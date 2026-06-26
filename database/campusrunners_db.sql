@@ -151,17 +151,15 @@ CREATE TABLE admin_actions (
 );
 
 -- Sample users
--- Password placeholder note:
--- For real testing, replace password hashes using PHP password_hash().
--- The sample hash below is not guaranteed to match "password" in all environments.
+-- Demo password for all seed accounts: password
 INSERT INTO users (full_name, school_email, student_number, password_hash, role, verification_status, account_status)
 VALUES
-('CampusRunners Admin', 'admin@mcl.edu.ph', NULL, '$2y$10$exampleplaceholderhashreplaceinphp', 'admin', 'verified', 'active'),
-('Juan Dela Cruz', 'juan.dcruz@mcl.edu.ph', '202600001', '$2y$10$exampleplaceholderhashreplaceinphp', 'student', 'verified', 'active'),
-('Maria Santos', 'maria.santos@mcl.edu.ph', '202600002', '$2y$10$exampleplaceholderhashreplaceinphp', 'student', 'verified', 'active'),
-('Carlo Reyes', 'carlo.reyes@mcl.edu.ph', '202600003', '$2y$10$exampleplaceholderhashreplaceinphp', 'student', 'verified', 'active'),
-('Ana Lopez', 'ana.lopez@mcl.edu.ph', '202600004', '$2y$10$exampleplaceholderhashreplaceinphp', 'student', 'verified', 'active'),
-('Miguel Garcia', 'miguel.garcia@mcl.edu.ph', '202600005', '$2y$10$exampleplaceholderhashreplaceinphp', 'student', 'verified', 'active');
+('CampusRunners Admin', 'admin@mcl.edu.ph', NULL, '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'admin', 'verified', 'active'),
+('Juan Dela Cruz', 'juan.dcruz@mcl.edu.ph', '202600001', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Maria Santos', 'maria.santos@mcl.edu.ph', '202600002', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Carlo Reyes', 'carlo.reyes@mcl.edu.ph', '202600003', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Ana Lopez', 'ana.lopez@mcl.edu.ph', '202600004', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Miguel Garcia', 'miguel.garcia@mcl.edu.ph', '202600005', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active');
 
 -- Sample locations
 INSERT INTO locations (location_name, location_type)
@@ -182,3 +180,16 @@ VALUES
 (4, 'Buy lunch from canteen', 'Please buy one rice meal from the canteen.', 'Food Pickup', 'Canteen', 'Classroom Building', '2026-07-15 12:00:00', 25.00, 'Payment after delivery', 'Open', 'allowed'),
 (5, 'Deliver project materials', 'Please bring light project materials from Room B202 to Room C105.', 'Campus Item Delivery', 'Room B202', 'Room C105', '2026-07-16 10:00:00', 10.00, 'Thank you reward', 'Open', 'allowed'),
 (6, 'Check bookstore stock', 'Please check if the bookstore has graphing paper available.', 'Bookstore Item Purchase', 'Bookstore', 'Library', '2026-07-16 14:00:00', NULL, 'No purchase needed, just check availability', 'Open', 'allowed');
+
+-- Sample activity
+INSERT INTO errand_applications (errand_id, helper_id, offer_note, estimated_completion_time, status)
+VALUES
+(1, 3, 'I can pass by the bookstore before my next class.', '30 minutes', 'pending'),
+(2, 4, 'I am near printing services right now.', '15 minutes', 'pending');
+
+UPDATE errands SET status = 'Has Applicants' WHERE errand_id IN (1, 2);
+
+INSERT INTO errand_status_logs (errand_id, changed_by, old_status, new_status, reason)
+VALUES
+(1, 3, 'Open', 'Has Applicants', 'Seed helper application submitted.'),
+(2, 4, 'Open', 'Has Applicants', 'Seed helper application submitted.');

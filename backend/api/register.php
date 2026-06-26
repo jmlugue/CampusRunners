@@ -17,6 +17,10 @@ if (!filter_var($school_email, FILTER_VALIDATE_EMAIL)) {
     respond_error("Invalid school email format.");
 }
 
+if (!preg_match("/@mcl\.edu\.ph$/i", $school_email)) {
+    respond_error("Use your MCL school email address.");
+}
+
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {

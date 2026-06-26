@@ -40,6 +40,8 @@ The project uses PHP and MySQL instead of Supabase or Firebase because the final
 
 ## Suggested Setup
 
+For detailed local setup, see `docs/LOCAL_SETUP.md`.
+
 ### Backend
 
 1. Install XAMPP.

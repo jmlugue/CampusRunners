@@ -2,5 +2,16 @@
 require_once "../config/db.php";
 require_once "helpers.php";
 
-respond_error("This endpoint is a starter placeholder. Implement this API based on CODEX_PROMPT.md and API_DOCUMENTATION.md.");
+$user_id = $_GET["user_id"] ?? null;
+
+if (!$user_id) {
+    respond_error("User ID is required.");
+}
+
+$user = sanitize_user(get_user_by_id($pdo, $user_id));
+if (!$user) {
+    respond_error("User not found.");
+}
+
+respond_success("User profile retrieved.", $user);
 ?>

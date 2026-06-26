@@ -18,7 +18,7 @@ if (!$requester_id || $title === "" || $description === "" || $category === "" |
     respond_error("Missing required errand fields.");
 }
 
-$moderation = moderate_errand($title, $description);
+$moderation = moderate_errand($title, $description, $category, $pickup_location, $dropoff_location);
 $moderation_status = $moderation["result"];
 
 try {
