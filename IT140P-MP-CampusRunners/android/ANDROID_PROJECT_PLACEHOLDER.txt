@@ -1,1 +1,0 @@
-Create or paste the Android Studio project here. Use Java/XML and apply android/theme/colors.xml to res/values/colors.xml.
