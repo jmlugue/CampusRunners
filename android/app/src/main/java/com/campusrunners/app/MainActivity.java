@@ -873,17 +873,24 @@ public class MainActivity extends ComponentActivity {
     }
 
     private void addErrandCore(LinearLayout card, JSONObject errand) {
-        card.addView(cardTitle(errand.optString("title")));
-        card.addView(badge(errand.optString("status", "Open"), colorForStatus(errand.optString("status")), R.color.card_light));
-        card.addView(smallText(
-                categoryIcon(errand.optString("category")) + " " + errand.optString("category") + "\n" +
-                        "Pickup: " + errand.optString("pickup_location") + "\n" +
-                        "Drop-off: " + errand.optString("dropoff_location") + "\n" +
-                        "Deadline: " + errand.optString("deadline") + "\n" +
-                        "Reward: " + rewardText(errand) + "\n" +
-                        "Requester: " + errand.optString("requester_name", "Student") + "\n" +
-                        "Requester rating: " + errand.optString("requester_rating", "No rating yet")
-        ));
+        LinearLayout header = new LinearLayout(this);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setLayoutParams(spacedParams());
+
+        TextView title = cardTitle(errand.optString("title"));
+        title.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        header.addView(title);
+        header.addView(badge(errand.optString("status", "Open"), colorForStatus(errand.optString("status")), R.color.card_light));
+        card.addView(header);
+
+        card.addView(badge(categoryIcon(errand.optString("category")) + " " + errand.optString("category"), R.color.secondary_blue, R.color.card_light));
+        card.addView(detailRow("Pickup", errand.optString("pickup_location")));
+        card.addView(detailRow("Drop-off", errand.optString("dropoff_location")));
+        card.addView(detailRow("Deadline", errand.optString("deadline")));
+        card.addView(detailRow("Reward", rewardText(errand)));
+        card.addView(detailRow("Requester", errand.optString("requester_name", "Student")));
+        card.addView(detailRow("Rating", errand.optString("requester_rating", "No rating yet")));
     }
 
     private void requesterActions(JSONObject errand) {
@@ -921,14 +928,19 @@ public class MainActivity extends ComponentActivity {
 
     private LinearLayout applicantCard(JSONObject applicant, int errandId) {
         LinearLayout card = card();
-        card.addView(cardTitle(applicant.optString("helper_name")));
-        card.addView(smallText(
-                "Rating: " + applicant.optString("average_rating", "No rating yet") + "\n" +
-                        "Completed errands: " + applicant.optString("completed_errands", "0") + "\n" +
-                        "Offer: " + applicant.optString("offer_note") + "\n" +
-                        "Estimate: " + applicant.optString("estimated_completion_time")
-        ));
-        card.addView(badge(applicant.optString("status", "pending"), colorForStatus(applicant.optString("status")), R.color.card_light));
+        LinearLayout header = new LinearLayout(this);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setLayoutParams(spacedParams());
+        TextView name = cardTitle(applicant.optString("helper_name"));
+        name.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        header.addView(name);
+        header.addView(badge(applicant.optString("status", "pending"), colorForStatus(applicant.optString("status")), R.color.card_light));
+        card.addView(header);
+        card.addView(detailRow("Rating", applicant.optString("average_rating", "No rating yet")));
+        card.addView(detailRow("Completed", applicant.optString("completed_errands", "0") + " errands"));
+        card.addView(detailRow("Offer", applicant.optString("offer_note")));
+        card.addView(detailRow("Estimate", applicant.optString("estimated_completion_time")));
         card.addView(button("Helper Profile", false, v -> showHelperProfile(applicant)));
         if ("pending".equals(applicant.optString("status"))) {
             card.addView(button("Select Helper", true, v -> {
@@ -1082,6 +1094,7 @@ public class MainActivity extends ComponentActivity {
         view.setTextColor(getColor(R.color.text_primary));
         view.setTextSize(22);
         view.setTypeface(Typeface.DEFAULT_BOLD);
+        view.setLetterSpacing(0.01f);
         view.setLayoutParams(spacedParams());
         return view;
     }
@@ -1089,6 +1102,7 @@ public class MainActivity extends ComponentActivity {
     private TextView section(String text) {
         TextView view = title(text);
         view.setTextSize(18);
+        view.setTextColor(getColor(R.color.primary_blue));
         return view;
     }
 
@@ -1103,7 +1117,7 @@ public class MainActivity extends ComponentActivity {
         view.setText(text);
         view.setTextColor(getColor(R.color.text_secondary));
         view.setTextSize(14);
-        view.setLineSpacing(dp(2), 1.0f);
+        view.setLineSpacing(dp(3), 1.0f);
         view.setLayoutParams(spacedParams());
         return view;
     }
@@ -1112,7 +1126,7 @@ public class MainActivity extends ComponentActivity {
         TextView view = new TextView(this);
         view.setText(text == null || text.isEmpty() ? "Untitled" : text);
         view.setTextColor(getColor(R.color.text_primary));
-        view.setTextSize(17);
+        view.setTextSize(18);
         view.setTypeface(Typeface.DEFAULT_BOLD);
         view.setLayoutParams(spacedParams());
         return view;
@@ -1124,8 +1138,9 @@ public class MainActivity extends ComponentActivity {
         view.setInputType(inputType);
         view.setTextColor(getColor(R.color.text_primary));
         view.setHintTextColor(getColor(R.color.text_secondary));
+        view.setTextSize(15);
         view.setSingleLine(false);
-        view.setMinHeight(dp(48));
+        view.setMinHeight(dp(52));
         view.setBackgroundResource(R.drawable.input_background);
         view.setLayoutParams(spacedParams());
         return view;
@@ -1144,7 +1159,8 @@ public class MainActivity extends ComponentActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setBackgroundResource(R.drawable.input_background);
-        spinner.setPadding(dp(8), dp(6), dp(8), dp(6));
+        spinner.setPadding(dp(10), dp(8), dp(10), dp(8));
+        spinner.setMinimumHeight(dp(52));
         spinner.setLayoutParams(spacedParams());
         return spinner;
     }
@@ -1152,9 +1168,11 @@ public class MainActivity extends ComponentActivity {
     private Button button(String text, boolean primary, View.OnClickListener listener) {
         Button button = new Button(this);
         button.setText(text);
-        button.setTextColor(getColor(android.R.color.white));
+        button.setTextColor(getColor(primary ? android.R.color.white : R.color.primary_blue));
+        button.setTextSize(14);
+        button.setTypeface(Typeface.DEFAULT_BOLD);
         button.setAllCaps(false);
-        button.setMinHeight(dp(46));
+        button.setMinHeight(dp(50));
         button.setBackgroundResource(primary ? R.drawable.primary_button : R.drawable.secondary_button);
         button.setClickable(true);
         button.setFocusable(true);
@@ -1167,6 +1185,7 @@ public class MainActivity extends ComponentActivity {
     private LinearLayout greetingCard() {
         LinearLayout card = card();
         card.setBackgroundResource(R.drawable.panel_light);
+        card.addView(badge("Verified school-only prototype", R.color.secondary_blue, R.color.card_light));
         card.addView(cardTitle("Hello, " + (fullName == null || fullName.isEmpty() ? "Student" : firstName(fullName))));
         card.addView(smallText("Manage campus errands, helper applications, messages, completion, ratings, and safety reports from one dashboard."));
         return card;
@@ -1200,14 +1219,17 @@ public class MainActivity extends ComponentActivity {
     private LinearLayout summaryCard(String label, String value) {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(dp(12), dp(12), dp(12), dp(12));
+        card.setPadding(dp(14), dp(14), dp(14), dp(14));
         card.setBackgroundResource(R.drawable.card_background);
+        card.setElevation(dp(1));
+
         TextView valueView = new TextView(this);
         valueView.setText(value);
         valueView.setTextColor(getColor(R.color.primary_blue));
-        valueView.setTextSize(20);
+        valueView.setTextSize(19);
         valueView.setTypeface(Typeface.DEFAULT_BOLD);
         card.addView(valueView);
+
         TextView labelView = smallText(label);
         labelView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         card.addView(labelView);
@@ -1233,29 +1255,55 @@ public class MainActivity extends ComponentActivity {
         return grid;
     }
 
-    private Button actionTile(String title, String subtitle, View.OnClickListener listener) {
-        Button tile = new Button(this);
-        tile.setText(title);
+    private LinearLayout actionTile(String title, String subtitle, View.OnClickListener listener) {
+        LinearLayout tile = new LinearLayout(this);
+        tile.setOrientation(LinearLayout.VERTICAL);
         tile.setContentDescription(title + ". " + subtitle);
-        tile.setTextColor(getColor(R.color.text_primary));
-        tile.setTextSize(13);
-        tile.setAllCaps(false);
-        tile.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
-        tile.setPadding(dp(12), dp(8), dp(12), dp(8));
+        tile.setPadding(dp(14), dp(12), dp(14), dp(12));
         tile.setBackgroundResource(R.drawable.action_tile_background);
         tile.setClickable(true);
         tile.setFocusable(true);
         tile.setEnabled(true);
-        tile.setMinHeight(dp(70));
+        tile.setMinimumHeight(dp(88));
+        tile.setElevation(dp(1));
         tile.setOnClickListener(listener);
+
+        TextView accent = new TextView(this);
+        accent.setText(actionLabel(title));
+        accent.setTextColor(getColor(R.color.primary_blue));
+        accent.setTextSize(11);
+        accent.setTypeface(Typeface.DEFAULT_BOLD);
+        accent.setGravity(Gravity.CENTER);
+        accent.setBackground(roundedPill(Color.rgb(220, 235, 250), getColor(R.color.secondary_blue)));
+        LinearLayout.LayoutParams accentParams = wrapParams();
+        accentParams.setMargins(0, 0, 0, dp(8));
+        tile.addView(accent, accentParams);
+
+        TextView titleView = new TextView(this);
+        titleView.setText(title);
+        titleView.setTextColor(getColor(R.color.text_primary));
+        titleView.setTextSize(15);
+        titleView.setTypeface(Typeface.DEFAULT_BOLD);
+        titleView.setMaxLines(2);
+        titleView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tile.addView(titleView);
+
+        TextView subtitleView = new TextView(this);
+        subtitleView.setText(subtitle);
+        subtitleView.setTextColor(getColor(R.color.text_secondary));
+        subtitleView.setTextSize(12);
+        subtitleView.setMaxLines(2);
+        subtitleView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tile.addView(subtitleView);
         return tile;
     }
 
     private LinearLayout card() {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(dp(14), dp(12), dp(14), dp(12));
+        card.setPadding(dp(16), dp(14), dp(16), dp(14));
         card.setBackgroundResource(R.drawable.card_background);
+        card.setElevation(dp(2));
         card.setLayoutParams(spacedParams());
         return card;
     }
@@ -1280,6 +1328,29 @@ public class MainActivity extends ComponentActivity {
         card.addView(smallText(stats));
         card.addView(smallText(note));
         return card;
+    }
+
+    private LinearLayout detailRow(String label, String value) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.VERTICAL);
+        row.setPadding(0, dp(4), 0, dp(4));
+        row.setLayoutParams(spacedParams());
+
+        TextView labelView = new TextView(this);
+        labelView.setText(label);
+        labelView.setTextColor(getColor(R.color.secondary_blue));
+        labelView.setTextSize(11);
+        labelView.setTypeface(Typeface.DEFAULT_BOLD);
+        labelView.setAllCaps(true);
+        row.addView(labelView);
+
+        TextView valueView = new TextView(this);
+        valueView.setText(value == null || value.isEmpty() || "null".equals(value) ? "Not specified" : value);
+        valueView.setTextColor(getColor(R.color.text_primary));
+        valueView.setTextSize(14);
+        valueView.setLineSpacing(dp(2), 1.0f);
+        row.addView(valueView);
+        return row;
     }
 
     private LinearLayout statusTracker(String currentStatus) {
@@ -1350,7 +1421,7 @@ public class MainActivity extends ComponentActivity {
         badge.setTypeface(Typeface.DEFAULT_BOLD);
         badge.setTextColor(getColor(textColorRes));
         badge.setGravity(Gravity.CENTER);
-        badge.setPadding(dp(10), dp(4), dp(10), dp(4));
+        badge.setPadding(dp(11), dp(5), dp(11), dp(5));
         badge.setBackground(roundedPill(getColor(fillColorRes), getColor(textColorRes)));
         badge.setLayoutParams(wrapParams());
         return badge;
@@ -1416,6 +1487,37 @@ public class MainActivity extends ComponentActivity {
             return R.color.warning_amber;
         }
         return R.color.primary_blue;
+    }
+
+    private String actionLabel(String title) {
+        if (title == null || title.isEmpty()) {
+            return "ACTION";
+        }
+        if (title.contains("Post")) {
+            return "CREATE";
+        }
+        if (title.contains("Browse")) {
+            return "FIND";
+        }
+        if (title.contains("Message")) {
+            return "CHAT";
+        }
+        if (title.contains("Report")) {
+            return "SAFETY";
+        }
+        if (title.contains("Profile") || title.contains("Rating")) {
+            return "ACCOUNT";
+        }
+        if (title.contains("History")) {
+            return "RECORD";
+        }
+        if (title.contains("Helper")) {
+            return "HELPER";
+        }
+        if (title.contains("Posted")) {
+            return "REQUESTER";
+        }
+        return "OPEN";
     }
 
     private String rewardText(JSONObject errand) {

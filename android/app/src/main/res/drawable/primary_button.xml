@@ -3,13 +3,16 @@
     android:color="#90CAF9">
     <item>
         <shape>
-            <solid android:color="@color/primary_blue" />
-            <corners android:radius="6dp" />
+            <gradient
+                android:angle="0"
+                android:endColor="@color/secondary_blue"
+                android:startColor="@color/primary_blue" />
+            <corners android:radius="12dp" />
             <padding
-                android:bottom="10dp"
-                android:left="14dp"
-                android:right="14dp"
-                android:top="10dp" />
+                android:bottom="12dp"
+                android:left="16dp"
+                android:right="16dp"
+                android:top="12dp" />
         </shape>
     </item>
 </ripple>

@@ -2,8 +2,13 @@
 <resources>
     <color name="primary_blue">#0B4EA2</color>
     <color name="secondary_blue">#1976D2</color>
+    <color name="accent_cyan">#00A7E1</color>
+    <color name="accent_indigo">#334EAC</color>
+    <color name="background_soft">#EEF5FB</color>
     <color name="background_white">#FFFFFF</color>
     <color name="card_light">#F4F8FC</color>
+    <color name="field_fill">#FAFCFF</color>
+    <color name="border_soft">#D7E6F5</color>
     <color name="text_primary">#102A43</color>
     <color name="text_secondary">#6B7280</color>
     <color name="success_green">#2E7D32</color>
