@@ -574,12 +574,20 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun MyPostedScreen() {
+        var selectedTab by remember { mutableStateOf("Active") }
+        TabStrip(
+            tabs = listOf("Active", "Completed", "Cancelled"),
+            selected = selectedTab,
+            onSelected = { selectedTab = it }
+        )
         RemoteList(
             endpoint = "get_my_posted_errands.php",
             params = mapOf("user_id" to userId.toString()),
             emptyText = "You have not posted errands yet."
         ) { item ->
-            ErrandCard(item, applyMode = false)
+            if (matchesErrandTab(item.optString("status"), selectedTab)) {
+                ErrandCard(item, applyMode = false)
+            }
         }
         BackButton()
     }
@@ -658,9 +666,18 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun MessageHubScreen() {
+        TabStrip(
+            tabs = listOf("All", "Errands", "System"),
+            selected = "All",
+            onSelected = {}
+        )
         InfoPanel("Messaging is connected to a specific errand and is only visible to the requester and selected helper.")
-        CampusButton("My Posted Errand Chats") { screen = Screen.MyPosted }
-        CampusButton("My Helper Errand Chats", primary = false) { screen = Screen.MyHelper }
+        MessageRouteCard("My Posted Errand Chats", "Open chats for errands where you selected a helper.", "Requester") {
+            screen = Screen.MyPosted
+        }
+        MessageRouteCard("My Helper Errand Chats", "Open chats for errands assigned to you as helper.", "Helper") {
+            screen = Screen.MyHelper
+        }
         BackButton()
     }
 
@@ -757,15 +774,23 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun ReportScreen(errand: JSONObject?) {
         var reportedUserId by remember { mutableStateOf("") }
-        var reason by remember { mutableStateOf("") }
+        var reason by remember { mutableStateOf("Unsafe or prohibited request") }
         var details by remember { mutableStateOf("") }
+        val reportReasons = listOf(
+            "Unsafe or prohibited request",
+            "Restricted area",
+            "Harassment or threat",
+            "Privacy concern",
+            "School-rule violation",
+            "Other safety concern"
+        )
 
         InfoPanel("Use reports for unsafe behavior, banned errands, restricted areas, harassment, privacy concerns, or school-rule violations.")
         if (errand == null) {
             CampusTextField("Reported user ID", reportedUserId, { reportedUserId = it }, KeyboardType.Number)
-            CampusTextField("Reason", reason, { reason = it })
+            GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
             CampusTextField("Details", details, { details = it }, multiline = true)
-            CampusButton("Submit User Report") {
+            DangerButton("Submit User Report") {
                 api.post("report_user.php", JSONObject().apply {
                     put("reported_user_id", reportedUserId.toIntOrNull() ?: 0)
                     put("reported_by_user_id", userId)
@@ -777,12 +802,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         } else {
-            CampusTextField("Describe the concern", reason, { reason = it }, multiline = true)
-            CampusButton("Submit Report") {
+            GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
+            CampusTextField("Additional details, optional", details, { details = it }, multiline = true)
+            DangerButton("Submit Report") {
                 api.post("report_errand.php", JSONObject().apply {
                     put("errand_id", errand.optInt("errand_id"))
                     put("reporter_id", userId)
-                    put("reason", reason.trim())
+                    put("reason", (reason + if (details.isBlank()) "" else ": ${details.trim()}").trim())
                 }) { response ->
                     toast(response.optString("message"))
                     if (response.optBoolean("success")) screen = Screen.Dashboard
@@ -799,17 +825,11 @@ class MainActivity : ComponentActivity() {
             params = mapOf("user_id" to userId.toString()),
             emptyText = "Profile unavailable."
         ) { data ->
-            CampusCard {
-                Text(data.optString("full_name", fullName), color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text("Verification: ${data.optString("verification_status", "verified")}", color = TextSecondary)
-                Text("Account: ${data.optString("account_status", "active")}", color = TextSecondary)
-                Text("Average rating: ${data.optString("average_rating", "0.00")}", color = TextSecondary)
-                Text("Completed errands: ${data.optString("completed_errands", "0")}", color = TextSecondary)
-                InfoPanel("Public cards show only name, average rating, completed errand count, and offer note.")
-            }
+            ProfileHeader(data)
         }
-        CampusButton("Edit Profile") { screen = Screen.EditProfile }
-        CampusButton("View History") { screen = Screen.History }
+        MenuRow("Edit Profile", "Update your display name") { screen = Screen.EditProfile }
+        MenuRow("Privacy & Safety", "Your email and student number stay hidden publicly") { }
+        MenuRow("History", "Review completed and cancelled errands") { screen = Screen.History }
         BackButton()
     }
 
@@ -836,6 +856,12 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun HistoryScreen() {
+        var selectedTab by remember { mutableStateOf("All") }
+        TabStrip(
+            tabs = listOf("All", "Posted", "As Helper"),
+            selected = selectedTab,
+            onSelected = { selectedTab = it }
+        )
         RemoteList(
             endpoint = "get_user_history.php",
             params = mapOf("user_id" to userId.toString()),
@@ -1245,6 +1271,75 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    private fun ProfileHeader(data: JSONObject) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(PrimaryBlue)
+                .padding(18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(76.dp)
+                    .clip(CircleShape)
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = "Profile",
+                    tint = TextSecondary,
+                    modifier = Modifier.size(70.dp)
+                )
+            }
+            Text(data.optString("full_name", fullName), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Badge("Verified Prototype", Color.White, fill = Color(0xFF0A63D8), border = Color.White)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                ProfileStat("Completed", data.optString("completed_errands", "0"), Modifier.weight(1f))
+                ProfileStat("Rating", data.optString("average_rating", "0.00"), Modifier.weight(1f))
+                ProfileStat("Account", data.optString("account_status", "active"), Modifier.weight(1f))
+            }
+        }
+    }
+
+    @Composable
+    private fun ProfileStat(label: String, value: String, modifier: Modifier = Modifier) {
+        Column(
+            modifier = modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .padding(horizontal = 8.dp, vertical = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(value, color = PrimaryBlue, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Text(label, color = TextSecondary, fontSize = 10.sp)
+        }
+    }
+
+    @Composable
+    private fun MenuRow(title: String, subtitle: String, action: () -> Unit) {
+        CampusCard {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { action() },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Icon(Icons.Filled.Assignment, contentDescription = title, tint = PrimaryBlue, modifier = Modifier.size(20.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(title, color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text(subtitle, color = TextSecondary, fontSize = 12.sp)
+                }
+                Text(">", color = TextSecondary, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+
+    @Composable
     private fun ChatBubble(sender: String, message: String, mine: Boolean) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = if (mine) Arrangement.End else Arrangement.Start) {
             Column(
@@ -1264,20 +1359,43 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun StatusTracker(currentStatus: String) {
         val currentIndex = statusSteps.indexOf(currentStatus)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        CampusCard {
             statusSteps.forEachIndexed { index, step ->
                 val color = when {
                     currentIndex >= 0 && index < currentIndex -> SuccessGreen
                     index == currentIndex -> PrimaryBlue
                     else -> TextSecondary
                 }
-                Badge(step, color)
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clip(CircleShape)
+                                .background(if (index <= currentIndex && currentIndex >= 0) color else Color.White)
+                                .border(2.dp, color, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (index < currentIndex) {
+                                Text("✓", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                        if (index < statusSteps.lastIndex) {
+                            Box(
+                                modifier = Modifier
+                                    .width(2.dp)
+                                    .height(22.dp)
+                                    .background(if (index < currentIndex) SuccessGreen else BorderSoft)
+                            )
+                        }
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(step, color = color, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Text(if (index <= currentIndex && currentIndex >= 0) "Updated in current workflow" else "Pending", color = TextSecondary, fontSize = 11.sp)
+                    }
+                }
             }
+            InfoPanel("You will be notified at every update.")
         }
     }
 
@@ -1310,6 +1428,57 @@ class MainActivity : ComponentActivity() {
                     if (rowItems.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun TabStrip(tabs: List<String>, selected: String, onSelected: (String) -> Unit) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .border(1.dp, BorderSoft, RoundedCornerShape(8.dp))
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            tabs.forEach { tab ->
+                val active = tab == selected
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(if (active) Color(0xFFEAF3FF) else Color.Transparent)
+                        .clickable { onSelected(tab) }
+                        .padding(vertical = 9.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(tab, color = if (active) PrimaryBlue else TextSecondary, fontSize = 12.sp, fontWeight = if (active) FontWeight.Bold else FontWeight.Normal)
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun MessageRouteCard(title: String, subtitle: String, badge: String, action: () -> Unit) {
+        CampusCard {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFEAF3FF)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Filled.ChatBubble, contentDescription = title, tint = PrimaryBlue, modifier = Modifier.size(22.dp))
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(title, color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text(subtitle, color = TextSecondary, fontSize = 12.sp)
+                }
+                Badge(badge, SecondaryBlue)
+            }
+            CampusButton("Open", primary = false, onClick = action)
         }
     }
 
@@ -1445,6 +1614,25 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    private fun DangerButton(
+        text: String,
+        modifier: Modifier = Modifier.fillMaxWidth(),
+        onClick: () -> Unit
+    ) {
+        Button(
+            onClick = onClick,
+            modifier = modifier.height(50.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = DangerRed,
+                contentColor = Color.White
+            )
+        ) {
+            Text(text, fontWeight = FontWeight.Bold)
+        }
+    }
+
+    @Composable
     private fun BackButton() {
         CampusButton("Back", primary = false) { navigateBack() }
     }
@@ -1523,6 +1711,36 @@ class MainActivity : ComponentActivity() {
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Category") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp)
+            )
+            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                options.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option) },
+                        onClick = {
+                            onChange(option)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun GenericDropdown(label: String, value: String, options: List<String>, onChange: (String) -> Unit) {
+        var expanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+            OutlinedTextField(
+                value = value,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(label) },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 modifier = Modifier
                     .menuAnchor()
@@ -1745,6 +1963,15 @@ class MainActivity : ComponentActivity() {
             status.contains("Cancel") || status.contains("Reported") || status.contains("Removed") -> DangerRed
             status.contains("Flagged") || status.contains("pending") || status.contains("Has Applicants") -> WarningAmber
             else -> PrimaryBlue
+        }
+    }
+
+    private fun matchesErrandTab(status: String?, tab: String): Boolean {
+        val value = status.orEmpty()
+        return when (tab) {
+            "Completed" -> value.contains("Completed") || value.contains("Confirmed") || value.contains("Rated") || value.contains("Closed")
+            "Cancelled" -> value.contains("Cancel")
+            else -> !value.contains("Completed") && !value.contains("Confirmed") && !value.contains("Rated") && !value.contains("Closed") && !value.contains("Cancel")
         }
     }
 
