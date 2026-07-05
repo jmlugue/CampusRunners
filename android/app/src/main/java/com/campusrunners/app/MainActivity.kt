@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,6 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,12 +38,28 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Work
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,6 +71,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -169,20 +188,34 @@ class MainActivity : ComponentActivity() {
             delay(850)
             screen = if (userId > 0) Screen.Dashboard else Screen.Login
         }
+        BackHandler(enabled = canNavigateBack()) {
+            navigateBack()
+        }
 
         val header = headerText()
+        val authScreen = screen == Screen.Splash || screen == Screen.Login || screen == Screen.Register
+        val studentChrome = userId > 0 && role != "admin" && !authScreen
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = BackgroundSoft
+            color = if (authScreen) Color.White else BackgroundSoft
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                Header(header.first, header.second)
+                if (!authScreen) {
+                    if (screen == Screen.Dashboard && role != "admin") {
+                        DashboardHeader()
+                    } else {
+                        Header(header.first, header.second)
+                    }
+                }
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .weight(1f)
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp, vertical = 18.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                        .padding(
+                            horizontal = if (authScreen) 24.dp else 16.dp,
+                            vertical = if (authScreen) 28.dp else 14.dp
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     when (screen) {
                         Screen.Splash -> SplashScreen()
@@ -214,21 +247,77 @@ class MainActivity : ComponentActivity() {
                         Screen.AdminRatings -> AdminRatingsScreen()
                     }
                 }
+                if (studentChrome) {
+                    StudentBottomNav()
+                }
             }
         }
     }
 
     @Composable
     private fun Header(title: String, subtitle: String) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (canNavigateBack()) {
+                IconButton(
+                    onClick = { navigateBack() },
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = PrimaryBlue
+                    )
+                }
+            } else {
+                Spacer(Modifier.size(40.dp))
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(title, color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                if (subtitle.isNotBlank()) {
+                    Text(subtitle, color = TextSecondary, fontSize = 11.sp)
+                }
+            }
+            Spacer(Modifier.size(40.dp))
+        }
+        Divider(color = BorderSoft)
+    }
+
+    @Composable
+    private fun DashboardHeader() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(PrimaryBlue)
-                .padding(start = 20.dp, end = 20.dp, top = 22.dp, bottom = 18.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 22.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(4.dp))
-            Text(subtitle, color = Color(0xFFDCEBFA), fontSize = 14.sp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.weight(1f))
+                Text("CampusRunners", color = Color(0xFFDCEBFA), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            }
+            Text(
+                "Hello, ${firstName(fullName).ifBlank { "Student" }}!",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text("What do you want to do today?", color = Color(0xFFDCEBFA), fontSize = 13.sp)
+            Badge("Verified Prototype", Color.White, fill = Color(0xFF0A63D8), border = Color.White)
         }
     }
 
@@ -237,22 +326,23 @@ class MainActivity : ComponentActivity() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 28.dp),
+                .padding(top = 74.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .size(84.dp)
+                    .size(104.dp)
                     .clip(CircleShape)
-                    .background(PrimaryBlue),
+                    .background(Color(0xFFEAF3FF)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("CR", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                Text("CR", color = PrimaryBlue, fontSize = 38.sp, fontWeight = FontWeight.Bold)
             }
-            Text("CampusRunners", color = TextPrimary, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text("Post errands, apply as helpers, message, complete, rate, and report unsafe activity.", color = TextSecondary)
-            Badge("Preparing prototype", SecondaryBlue)
+            Text("CampusRunners", color = PrimaryBlue, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text("Student Errand Platform", color = SecondaryBlue, fontSize = 15.sp)
+            Spacer(Modifier.height(42.dp))
+            Badge("Prototype Version", PrimaryBlue)
         }
     }
 
@@ -261,7 +351,7 @@ class MainActivity : ComponentActivity() {
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
 
-        SectionTitle("Student and Admin Login")
+        AuthTitle("Welcome Back!", "Sign in to your account")
         CampusTextField("School email", email, { email = it }, KeyboardType.Email)
         CampusTextField("Password", password, { password = it }, KeyboardType.Password, password = true)
         CampusButton("Login") {
@@ -279,6 +369,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Text("or", color = TextSecondary, fontSize = 12.sp)
+        }
         CampusButton("Create student account", primary = false) { screen = Screen.Register }
         InfoPanel("Demo accounts use password: password\nAdmin: admin@mcl.edu.ph\nStudent: juan.dcruz@mcl.edu.ph, maria.santos@mcl.edu.ph, carlo.reyes@mcl.edu.ph")
     }
@@ -291,6 +384,7 @@ class MainActivity : ComponentActivity() {
         var password by remember { mutableStateOf("") }
         var confirm by remember { mutableStateOf("") }
 
+        AuthTitle("Create Student Account", "All accounts are verified for prototype use.")
         InfoPanel("Use your school email and student number. Student numbers and school emails are stored for verification and are not shown publicly.")
         CampusTextField("Full name", name, { name = it })
         CampusTextField("School email, example: student@mcl.edu.ph", email, { email = it }, KeyboardType.Email)
@@ -317,7 +411,6 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun StudentDashboardScreen() {
-        GreetingCard()
         ActionGrid(
             listOf(
                 "Post Errand" to "Create a campus request",
@@ -1228,12 +1321,20 @@ class MainActivity : ComponentActivity() {
                 .background(Color.White)
                 .border(1.dp, BorderSoft, RoundedCornerShape(8.dp))
                 .clickable { action() }
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+                .height(104.dp)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Badge(actionLabel(title), PrimaryBlue)
-            Text(title, color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-            Text(subtitle, color = TextSecondary, fontSize = 12.sp)
+            Icon(
+                imageVector = actionIcon(title),
+                contentDescription = title,
+                tint = iconColor(title),
+                modifier = Modifier.size(26.dp)
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(title, color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+            Text(subtitle, color = TextSecondary, fontSize = 10.sp)
         }
     }
 
@@ -1245,12 +1346,12 @@ class MainActivity : ComponentActivity() {
     ) {
         Card(
             modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(containerColor = background),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(14.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 content = content
             )
@@ -1277,6 +1378,20 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    private fun AuthTitle(title: String, subtitle: String) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 22.dp, bottom = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text(title, color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text(subtitle, color = TextSecondary, fontSize = 13.sp)
+        }
+    }
+
+    @Composable
     private fun DetailRow(label: String, value: String?) {
         Column {
             Text(label.uppercase(Locale.US), color = SecondaryBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold)
@@ -1289,13 +1404,18 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun Badge(text: String, color: Color) {
+    private fun Badge(
+        text: String,
+        color: Color,
+        fill: Color = CardLight,
+        border: Color = color
+    ) {
         Text(
             text = text.ifBlank { "Open" },
             modifier = Modifier
                 .clip(RoundedCornerShape(18.dp))
-                .background(CardLight)
-                .border(1.dp, color, RoundedCornerShape(18.dp))
+                .background(fill)
+                .border(1.dp, border, RoundedCornerShape(18.dp))
                 .padding(horizontal = 11.dp, vertical = 5.dp),
             color = color,
             fontSize = 12.sp,
@@ -1348,6 +1468,48 @@ class MainActivity : ComponentActivity() {
             visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
             shape = RoundedCornerShape(8.dp)
         )
+    }
+
+    @Composable
+    private fun StudentBottomNav() {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+        ) {
+            Divider(color = BorderSoft)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 7.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BottomNavItem("Home", Icons.Filled.Home, screen == Screen.Dashboard) { screen = Screen.Dashboard }
+                BottomNavItem("Messages", Icons.Filled.ChatBubble, screen == Screen.MessageHub || screen == Screen.Chat) { screen = Screen.MessageHub }
+                BottomNavItem("History", Icons.Filled.History, screen == Screen.History || screen == Screen.UserRatings) { screen = Screen.History }
+                BottomNavItem("Profile", Icons.Filled.AccountCircle, screen == Screen.Profile || screen == Screen.EditProfile) { screen = Screen.Profile }
+            }
+        }
+    }
+
+    @Composable
+    private fun BottomNavItem(label: String, icon: ImageVector, selected: Boolean, action: () -> Unit) {
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .clickable { action() }
+                .padding(horizontal = 10.dp, vertical = 4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = if (selected) PrimaryBlue else TextSecondary,
+                modifier = Modifier.size(20.dp)
+            )
+            Text(label, color = if (selected) PrimaryBlue else TextSecondary, fontSize = 10.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal)
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -1411,6 +1573,13 @@ class MainActivity : ComponentActivity() {
             Screen.AdminRecordDetails -> "$adminTitle Details" to "Admin detail view"
             Screen.AdminRatings -> "Ratings and Feedback" to "Admin review screen"
         }
+    }
+
+    private fun canNavigateBack(): Boolean {
+        return screen != Screen.Splash &&
+            screen != Screen.Login &&
+            screen != Screen.Dashboard &&
+            screen != Screen.AdminDashboard
     }
 
     private fun navigateBack() {
@@ -1596,6 +1765,32 @@ class MainActivity : ComponentActivity() {
             title.contains("Helper") -> "HELPER"
             title.contains("Posted") -> "REQUESTER"
             else -> "OPEN"
+        }
+    }
+
+    private fun actionIcon(title: String): ImageVector {
+        return when {
+            title.contains("Post") -> Icons.Filled.AddCircle
+            title.contains("Browse") -> Icons.Filled.Search
+            title.contains("Message") -> Icons.Filled.ChatBubble
+            title.contains("Report") -> Icons.Filled.Flag
+            title.contains("Profile") || title.contains("Rating") -> Icons.Filled.AccountCircle
+            title.contains("History") -> Icons.Filled.History
+            title.contains("Helper") -> Icons.Filled.Person
+            title.contains("Posted") -> Icons.Filled.Work
+            title.contains("Errand") -> Icons.Filled.LocalShipping
+            else -> Icons.Filled.Assignment
+        }
+    }
+
+    private fun iconColor(title: String): Color {
+        return when {
+            title.contains("Report") -> DangerRed
+            title.contains("Message") -> SuccessGreen
+            title.contains("History") -> Color(0xFF4F46E5)
+            title.contains("Helper") || title.contains("Profile") -> SecondaryBlue
+            title.contains("Posted") -> WarningAmber
+            else -> PrimaryBlue
         }
     }
 
