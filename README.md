@@ -40,7 +40,7 @@ The project uses PHP and MySQL instead of Supabase or Firebase because the final
 
 ## Suggested Setup
 
-For detailed local setup, see `docs/LOCAL_SETUP.md`.
+For detailed local setup, see `docs/LOCAL_SETUP.md`. For a groupmate-friendly setup checklist and AI assistant handoff prompt, see `docs/GROUPMATE_AI_SETUP_GUIDE.md`.
 
 ### Backend
 
