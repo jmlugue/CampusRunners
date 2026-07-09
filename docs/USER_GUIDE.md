@@ -1,6 +1,6 @@
 # USER_GUIDE.md
 
-## CampusRunners User Guide
+## Malayan Quest User Guide
 
 ## Student Requester
 

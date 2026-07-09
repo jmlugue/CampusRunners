@@ -3,8 +3,8 @@
 ## Suggested Presentation Flow
 
 1. Title Page
-   - IT140P-MP-CampusRunners
-   - CampusRunners
+   - IT140P-MP-MalayanQuest
+   - Malayan Quest
    - Group members
 
 2. Problem Background
@@ -13,7 +13,7 @@
    - Chat-based requests can be unorganized, unsafe, and hard to track.
 
 3. Proposed Solution
-   - CampusRunners is a school-only micro-errand request app for MCL students.
+   - Malayan Quest is a school-only micro-errand request app for MCL students.
    - It allows verified students to post errands, apply as helpers, select helpers, track status, message, confirm completion, rate, and report issues.
 
 4. Target Users
@@ -77,7 +77,7 @@
    - Summarize user feedback
 
 11. Conclusion
-   - CampusRunners provides a structured, safer, and more organized way for students to request and complete small school-related errands.
+   - Malayan Quest provides a structured, safer, and more organized way for students to request and complete small school-related errands.
 
 12. Future Improvements
    - Real-time chat

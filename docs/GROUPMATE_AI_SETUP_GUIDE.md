@@ -1,18 +1,18 @@
-# CampusRunners Groupmate and AI Setup Guide
+# Malayan Quest Groupmate and AI Setup Guide
 
-Use this guide when a groupmate, classmate, or AI coding assistant needs to set up, run, debug, or continue developing the CampusRunners project. It is written as both a human checklist and an AI handoff file.
+Use this guide when a groupmate, classmate, or AI coding assistant needs to set up, run, debug, or continue developing the Malayan Quest project. It is written as both a human checklist and an AI handoff file.
 
 ## 1. Project Snapshot
 
-- **Project name:** IT140P-MP-CampusRunners
-- **App display name:** CampusRunners
+- **Project name:** IT140P-MP-MalayanQuest
+- **App display name:** Malayan Quest
 - **Project type:** Android Studio mobile app with PHP REST API and MySQL database
 - **Target users:** Mapúa Malayan Colleges Laguna students
 - **Backend requirement:** PHP + MySQL through XAMPP, not Firebase, Supabase, or another cloud database
-- **Database name:** `campusrunners_db`
-- **Android API config file:** `android/app/src/main/java/com/campusrunners/app/Config.java`
+- **Database name:** `malayanquest_db`
+- **Android API config file:** `android/app/src/main/java/com/malayanquest/app/Config.java`
 - **Default backend API folder:** `backend/api/`
-- **SQL import file:** `database/campusrunners_db.sql`
+- **SQL import file:** `database/malayanquest_db.sql`
 
 ## 2. Required Tools
 
@@ -31,17 +31,17 @@ Recommended versions are flexible for the school prototype, but the group should
 For easiest XAMPP setup on Windows, keep the project inside `htdocs`:
 
 ```text
-C:\xampp\htdocs\IT140P-MP-CampusRunners
+C:\xampp\htdocs\IT140P-MP-MalayanQuest
 ```
 
 The expected important paths are:
 
 ```text
-C:\xampp\htdocs\IT140P-MP-CampusRunners\backend
-C:\xampp\htdocs\IT140P-MP-CampusRunners\backend\api
-C:\xampp\htdocs\IT140P-MP-CampusRunners\backend\config\db.php
-C:\xampp\htdocs\IT140P-MP-CampusRunners\database\campusrunners_db.sql
-C:\xampp\htdocs\IT140P-MP-CampusRunners\android
+C:\xampp\htdocs\IT140P-MP-MalayanQuest\backend
+C:\xampp\htdocs\IT140P-MP-MalayanQuest\backend\api
+C:\xampp\htdocs\IT140P-MP-MalayanQuest\backend\config\db.php
+C:\xampp\htdocs\IT140P-MP-MalayanQuest\database\malayanquest_db.sql
+C:\xampp\htdocs\IT140P-MP-MalayanQuest\android
 ```
 
 If you keep the project somewhere else, the Android `API_BASE_URL` and browser URLs must match the actual Apache URL.
@@ -53,7 +53,7 @@ If you keep the project somewhere else, the Android `API_BASE_URL` and browser U
 Clone the repository or copy the project folder from the group:
 
 ```bash
-git clone <repository-url> IT140P-MP-CampusRunners
+git clone <repository-url> IT140P-MP-MalayanQuest
 ```
 
 If the repository is already downloaded, pull the latest changes before working:
@@ -86,13 +86,13 @@ http://localhost:8080/phpmyadmin
 3. Choose this file from the project:
 
 ```text
-database/campusrunners_db.sql
+database/malayanquest_db.sql
 ```
 
 4. Click **Import**.
-5. Confirm that the database named `campusrunners_db` appears in phpMyAdmin.
+5. Confirm that the database named `malayanquest_db` appears in phpMyAdmin.
 
-If the database already exists and you need a clean reset, drop `campusrunners_db` first, then import the SQL file again.
+If the database already exists and you need a clean reset, drop `malayanquest_db` first, then import the SQL file again.
 
 ### Step 4: Confirm PHP Database Credentials
 
@@ -106,7 +106,7 @@ Default XAMPP credentials should be:
 
 ```php
 $host = "localhost";
-$db_name = "campusrunners_db";
+$db_name = "malayanquest_db";
 $username = "root";
 $password = "";
 ```
@@ -118,13 +118,13 @@ Only change these if your local MySQL setup uses a different username or passwor
 Use this URL if Apache runs on port `8080`:
 
 ```text
-http://localhost:8080/IT140P-MP-CampusRunners/backend/api/admin_dashboard.php
+http://localhost:8080/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php
 ```
 
 Use this URL if Apache runs on the default port `80`:
 
 ```text
-http://localhost/IT140P-MP-CampusRunners/backend/api/admin_dashboard.php
+http://localhost/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php
 ```
 
 A successful response should be JSON and include `"success": true`.
@@ -136,7 +136,7 @@ A successful response should be JSON and include `"success": true`.
 3. Select the project folder:
 
 ```text
-IT140P-MP-CampusRunners/android
+IT140P-MP-MalayanQuest/android
 ```
 
 4. Wait for Gradle sync to finish.
@@ -147,25 +147,25 @@ IT140P-MP-CampusRunners/android
 Open:
 
 ```text
-android/app/src/main/java/com/campusrunners/app/Config.java
+android/app/src/main/java/com/malayanquest/app/Config.java
 ```
 
 For the Android emulator, use your computer localhost through `10.0.2.2`:
 
 ```java
-public static final String API_BASE_URL = "http://10.0.2.2:8080/IT140P-MP-CampusRunners/backend/api/";
+public static final String API_BASE_URL = "http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/";
 ```
 
 If Apache uses port `80`, remove `:8080`:
 
 ```java
-public static final String API_BASE_URL = "http://10.0.2.2/IT140P-MP-CampusRunners/backend/api/";
+public static final String API_BASE_URL = "http://10.0.2.2/IT140P-MP-MalayanQuest/backend/api/";
 ```
 
 For a real Android phone, replace `10.0.2.2` with your computer IPv4 address. Example:
 
 ```java
-public static final String API_BASE_URL = "http://192.168.1.12:8080/IT140P-MP-CampusRunners/backend/api/";
+public static final String API_BASE_URL = "http://192.168.1.12:8080/IT140P-MP-MalayanQuest/backend/api/";
 ```
 
 The phone and computer must be connected to the same Wi-Fi network.
@@ -247,7 +247,7 @@ Use this sequence for a presentation-ready test:
 Check these items:
 
 - XAMPP MySQL is running.
-- `campusrunners_db` exists in phpMyAdmin.
+- `malayanquest_db` exists in phpMyAdmin.
 - `backend/config/db.php` credentials match your MySQL setup.
 - The SQL file imported without errors.
 
@@ -339,17 +339,17 @@ Do not directly push to `main` unless the group agreed to do so.
 Copy and paste this prompt into any AI coding assistant before asking it to modify the project:
 
 ```text
-You are helping with IT140P-MP-CampusRunners, an Android Studio mobile app with a PHP REST API and MySQL database. The app is CampusRunners, a school-only micro-errand request app for Mapúa Malayan Colleges Laguna students.
+You are helping with IT140P-MP-MalayanQuest, an Android Studio mobile app with a PHP REST API and MySQL database. The app is Malayan Quest, a school-only micro-errand request app for Mapúa Malayan Colleges Laguna students.
 
 Important constraints:
 - Keep the backend as PHP REST API + MySQL.
 - Do not replace the backend with Firebase, Supabase, or another cloud database.
-- Use database name campusrunners_db.
-- SQL export file is database/campusrunners_db.sql.
+- Use database name malayanquest_db.
+- SQL export file is database/malayanquest_db.sql.
 - PHP API files are in backend/api/.
 - PHP database config is backend/config/db.php.
 - Android project is in android/.
-- Android API URL is configured in android/app/src/main/java/com/campusrunners/app/Config.java.
+- Android API URL is configured in android/app/src/main/java/com/malayanquest/app/Config.java.
 - Use prepared statements in PHP.
 - Use password_hash and password_verify for passwords.
 - Do not expose database credentials in Android.
@@ -377,8 +377,8 @@ docs/USER_GUIDE.md
 docs/GROUPMATE_AI_SETUP_GUIDE.md
 README.md
 backend/config/db.php
-android/app/src/main/java/com/campusrunners/app/Config.java
-database/campusrunners_db.sql
+android/app/src/main/java/com/malayanquest/app/Config.java
+database/malayanquest_db.sql
 ```
 
 ## 13. Final Pre-Demo Checklist
@@ -387,7 +387,7 @@ Before the group demo, confirm these items:
 
 - XAMPP Apache starts without port conflicts.
 - XAMPP MySQL starts successfully.
-- `campusrunners_db` exists and has data.
+- `malayanquest_db` exists and has data.
 - Browser can open at least one backend API endpoint.
 - Android app launches from Android Studio.
 - Android app can log in with seeded accounts.

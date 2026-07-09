@@ -2,11 +2,11 @@
 
 ## Project Name
 
-IT140P-MP-CampusRunners
+IT140P-MP-MalayanQuest
 
 ## App Display Name
 
-CampusRunners
+Malayan Quest
 
 ## Project Type
 
@@ -14,7 +14,7 @@ Android Studio mobile application using the RESTful approach with PHP REST API a
 
 ## Project Context
 
-CampusRunners is a school-only micro-errand request app for students of Mapúa Malayan Colleges Laguna. The app allows verified MCL students to post small campus-based errands, apply as helpers, choose helpers, track errand status, message each other, confirm completion, rate helpers, and report unsafe activity.
+Malayan Quest is a school-only micro-errand request app for students of Mapúa Malayan Colleges Laguna. The app allows verified MCL students to post small campus-based errands, apply as helpers, choose helpers, track errand status, message each other, confirm completion, rate helpers, and report unsafe activity.
 
 The project should be built as a complete but manageable final project prototype for IT140P.
 
@@ -76,7 +76,7 @@ A student can act as both requester and helper after verification.
 
 Students sometimes need small school-related errands done while they are busy with classes, exams, group work, deadlines, or school activities. These requests are usually arranged through chat, which can be unorganized and unsafe because there is no structured record of the request, helper, status, agreement, or completion.
 
-CampusRunners solves this by providing a verified, campus-limited, traceable errand request platform.
+Malayan Quest solves this by providing a verified, campus-limited, traceable errand request platform.
 
 ## Main Project Goal
 
@@ -320,7 +320,7 @@ Backend:
 
 Database:
 
-1. MySQL database named campusrunners_db
+1. MySQL database named malayanquest_db
 2. Exportable SQL file
 
 ## Required Deliverables

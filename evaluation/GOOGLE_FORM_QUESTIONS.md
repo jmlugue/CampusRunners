@@ -4,17 +4,17 @@ Use these questions for the User Experience and Usability Evaluation Google Form
 
 ## Suggested Form Title
 
-CampusRunners User Experience and Usability Evaluation
+Malayan Quest User Experience and Usability Evaluation
 
 ## Suggested Description
 
-This form is for evaluating CampusRunners, a school-based micro-errand request app prototype for Mapúa Malayan Colleges Laguna students. Your responses will help assess the app's ease of use, usefulness, safety, privacy, and overall usability.
+This form is for evaluating Malayan Quest, a school-based micro-errand request app prototype for Mapúa Malayan Colleges Laguna students. Your responses will help assess the app's ease of use, usefulness, safety, privacy, and overall usability.
 
 ## Respondent Profile Questions
 
 1. Are you a student of Mapúa Malayan Colleges Laguna?
 2. What is your year level?
-3. Have you tried using the CampusRunners prototype?
+3. Have you tried using the Malayan Quest prototype?
 
 ## Likert Scale
 
@@ -42,10 +42,10 @@ Use this scale:
 12. The report feature helps improve safety.
 13. The app gives enough protection for student privacy.
 14. The app is useful for small school-related errands.
-15. Overall, I am satisfied with the CampusRunners prototype.
+15. Overall, I am satisfied with the Malayan Quest prototype.
 
 ## Open-Ended Questions
 
 1. What feature did you find most useful?
 2. What part of the app was confusing or difficult to use?
-3. What improvement would you suggest for CampusRunners?
+3. What improvement would you suggest for Malayan Quest?

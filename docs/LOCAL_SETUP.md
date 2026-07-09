@@ -1,4 +1,4 @@
-# CampusRunners Local Setup Guide
+# Malayan Quest Local Setup Guide
 
 ## 1. Install Required Tools
 
@@ -32,19 +32,19 @@ If phpMyAdmin opens, Apache and MySQL are running.
 Copy this whole project folder:
 
 ```text
-D:\CampusRunners
+D:\MalayanQuest
 ```
 
 to your XAMPP `htdocs` folder and rename it to:
 
 ```text
-IT140P-MP-CampusRunners
+IT140P-MP-MalayanQuest
 ```
 
 Expected backend path:
 
 ```text
-C:\xampp\htdocs\IT140P-MP-CampusRunners\backend
+C:\xampp\htdocs\IT140P-MP-MalayanQuest\backend
 ```
 
 ## 4. Import the Database
@@ -54,11 +54,11 @@ C:\xampp\htdocs\IT140P-MP-CampusRunners\backend
 3. Choose:
 
 ```text
-database/campusrunners_db.sql
+database/malayanquest_db.sql
 ```
 
 4. Click `Import`.
-5. Confirm that `campusrunners_db` appears in the left sidebar.
+5. Confirm that `malayanquest_db` appears in the left sidebar.
 
 The seed accounts use this password:
 
@@ -87,7 +87,7 @@ Default XAMPP settings are:
 
 ```php
 $host = "localhost";
-$db_name = "campusrunners_db";
+$db_name = "malayanquest_db";
 $username = "root";
 $password = "";
 ```
@@ -99,13 +99,13 @@ These should work unless you changed your MySQL password.
 Open:
 
 ```text
-http://localhost/IT140P-MP-CampusRunners/backend/api/admin_dashboard.php
+http://localhost/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php
 ```
 
 If Apache is configured for port `8080`, use:
 
 ```text
-http://localhost:8080/IT140P-MP-CampusRunners/backend/api/admin_dashboard.php
+http://localhost:8080/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php
 ```
 
 Expected result:
@@ -127,7 +127,7 @@ The numbers inside `data` will depend on the imported records.
 3. Select:
 
 ```text
-D:\CampusRunners\android
+D:\MalayanQuest\android
 ```
 
 4. Wait for Gradle sync.
@@ -136,7 +136,7 @@ D:\CampusRunners\android
 For emulator testing, the app uses:
 
 ```text
-http://10.0.2.2:8080/IT140P-MP-CampusRunners/backend/api/
+http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/
 ```
 
 `10.0.2.2` means "your computer's localhost" from the Android emulator. The `:8080` part must match your Apache port.
@@ -148,7 +148,7 @@ You can view output in three ways:
 1. Browser API output:
 
 ```text
-http://localhost:8080/IT140P-MP-CampusRunners/backend/api/admin_dashboard.php
+http://localhost:8080/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php
 ```
 
 2. phpMyAdmin database tables:
@@ -168,7 +168,7 @@ If you use a real phone instead of emulator:
 3. Edit:
 
 ```text
-android/app/src/main/java/com/campusrunners/app/Config.java
+android/app/src/main/java/com/malayanquest/app/Config.java
 ```
 
 4. Replace `10.0.2.2` with your computer IPv4 address.
@@ -176,5 +176,5 @@ android/app/src/main/java/com/campusrunners/app/Config.java
 Example:
 
 ```java
-public static final String API_BASE_URL = "http://192.168.1.12:8080/IT140P-MP-CampusRunners/backend/api/";
+public static final String API_BASE_URL = "http://192.168.1.12:8080/IT140P-MP-MalayanQuest/backend/api/";
 ```

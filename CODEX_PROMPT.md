@@ -1,22 +1,22 @@
 # CODEX_PROMPT.md
 
-You are helping build a final project called IT140P-MP-CampusRunners.
+You are helping build a final project called IT140P-MP-MalayanQuest.
 
-The app display name is CampusRunners.
+The app display name is Malayan Quest.
 
 The project must be an Android Studio mobile application using a RESTful approach connected to a MySQL database through PHP REST API files. Do not use Firebase, Supabase, or other cloud databases as the main backend because the final submission requires a database file. Use PHP + MySQL so the database can be exported as an SQL file.
 
 ## Project Name
 
-IT140P-MP-CampusRunners
+IT140P-MP-MalayanQuest
 
 ## App Display Name
 
-CampusRunners
+Malayan Quest
 
 ## Project Concept
 
-CampusRunners is a school-based micro-errand request app for Mapúa Malayan Colleges Laguna students. Verified students can post small errands, apply as helpers, choose helpers, track errand status, message each other, confirm completion, rate helpers, and report unsafe activity. Admin users can monitor errands, reports, users, ratings, flagged content, and restrict users if needed.
+Malayan Quest is a school-based micro-errand request app for Mapúa Malayan Colleges Laguna students. Verified students can post small errands, apply as helpers, choose helpers, track errand status, message each other, confirm completion, rate helpers, and report unsafe activity. Admin users can monitor errands, reports, users, ratings, flagged content, and restrict users if needed.
 
 ## Target Users
 
@@ -44,7 +44,7 @@ A student can be both requester and helper.
 Create this structure:
 
 ```text
-IT140P-MP-CampusRunners/
+IT140P-MP-MalayanQuest/
 ├── android/
 │   └── Android Studio project files
 ├── backend/
@@ -53,7 +53,7 @@ IT140P-MP-CampusRunners/
 │   └── api/
 │       └── PHP REST API files
 ├── database/
-│   └── campusrunners_db.sql
+│   └── malayanquest_db.sql
 ├── docs/
 │   ├── README.md
 │   ├── API_DOCUMENTATION.md
@@ -219,7 +219,7 @@ Other statuses:
 Create a MySQL database named:
 
 ```sql
-campusrunners_db
+malayanquest_db
 ```
 
 Create these MySQL tables:
@@ -235,7 +235,7 @@ Create these MySQL tables:
 9. moderation_logs
 10. admin_actions
 
-Suggested table fields are already included in database/campusrunners_db.sql. Use or improve that schema.
+Suggested table fields are already included in database/malayanquest_db.sql. Use or improve that schema.
 
 Create sample seed data:
 

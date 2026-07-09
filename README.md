@@ -1,12 +1,12 @@
-# IT140P-MP-CampusRunners
+# IT140P-MP-MalayanQuest
 
 ## App Name
 
-CampusRunners
+Malayan Quest
 
 ## Description
 
-CampusRunners is a REST-based Android mobile application for Mapúa Malayan Colleges Laguna students. It allows verified students to post small campus-based errands, apply as helpers, select helpers, track progress, message each other, confirm completion, submit ratings, and report unsafe activity.
+Malayan Quest is a REST-based Android mobile application for Mapúa Malayan Colleges Laguna students. It allows verified students to post small campus-based errands, apply as helpers, select helpers, track progress, message each other, confirm completion, submit ratings, and report unsafe activity.
 
 ## Technology Stack
 
@@ -47,15 +47,15 @@ For detailed local setup, see `docs/LOCAL_SETUP.md`. For a groupmate-friendly se
 1. Install XAMPP.
 2. Start Apache and MySQL.
 3. Copy the `backend` folder to your XAMPP `htdocs` folder.
-4. Create a database named `campusrunners_db` in phpMyAdmin.
-5. Import `database/campusrunners_db.sql`.
+4. Create a database named `malayanquest_db` in phpMyAdmin.
+5. Import `database/malayanquest_db.sql`.
 6. Update database credentials in `backend/config/db.php`.
 
 ### Android
 
 1. Open the Android project in Android Studio.
 2. Set the API base URL in the Android config file.
-3. For emulator testing, use `http://10.0.2.2/IT140P-MP-CampusRunners/backend/api/`.
+3. For emulator testing, use `http://10.0.2.2/IT140P-MP-MalayanQuest/backend/api/`.
 4. For phone testing, use the computer local IP address.
 
 ## Sample Test Accounts

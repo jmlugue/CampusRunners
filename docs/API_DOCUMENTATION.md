@@ -5,7 +5,7 @@
 Example for local XAMPP testing:
 
 ```text
-http://10.0.2.2/IT140P-MP-CampusRunners/backend/api/
+http://10.0.2.2/IT140P-MP-MalayanQuest/backend/api/
 ```
 
 For Android phone testing, replace `10.0.2.2` with the local IP address of the computer running XAMPP.
