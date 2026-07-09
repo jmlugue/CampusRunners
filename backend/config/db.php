@@ -1,9 +1,9 @@
 <?php
 // backend/config/db.php
-// Database configuration for IT140P-MP-CampusRunners
+// Database configuration for IT140P-MP-MalayanQuest
 
 $host = "localhost";
-$db_name = "campusrunners_db";
+$db_name = "malayanquest_db";
 $username = "root";
 $password = "";
 

@@ -3,7 +3,7 @@
 ## Database Name
 
 ```sql
-campusrunners_db
+malayanquest_db
 ```
 
 ## Main Tables
@@ -22,8 +22,8 @@ campusrunners_db
 ## Setup Steps
 
 1. Open phpMyAdmin.
-2. Create a new database named `campusrunners_db`.
-3. Import `database/campusrunners_db.sql`.
+2. Create a new database named `malayanquest_db`.
+3. Import `database/malayanquest_db.sql`.
 4. Check if sample users and locations are inserted.
 5. Update `backend/config/db.php` with your local database settings.
 
@@ -32,8 +32,8 @@ campusrunners_db
 Before submission:
 
 1. Open phpMyAdmin.
-2. Select `campusrunners_db`.
+2. Select `malayanquest_db`.
 3. Click Export.
 4. Choose SQL format.
-5. Save as `campusrunners_db.sql`.
+5. Save as `malayanquest_db.sql`.
 6. Place it inside the `database` folder.

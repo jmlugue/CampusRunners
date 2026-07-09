@@ -1,4 +1,4 @@
-package com.campusrunners.app
+package com.malayanquest.app
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -156,7 +156,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = getSharedPreferences("campusrunners_session", MODE_PRIVATE)
+        prefs = getSharedPreferences("malayanquest_session", MODE_PRIVATE)
         userId = prefs.getInt("user_id", 0)
         fullName = prefs.getString("full_name", "") ?: ""
         role = prefs.getString("role", "") ?: ""
@@ -308,7 +308,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(Modifier.weight(1f))
-                Text("CampusRunners", color = Color(0xFFDCEBFA), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Text("Malayan Quest", color = Color(0xFFDCEBFA), fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
             Text(
                 "Hello, ${firstName(fullName).ifBlank { "Student" }}!",
@@ -337,9 +337,9 @@ class MainActivity : ComponentActivity() {
                     .background(Color(0xFFEAF3FF)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("CR", color = PrimaryBlue, fontSize = 38.sp, fontWeight = FontWeight.Bold)
+                Text("MQ", color = PrimaryBlue, fontSize = 38.sp, fontWeight = FontWeight.Bold)
             }
-            Text("CampusRunners", color = PrimaryBlue, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text("Malayan Quest", color = PrimaryBlue, fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Text("Student Errand Platform", color = SecondaryBlue, fontSize = 15.sp)
             Spacer(Modifier.height(42.dp))
             Badge("Prototype Version", PrimaryBlue)
@@ -1763,10 +1763,10 @@ class MainActivity : ComponentActivity() {
 
     private fun headerText(): Pair<String, String> {
         return when (screen) {
-            Screen.Splash -> "CampusRunners" to "School-only campus errands for MCL students"
-            Screen.Login -> "CampusRunners" to "Login to the campus errand prototype"
+            Screen.Splash -> "Malayan Quest" to "School-only campus errands for MCL students"
+            Screen.Login -> "Malayan Quest" to "Login to the campus errand prototype"
             Screen.Register -> "Register" to "Create a verified prototype student account"
-            Screen.Dashboard -> if (role == "admin") "Admin Dashboard" to "Monitoring and moderation" else "CampusRunners" to (if (fullName.isBlank()) "Student dashboard" else "Welcome, $fullName")
+            Screen.Dashboard -> if (role == "admin") "Admin Dashboard" to "Monitoring and moderation" else "Malayan Quest" to (if (fullName.isBlank()) "Student dashboard" else "Welcome, $fullName")
             Screen.PostErrand -> "Post Errand" to "Campus and near-campus errands only"
             Screen.BrowseErrands -> "Browse Errands" to "Open errands from other students"
             Screen.ErrandDetails -> "Errand Details" to selectedErrand.optTitle()

@@ -1,4 +1,4 @@
-package com.campusrunners.app;
+package com.malayanquest.app;
 
 import android.os.Handler;
 import android.os.Looper;

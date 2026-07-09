@@ -380,7 +380,7 @@ Dashboard counts:
 
 Create a MySQL database named:
 
-campusrunners_db
+malayanquest_db
 
 Tables:
 

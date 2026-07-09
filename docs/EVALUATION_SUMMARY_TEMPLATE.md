@@ -1,6 +1,6 @@
 # EVALUATION_SUMMARY_TEMPLATE.md
 
-## CampusRunners Evaluation Summary
+## Malayan Quest Evaluation Summary
 
 ## Number of Respondents
 
@@ -32,7 +32,7 @@ Total respondents: ___
 | 12 | The report feature helps improve safety. | ___ | ___ |
 | 13 | The app gives enough protection for student privacy. | ___ | ___ |
 | 14 | The app is useful for small school-related errands. | ___ | ___ |
-| 15 | Overall, I am satisfied with the CampusRunners prototype. | ___ | ___ |
+| 15 | Overall, I am satisfied with the Malayan Quest prototype. | ___ | ___ |
 
 ## Interpretation Guide
 
@@ -46,4 +46,4 @@ Total respondents: ___
 
 ## Summary Paragraph
 
-Based on the evaluation results, the respondents generally __________ that CampusRunners is __________. The results show that the app is useful for __________. The respondents also found the interface __________ and the main features __________. Suggested improvements include __________.
+Based on the evaluation results, the respondents generally __________ that Malayan Quest is __________. The results show that the app is useful for __________. The respondents also found the interface __________ and the main features __________. Suggested improvements include __________.

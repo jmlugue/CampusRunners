@@ -1,9 +1,9 @@
--- campusrunners_db.sql
--- Database starter schema for IT140P-MP-CampusRunners
--- App display name: CampusRunners
+-- malayanquest_db.sql
+-- Database starter schema for IT140P-MP-MalayanQuest
+-- App display name: Malayan Quest
 
-CREATE DATABASE IF NOT EXISTS campusrunners_db;
-USE campusrunners_db;
+CREATE DATABASE IF NOT EXISTS malayanquest_db;
+USE malayanquest_db;
 
 DROP TABLE IF EXISTS admin_actions;
 DROP TABLE IF EXISTS moderation_logs;
@@ -154,7 +154,7 @@ CREATE TABLE admin_actions (
 -- Demo password for all seed accounts: password
 INSERT INTO users (full_name, school_email, student_number, password_hash, role, verification_status, account_status)
 VALUES
-('CampusRunners Admin', 'admin@mcl.edu.ph', NULL, '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'admin', 'verified', 'active'),
+('Malayan Quest Admin', 'admin@mcl.edu.ph', NULL, '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'admin', 'verified', 'active'),
 ('Juan Dela Cruz', 'juan.dcruz@mcl.edu.ph', '202600001', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
 ('Maria Santos', 'maria.santos@mcl.edu.ph', '202600002', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
 ('Carlo Reyes', 'carlo.reyes@mcl.edu.ph', '202600003', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
