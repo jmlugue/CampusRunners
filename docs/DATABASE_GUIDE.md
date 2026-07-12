@@ -24,8 +24,11 @@ malayanquest_db
 1. Open phpMyAdmin.
 2. Create a new database named `malayanquest_db`.
 3. Import `database/malayanquest_db.sql`.
-4. Check if sample users and locations are inserted.
-5. Update `backend/config/db.php` with your local database settings.
+4. Import `database/demo_seed_records.sql` for presentation-ready demo records across student, helper, and admin screens.
+5. Check if sample users, errands, applications, messages, ratings, reports, and moderation logs are inserted.
+6. Update `backend/config/db.php` with your local database settings.
+
+`demo_seed_records.sql` is idempotent, so it can be imported again to restore the demo data.
 
 ## Exporting for Submission
 

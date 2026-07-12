@@ -7,8 +7,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +32,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -42,6 +45,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -51,14 +55,31 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonSearch
+import androidx.compose.material.icons.filled.Report
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Storefront
+import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,8 +91,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -260,7 +284,7 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 14.dp),
+                .padding(start = 16.dp, end = 16.dp, top = 34.dp, bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (canNavigateBack()) {
@@ -281,9 +305,9 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(title, color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(title, color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 if (subtitle.isNotBlank()) {
-                    Text(subtitle, color = TextSecondary, fontSize = 11.sp)
+                    Text(subtitle, color = TextSecondary, fontSize = 12.sp, textAlign = TextAlign.Center)
                 }
             }
             Spacer(Modifier.size(40.dp))
@@ -293,56 +317,101 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun DashboardHeader() {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(PrimaryBlue)
-                .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 22.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menu",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(PrimaryBlue, Color(0xFF0A63D8))
+                    )
                 )
-                Spacer(Modifier.weight(1f))
-                Text("Malayan Quest", color = Color(0xFFDCEBFA), fontSize = 12.sp, fontWeight = FontWeight.Bold)
-            }
-            Text(
-                "Hello, ${firstName(fullName).ifBlank { "Student" }}!",
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(128.dp)
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 8.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.08f))
             )
-            Text("What do you want to do today?", color = Color(0xFFDCEBFA), fontSize = 13.sp)
-            Badge("Verified Prototype", Color.White, fill = Color(0xFF0A63D8), border = Color.White)
+            Column(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 34.dp, bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painterResource(R.drawable.malayan_quest_logo),
+                        contentDescription = "Malayan Quest",
+                        modifier = Modifier.size(26.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text("Malayan Quest", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.weight(1f))
+                    Badge("Verified Student", Color.White, fill = Color.White.copy(alpha = 0.16f), border = Color.White)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    UserAvatar(fullName, size = 54.dp)
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Hello, ${firstName(fullName).ifBlank { "Student" }}!",
+                            color = Color.White,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text("What campus errand can we help with today?", color = Color(0xFFDCEBFA), fontSize = 13.sp)
+                    }
+                }
+            }
         }
     }
 
     @Composable
     private fun SplashScreen() {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 74.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+                .height(660.dp)
+                .clip(RoundedCornerShape(28.dp))
+                .background(Brush.verticalGradient(listOf(PrimaryBlue, SecondaryBlue))),
         ) {
             Box(
                 modifier = Modifier
-                    .size(104.dp)
+                    .size(190.dp)
+                    .align(Alignment.TopEnd)
+                    .padding(top = 20.dp, end = 12.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFEAF3FF)),
-                contentAlignment = Alignment.Center
+                    .background(Color.White.copy(alpha = 0.08f))
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(horizontal = 28.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("MQ", color = PrimaryBlue, fontSize = 38.sp, fontWeight = FontWeight.Bold)
+                Box(
+                    modifier = Modifier
+                        .size(112.dp)
+                        .clip(RoundedCornerShape(30.dp))
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(painterResource(R.drawable.malayan_quest_logo), contentDescription = "Malayan Quest", modifier = Modifier.size(82.dp))
+                }
+                Text("Malayan Quest", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                Text("Campus errands, made easier.", color = Color(0xFFEAF3FF), fontSize = 16.sp, textAlign = TextAlign.Center)
+                Badge("MCL student service app", Color.White, fill = Color.White.copy(alpha = 0.14f), border = Color.White)
             }
-            Text("Malayan Quest", color = PrimaryBlue, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            Text("Student Errand Platform", color = SecondaryBlue, fontSize = 15.sp)
-            Spacer(Modifier.height(42.dp))
-            Badge("Prototype Version", PrimaryBlue)
+            androidx.compose.material3.LinearProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(horizontal = 42.dp, vertical = 42.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                color = Color.White,
+                trackColor = Color.White.copy(alpha = 0.25f)
+            )
         }
     }
 
@@ -351,9 +420,11 @@ class MainActivity : ComponentActivity() {
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
 
-        AuthTitle("Welcome Back!", "Sign in to your account")
-        CampusTextField("School email", email, { email = it }, KeyboardType.Email)
-        CampusTextField("Password", password, { password = it }, KeyboardType.Password, password = true)
+        AppMark()
+        AuthTitle("Welcome back!", "Sign in to continue your campus errands.")
+        Badge("For MCL students only", PrimaryBlue)
+        CampusTextField("School email", email, { email = it }, KeyboardType.Email, leadingIcon = Icons.Filled.Email)
+        CampusTextField("Password", password, { password = it }, KeyboardType.Password, password = true, leadingIcon = Icons.Filled.Lock)
         CampusButton("Login") {
             api.post("login.php", JSONObject().apply {
                 put("school_email", email.trim())
@@ -373,7 +444,7 @@ class MainActivity : ComponentActivity() {
             Text("or", color = TextSecondary, fontSize = 12.sp)
         }
         CampusButton("Create student account", primary = false) { screen = Screen.Register }
-        InfoPanel("Demo accounts use password: password\nAdmin: admin@mcl.edu.ph\nStudent: juan.dcruz@mcl.edu.ph, maria.santos@mcl.edu.ph, carlo.reyes@mcl.edu.ph")
+        InfoPanel("Demo accounts use password: password\nAdmin: admin@mcl.edu.ph\nStudent: juan.dcruz@mcl.edu.ph, maria.santos@mcl.edu.ph, carlo.reyes@mcl.edu.ph", Icons.Filled.Info, "Prototype accounts")
     }
 
     @Composable
@@ -384,13 +455,15 @@ class MainActivity : ComponentActivity() {
         var password by remember { mutableStateOf("") }
         var confirm by remember { mutableStateOf("") }
 
-        AuthTitle("Create Student Account", "All accounts are verified for prototype use.")
-        InfoPanel("Use your school email and student number. Student numbers and school emails are stored for verification and are not shown publicly.")
-        CampusTextField("Full name", name, { name = it })
-        CampusTextField("School email, example: student@mcl.edu.ph", email, { email = it }, KeyboardType.Email)
-        CampusTextField("Student number", studentNumber, { studentNumber = it })
-        CampusTextField("Password", password, { password = it }, KeyboardType.Password, password = true)
-        CampusTextField("Confirm password", confirm, { confirm = it }, KeyboardType.Password, password = true)
+        AppMark()
+        AuthTitle("Create Student Account", "Use your MCL student details to join Malayan Quest.")
+        InfoPanel("Use your school email and student number. Student numbers and school emails are stored for verification and are not shown publicly.", Icons.Filled.Info, "Private verification")
+        CampusTextField("Full name", name, { name = it }, leadingIcon = Icons.Filled.Person)
+        CampusTextField("School email, example: student@mcl.edu.ph", email, { email = it }, KeyboardType.Email, leadingIcon = Icons.Filled.Email)
+        CampusTextField("Student number", studentNumber, { studentNumber = it }, leadingIcon = Icons.Filled.Badge)
+        CampusTextField("Password", password, { password = it }, KeyboardType.Password, password = true, leadingIcon = Icons.Filled.Lock)
+        CampusTextField("Confirm password", confirm, { confirm = it }, KeyboardType.Password, password = true, leadingIcon = Icons.Filled.CheckCircle)
+        InfoPanel("I agree to use Malayan Quest only for safe, school-related errands.", Icons.Filled.Security, "Safety agreement")
         CampusButton("Register") {
             if (password != confirm) {
                 toast("Passwords do not match.")
@@ -411,6 +484,14 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun StudentDashboardScreen() {
+        SummaryGrid(
+            listOf(
+                "Open errands" to "5",
+                "Active tasks" to "0",
+                "Completed" to "0",
+                "Rating" to "0.00"
+            )
+        )
         ActionGrid(
             listOf(
                 "Post Errand" to "Create a campus request",
@@ -436,7 +517,7 @@ class MainActivity : ComponentActivity() {
                 }
             )
         )
-        InfoPanel("Errands must be school-related, safe, and limited to campus or nearby MCL locations.")
+        InfoPanel("Errands must be school-related, safe, and limited to campus or nearby MCL locations.", Icons.Filled.Security, "Campus Safety Reminder")
         CampusButton("Logout", primary = false) { logout() }
     }
 
@@ -451,15 +532,22 @@ class MainActivity : ComponentActivity() {
         var reward by remember { mutableStateOf("") }
         var rewardNote by remember { mutableStateOf("") }
 
-        InfoPanel("Banned errands include alcohol, vape products, medicines, confidential documents, answer sheets, IDs, weapons, restricted areas, and tasks that violate school rules.")
-        CampusTextField("Title", title, { title = it })
-        CampusTextField("Description", description, { description = it }, multiline = true)
-        CategoryDropdown(category) { category = it }
-        CampusTextField("Pickup location", pickup, { pickup = it })
-        CampusTextField("Drop-off location", dropoff, { dropoff = it })
-        CampusTextField("Deadline: 2026-07-15 13:00:00", deadline, { deadline = it })
-        CampusTextField("Reward amount, optional", reward, { reward = it }, KeyboardType.Decimal)
-        CampusTextField("Reward note, optional", rewardNote, { rewardNote = it })
+        InfoPanel("Describe a small, safe, school-related errand.", Icons.Filled.Security, "Campus-only request")
+        SectionCard("Errand Details", Icons.Filled.Assignment) {
+            CampusTextField("Title", title, { title = it }, leadingIcon = Icons.Filled.Assignment)
+            CampusTextField("Description", description, { description = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+            CategoryDropdown(category) { category = it }
+        }
+        SectionCard("Locations", Icons.Filled.LocationOn) {
+            CampusTextField("Pickup location", pickup, { pickup = it }, leadingIcon = Icons.Filled.LocationOn)
+            CampusTextField("Drop-off location", dropoff, { dropoff = it }, leadingIcon = Icons.Filled.LocalShipping)
+        }
+        SectionCard("Time and Reward", Icons.Filled.Schedule) {
+            CampusTextField("Deadline: 2026-07-15 13:00:00", deadline, { deadline = it }, leadingIcon = Icons.Filled.CalendarMonth)
+            CampusTextField("Reward amount, optional", reward, { reward = it }, KeyboardType.Decimal, leadingIcon = Icons.Filled.Payments)
+            CampusTextField("Reward note, optional", rewardNote, { rewardNote = it }, leadingIcon = Icons.Filled.Info)
+        }
+        InfoPanel("Do not post errands involving confidential documents, prohibited items, exams, IDs, medicine, or unsafe tasks.", Icons.Filled.Report, "Safety Reminder", DangerRed)
         CampusButton("Submit Errand") {
             val body = JSONObject().apply {
                 put("requester_id", userId)
@@ -491,8 +579,9 @@ class MainActivity : ComponentActivity() {
         var appliedCategory by remember { mutableStateOf("") }
 
         SectionTitle("Errand Feed")
-        CampusTextField("Search keyword or location", keyword, { keyword = it })
+        CampusTextField("Search errands or locations", keyword, { keyword = it }, leadingIcon = Icons.Filled.Search)
         CategoryDropdown(category, includeAll = true) { category = it }
+        FilterChipRow(listOf("All", "Food", "Printing", "Bluebook", "Delivery", "Supplies"), "All")
         CampusButton("Apply Filters") {
             appliedKeyword = keyword.trim()
             appliedCategory = if (category == "All Categories") "" else category
@@ -515,11 +604,8 @@ class MainActivity : ComponentActivity() {
             BackButton()
             return
         }
-        CampusCard {
-            ErrandCore(errand)
-            SectionTitle("Safety Scope")
-            Text("Only accept if the request is safe, school-related, and limited to campus or nearby MCL locations.", color = TextSecondary)
-        }
+        ErrandCoreCard(errand)
+        InfoPanel("Only accept if the request is safe, school-related, and limited to campus or nearby MCL locations.", Icons.Filled.Security, "Safety Note")
         SectionTitle("Status Tracker")
         StatusTracker(errand.optString("status"))
         if (applyMode) {
@@ -547,14 +633,18 @@ class MainActivity : ComponentActivity() {
         var offer by remember { mutableStateOf("") }
         var estimate by remember { mutableStateOf("") }
 
+        ErrandCoreCard(errand)
         HelperPreviewPanel(
             "Your helper profile shown to requester",
             fullName,
-            "Average rating and completed errands will be loaded from your account record.",
+            "Rating and completed errands are shown as trust indicators.",
             "Offer note and estimated completion time are public to this requester only."
         )
-        CampusTextField("Offer note", offer, { offer = it }, multiline = true)
-        CampusTextField("Estimated completion time, example: 30 minutes", estimate, { estimate = it })
+        SectionCard("Helper Offer", Icons.Filled.PersonSearch) {
+            CampusTextField("Offer note, example: I can do this before 12:30 PM.", offer, { offer = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+            CampusTextField("Estimated time, example: 20 minutes", estimate, { estimate = it }, leadingIcon = Icons.Filled.Schedule)
+        }
+        InfoPanel("Apply only if you can complete the errand safely and on time.", Icons.Filled.Security, "Trust reminder")
         CampusButton("Submit Application") {
             api.post("apply_to_errand.php", JSONObject().apply {
                 put("errand_id", errand.optInt("errand_id"))
@@ -600,14 +690,8 @@ class MainActivity : ComponentActivity() {
             emptyText = "You have no helper errands yet."
         ) { errand ->
             CampusCard {
-                Text(errand.optString("title"), color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Badge(errand.optString("status"), colorForStatus(errand.optString("status")))
-                Text(
-                    errand.optString("category") + "\n" +
-                        errand.optString("pickup_location") + " -> " + errand.optString("dropoff_location") + "\n" +
-                        "Application: " + errand.optString("application_status"),
-                    color = TextSecondary
-                )
+                ErrandCore(errand)
+                DetailRow("Application", errand.optString("application_status"))
                 HelperActions(errand)
             }
         }
@@ -639,7 +723,7 @@ class MainActivity : ComponentActivity() {
             HelperPreviewPanel(
                 "Public helper card",
                 applicant.optString("helper_name"),
-                "Rating: ${applicant.optString("average_rating", "No rating yet")}\nCompleted errands: ${applicant.optString("completed_errands", "0")}",
+                "Rating: ${applicant.optString("average_rating", "No rating yet")} • Completed errands: ${applicant.optString("completed_errands", "0")}",
                 "Offer: ${applicant.optString("offer_note")}\nEstimate: ${applicant.optString("estimated_completion_time")}"
             )
             InfoPanel("Privacy rule: student numbers and school email addresses are not displayed on public helper cards.")
@@ -654,6 +738,7 @@ class MainActivity : ComponentActivity() {
             BackButton()
             return
         }
+        ErrandCoreCard(errand)
         StatusTracker(errand.optString("status"))
         CampusCard {
             Text("Current status", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -733,7 +818,8 @@ class MainActivity : ComponentActivity() {
             BackButton()
             return
         }
-        InfoPanel("Confirm only after the helper has completed the agreed errand. This moves the errand to requester-confirmed status.")
+        InfoPanel("Confirm only after the helper has completed the agreed errand.", Icons.Filled.CheckCircle, "Completion confirmation", SuccessGreen)
+        ErrandCoreCard(errand)
         StatusTracker(errand.optString("status"))
         CampusButton("Confirm Completion") {
             postStatus("confirm_completion.php", errand, "requester_id", "Confirmed by Requester")
@@ -751,8 +837,12 @@ class MainActivity : ComponentActivity() {
         var score by remember { mutableStateOf("") }
         var feedback by remember { mutableStateOf("") }
 
-        CampusTextField("Rating 1-5", score, { score = it }, KeyboardType.Number)
-        CampusTextField("Feedback", feedback, { feedback = it }, multiline = true)
+        ErrandCoreCard(errand)
+        SectionCard("Rate Helper", Icons.Filled.Star) {
+            RatingRow(score.ifBlank { "0" })
+            CampusTextField("Rating 1-5", score, { score = it }, KeyboardType.Number, leadingIcon = Icons.Filled.Star)
+            CampusTextField("Feedback", feedback, { feedback = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+        }
         CampusButton("Submit Rating") {
             api.post("submit_rating.php", JSONObject().apply {
                 put("errand_id", errand.optInt("errand_id"))
@@ -785,12 +875,18 @@ class MainActivity : ComponentActivity() {
             "Other safety concern"
         )
 
-        InfoPanel("Use reports for unsafe behavior, banned errands, restricted areas, harassment, privacy concerns, or school-rule violations.")
+        InfoPanel("Reports help keep Malayan Quest safe.", Icons.Filled.Security, if (errand == null) "Report User" else "Report Errand", DangerRed)
         if (errand == null) {
-            CampusTextField("Reported user ID", reportedUserId, { reportedUserId = it }, KeyboardType.Number)
-            GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
-            CampusTextField("Details", details, { details = it }, multiline = true)
-            DangerButton("Submit User Report") {
+            SectionCard("Report Details", Icons.Filled.Report) {
+                CampusTextField("Reported user ID", reportedUserId, { reportedUserId = it }, KeyboardType.Number, leadingIcon = Icons.Filled.Person)
+                GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
+                CampusTextField("Details - describe what happened", details, { details = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+            }
+            ConfirmDangerButton(
+                text = "Submit User Report",
+                dialogTitle = "Submit this report?",
+                dialogMessage = "This will send the report to admin records for review."
+            ) {
                 api.post("report_user.php", JSONObject().apply {
                     put("reported_user_id", reportedUserId.toIntOrNull() ?: 0)
                     put("reported_by_user_id", userId)
@@ -802,9 +898,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         } else {
-            GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
-            CampusTextField("Additional details, optional", details, { details = it }, multiline = true)
-            DangerButton("Submit Report") {
+            ErrandCoreCard(errand)
+            SectionCard("Report Details", Icons.Filled.Report) {
+                GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
+                CampusTextField("Additional details - describe what happened", details, { details = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+            }
+            ConfirmDangerButton(
+                text = "Submit Report",
+                dialogTitle = "Submit this report?",
+                dialogMessage = "This will send the errand report to admin records for review."
+            ) {
                 api.post("report_errand.php", JSONObject().apply {
                     put("errand_id", errand.optInt("errand_id"))
                     put("reporter_id", userId)
@@ -826,18 +929,27 @@ class MainActivity : ComponentActivity() {
             emptyText = "Profile unavailable."
         ) { data ->
             ProfileHeader(data)
+            SectionCard("Private Verification", Icons.Filled.Security) {
+                DetailRow("School email", data.optString("school_email"))
+                DetailRow("Student number", data.optString("student_number"))
+            }
         }
         MenuRow("Edit Profile", "Update your display name") { screen = Screen.EditProfile }
         MenuRow("Privacy & Safety", "Your email and student number stay hidden publicly") { }
+        MenuRow("Ratings", "View received feedback") { screen = Screen.UserRatings }
         MenuRow("History", "Review completed and cancelled errands") { screen = Screen.History }
+        DangerButton("Logout") { logout() }
         BackButton()
     }
 
     @Composable
     private fun EditProfileScreen() {
         var name by remember { mutableStateOf(fullName) }
-        InfoPanel("Only safe profile fields are editable in this prototype. School email and student number stay private verification records.")
-        CampusTextField("Full name", name, { name = it })
+        HelperPreviewPanel("Editable profile", fullName, "Verified Student", "Only safe profile fields are editable in this prototype.")
+        SectionCard("Display Information", Icons.Filled.Person) {
+            CampusTextField("Full name", name, { name = it }, leadingIcon = Icons.Filled.Person)
+            Text("School email and student number stay private verification records.", color = TextSecondary, fontSize = 12.sp)
+        }
         CampusButton("Save Profile") {
             api.post("update_user_profile.php", JSONObject().apply {
                 put("user_id", userId)
@@ -867,7 +979,7 @@ class MainActivity : ComponentActivity() {
             params = mapOf("user_id" to userId.toString()),
             emptyText = "No history records yet."
         ) { item ->
-            AdminRecordCard(item, "History Record")
+            HistoryCard(item)
         }
         CampusButton("Ratings") { screen = Screen.UserRatings }
         BackButton()
@@ -880,7 +992,7 @@ class MainActivity : ComponentActivity() {
             params = mapOf("user_id" to userId.toString()),
             emptyText = "No ratings yet."
         ) { item ->
-            AdminRecordCard(item, "Feedback")
+            FeedbackCard(item)
         }
         CampusButton("Back", primary = false) { screen = Screen.History }
     }
@@ -893,10 +1005,17 @@ class MainActivity : ComponentActivity() {
             return
         }
         var reason by remember { mutableStateOf("") }
-        InfoPanel("Cancellation is allowed before in-progress work. If the errand is already In Progress, a reason is required and saved in the status logs.")
+        InfoPanel("Cancellation may affect trust and reliability.", Icons.Filled.Cancel, "Cancel carefully", DangerRed)
         ErrandCoreCard(errand)
-        CampusTextField("Cancellation reason", reason, { reason = it }, multiline = true)
-        CampusButton("Cancel Errand") {
+        SectionCard("Reason", Icons.Filled.Info) {
+            CampusTextField("Explain why this errand is being cancelled", reason, { reason = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+        }
+        ConfirmDangerButton(
+            text = "Cancel Errand",
+            dialogTitle = "Cancel this errand?",
+            dialogMessage = "This action will be recorded in the errand history.",
+            confirmText = "Cancel Errand"
+        ) {
             api.post("cancel_errand.php", JSONObject().apply {
                 put("errand_id", errand.optInt("errand_id"))
                 put("user_id", userId)
@@ -914,6 +1033,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun AdminDashboardScreen() {
+        InfoPanel("Monitor Malayan Quest activity and moderate unsafe records.", Icons.Filled.Security, "Admin Dashboard")
         RemoteObject(
             endpoint = "admin_dashboard.php",
             params = mapOf("admin_id" to userId.toString()),
@@ -962,11 +1082,21 @@ class MainActivity : ComponentActivity() {
     private fun AdminArrayScreen(endpoint: String, title: String) {
         if (title == "Manage Users") {
             var keyword by remember { mutableStateOf("") }
-            CampusTextField("Search displayed user records", keyword, { keyword = it })
+            CampusTextField("Search by name", keyword, { keyword = it }, leadingIcon = Icons.Filled.Search)
+            FilterChipRow(listOf("All", "Verified", "Restricted", "Deactivated"), "All")
             InfoPanel("The current backend returns all users. This search field is a UI placeholder until server-side filtering is added.")
+        } else {
+            FilterChipRow(
+                when {
+                    title.contains("Errands") -> listOf("All", "Open", "Active", "Completed", "Cancelled", "Reported", "Flagged")
+                    title.contains("Reports") -> listOf("Pending", "Under Review", "Resolved", "Dismissed")
+                    else -> listOf("All", "Allowed", "Flagged", "Rejected")
+                },
+                "All"
+            )
         }
         if (title == "Moderation Logs") {
-            InfoPanel("The backend does not currently have a moderation log endpoint, so this screen reuses flagged errands for the prototype.")
+            InfoPanel("The backend does not currently have a moderation log endpoint, so this screen reuses flagged errands for the prototype.", Icons.Filled.Report, "Moderation logs", WarningAmber)
         }
         RemoteList(
             endpoint = endpoint,
@@ -987,11 +1117,12 @@ class MainActivity : ComponentActivity() {
         }
         AdminRecordCard(item, title, clickable = false)
         if (item.has("user_id")) {
-            CampusButton("Restrict User") { updateUserStatus(item.optInt("user_id"), "restricted") }
-            CampusButton("Deactivate User", primary = false) { updateUserStatus(item.optInt("user_id"), "deactivated") }
+            InfoPanel("Admin actions change account access and should only be used for verified moderation reasons.", Icons.Filled.Security, "Admin Actions", WarningAmber)
+            ConfirmDangerButton("Restrict User", "Restrict this user?", "The account will be marked restricted for prototype moderation.") { updateUserStatus(item.optInt("user_id"), "restricted") }
+            ConfirmDangerButton("Deactivate User", "Deactivate this user?", "The account will no longer be active until restored.") { updateUserStatus(item.optInt("user_id"), "deactivated") }
         }
         if (item.has("errand_id")) {
-            CampusButton("Remove Errand", primary = false) { removeErrand(item.optInt("errand_id")) }
+            ConfirmDangerButton("Remove Errand", "Remove this errand?", "This action should only be used for inappropriate or unsafe errands.") { removeErrand(item.optInt("errand_id")) }
         }
         if (item.has("report_id")) {
             CampusButton("Resolve Report") { resolveReport(item.optInt("report_id")) }
@@ -1080,6 +1211,7 @@ class MainActivity : ComponentActivity() {
     private fun ErrandCard(errand: JSONObject, applyMode: Boolean) {
         CampusCard {
             ErrandCore(errand)
+            Divider(color = BorderSoft)
             CampusButton("View Details") {
                 openErrandScreen(errand, Screen.ErrandDetails)
             }
@@ -1129,6 +1261,15 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun ErrandCore(errand: JSONObject) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(colorForStatus(errand.optString("status")).copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(categoryVector(errand.optString("category")), contentDescription = errand.optString("category"), tint = colorForStatus(errand.optString("status")), modifier = Modifier.size(23.dp))
+            }
             Text(
                 errand.optString("title", "Untitled"),
                 modifier = Modifier.weight(1f),
@@ -1214,16 +1355,13 @@ class MainActivity : ComponentActivity() {
     private fun ApplicantCard(applicant: JSONObject, errandId: Int) {
         CampusCard {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    applicant.optString("helper_name"),
-                    modifier = Modifier.weight(1f),
-                    color = TextPrimary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                UserAvatar(applicant.optString("helper_name"), size = 48.dp)
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(applicant.optString("helper_name"), color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    RatingRow(applicant.optString("average_rating", "0.00"))
+                }
                 Badge(applicant.optString("status", "pending"), colorForStatus(applicant.optString("status")))
             }
-            DetailRow("Rating", applicant.optString("average_rating", "No rating yet"))
             DetailRow("Completed", applicant.optString("completed_errands", "0") + " errands")
             DetailRow("Offer", applicant.optString("offer_note"))
             DetailRow("Estimate", applicant.optString("estimated_completion_time"))
@@ -1241,13 +1379,105 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun AdminRecordCard(item: JSONObject, title: String, clickable: Boolean = true) {
         CampusCard {
-            Text(title, color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(prettyJson(item), color = TextSecondary)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(iconColor(title).copy(alpha = 0.10f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(actionIcon(title), contentDescription = title, tint = iconColor(title), modifier = Modifier.size(22.dp))
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(title, color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(recordHeadline(item, title), color = TextSecondary, fontSize = 13.sp)
+                }
+                recordStatus(item)?.let { Badge(it, colorForStatus(it)) }
+            }
+            StructuredRecord(item)
             if (clickable) {
                 CampusButton("View") {
                     openAdminRecord(item, title)
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun StructuredRecord(item: JSONObject) {
+        val hidden = setOf("password_hash")
+        val priority = listOf(
+            "full_name", "role", "verification_status", "account_status",
+            "title", "category", "status", "moderation_status",
+            "reason", "report_status", "rating_score", "feedback",
+            "requester_name", "helper_name", "created_at", "deadline"
+        )
+        val names = item.names() ?: return
+        val keys = mutableListOf<String>()
+        priority.forEach { if (item.has(it) && it !in hidden) keys.add(it) }
+        for (i in 0 until names.length()) {
+            val key = names.optString(i)
+            if (key !in hidden && key !in keys && keys.size < 8) keys.add(key)
+        }
+        keys.take(8).forEach { key ->
+            DetailRow(key.replace("_", " "), item.optString(key))
+        }
+    }
+
+    @Composable
+    private fun RatingRow(value: String) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            repeat(5) {
+                Icon(Icons.Filled.Star, contentDescription = "Rating", tint = WarningAmber, modifier = Modifier.size(14.dp))
+            }
+            Text(value.ifBlank { "0.00" }, color = TextSecondary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+
+    @Composable
+    private fun HistoryCard(item: JSONObject) {
+        CampusCard {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(SuccessGreen.copy(alpha = 0.10f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Filled.History, contentDescription = "History", tint = SuccessGreen, modifier = Modifier.size(22.dp))
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(item.optString("title", "History Record"), color = TextPrimary, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(item.optString("created_at", item.optString("updated_at", "Recent activity")), color = TextSecondary, fontSize = 12.sp)
+                }
+                Badge(item.optString("status", "Recorded"), colorForStatus(item.optString("status")))
+            }
+            StructuredRecord(item)
+        }
+    }
+
+    @Composable
+    private fun FeedbackCard(item: JSONObject) {
+        CampusCard {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(WarningAmber.copy(alpha = 0.13f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Filled.Star, contentDescription = "Feedback", tint = WarningAmber, modifier = Modifier.size(22.dp))
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Rating ${item.optString("rating_score", item.optString("score", "0"))}", color = TextPrimary, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    RatingRow(item.optString("rating_score", "0"))
+                }
+            }
+            DetailRow("Feedback", item.optString("feedback", "No feedback text."))
+            DetailRow("Errand", item.optString("title", item.optString("errand_title", "Related errand")))
         }
     }
 
@@ -1263,10 +1493,15 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun HelperPreviewPanel(eyebrow: String, name: String, stats: String, note: String) {
         CampusCard {
-            Badge(eyebrow, SecondaryBlue)
-            Text(name.ifBlank { "Student Helper" }, color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(stats, color = TextSecondary)
-            Text(note, color = TextSecondary)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                UserAvatar(name, size = 56.dp)
+                Column(modifier = Modifier.weight(1f)) {
+                    Badge(eyebrow, SecondaryBlue)
+                    Text(name.ifBlank { "Student Helper" }, color = TextPrimary, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Text(stats, color = TextSecondary, fontSize = 13.sp)
+                }
+            }
+            InfoPanel(note, Icons.Filled.Info, "Helper details")
         }
     }
 
@@ -1288,15 +1523,10 @@ class MainActivity : ComponentActivity() {
                     .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "Profile",
-                    tint = TextSecondary,
-                    modifier = Modifier.size(70.dp)
-                )
+                Text(initials(data.optString("full_name", fullName)), color = PrimaryBlue, fontSize = 22.sp, fontWeight = FontWeight.Bold)
             }
             Text(data.optString("full_name", fullName), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Badge("Verified Prototype", Color.White, fill = Color(0xFF0A63D8), border = Color.White)
+            Badge("Verified Student", Color.White, fill = Color(0xFF0A63D8), border = Color.White)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                 ProfileStat("Completed", data.optString("completed_errands", "0"), Modifier.weight(1f))
                 ProfileStat("Rating", data.optString("average_rating", "0.00"), Modifier.weight(1f))
@@ -1329,12 +1559,12 @@ class MainActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(Icons.Filled.Assignment, contentDescription = title, tint = PrimaryBlue, modifier = Modifier.size(20.dp))
+                Icon(actionIcon(title), contentDescription = title, tint = iconColor(title), modifier = Modifier.size(22.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(title, color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     Text(subtitle, color = TextSecondary, fontSize = 12.sp)
                 }
-                Text(">", color = TextSecondary, fontWeight = FontWeight.Bold)
+                Icon(Icons.Filled.ChevronRight, contentDescription = "Open", tint = TextSecondary, modifier = Modifier.size(20.dp))
             }
         }
     }
@@ -1395,7 +1625,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            InfoPanel("You will be notified at every update.")
+            InfoPanel("You will be notified at every update.", Icons.Filled.Info, "Status updates")
         }
     }
 
@@ -1406,8 +1636,21 @@ class MainActivity : ComponentActivity() {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     rowItems.forEach { item ->
                         CampusCard(modifier = Modifier.weight(1f)) {
-                            Text(item.second, color = PrimaryBlue, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                            Text(item.first, color = TextSecondary, fontSize = 13.sp)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(iconColor(item.first).copy(alpha = 0.10f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(actionIcon(item.first), contentDescription = item.first, tint = iconColor(item.first), modifier = Modifier.size(19.dp))
+                                }
+                                Column {
+                                    Text(item.second, color = PrimaryBlue, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                                    Text(item.first, color = TextSecondary, fontSize = 12.sp)
+                                }
+                            }
                         }
                     }
                     if (rowItems.size == 1) Spacer(Modifier.weight(1f))
@@ -1447,7 +1690,7 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(6.dp))
+                        .clip(RoundedCornerShape(18.dp))
                         .background(if (active) Color(0xFFEAF3FF) else Color.Transparent)
                         .clickable { onSelected(tab) }
                         .padding(vertical = 9.dp),
@@ -1486,24 +1729,34 @@ class MainActivity : ComponentActivity() {
     private fun ActionTile(title: String, subtitle: String, action: () -> Unit, modifier: Modifier = Modifier) {
         Column(
             modifier = modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .background(Color.White)
-                .border(1.dp, BorderSoft, RoundedCornerShape(8.dp))
+                .border(1.dp, BorderSoft, RoundedCornerShape(16.dp))
                 .clickable { action() }
-                .height(104.dp)
-                .padding(12.dp),
+                .height(116.dp)
+                .padding(14.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = actionIcon(title),
-                contentDescription = title,
-                tint = iconColor(title),
-                modifier = Modifier.size(26.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(iconColor(title).copy(alpha = 0.10f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = actionIcon(title),
+                    contentDescription = title,
+                    tint = iconColor(title),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
             Spacer(Modifier.height(6.dp))
             Text(title, color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             Text(subtitle, color = TextSecondary, fontSize = 10.sp)
+            Spacer(Modifier.height(2.dp))
+            Icon(Icons.Filled.ChevronRight, contentDescription = "Open", tint = BorderSoft, modifier = Modifier.size(16.dp))
         }
     }
 
@@ -1515,35 +1768,61 @@ class MainActivity : ComponentActivity() {
     ) {
         Card(
             modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(18.dp),
             colors = CardDefaults.cardColors(containerColor = background),
-            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            border = BorderStroke(1.dp, BorderSoft),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(14.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 content = content
             )
         }
     }
 
     @Composable
-    private fun InfoPanel(text: String) {
+    private fun InfoPanel(
+        text: String,
+        icon: ImageVector = Icons.Filled.Info,
+        title: String = "",
+        tint: Color = SecondaryBlue
+    ) {
         CampusCard(background = CardLight) {
-            Text(text, color = TextSecondary, fontSize = 14.sp)
+            Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(tint.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(icon, contentDescription = title.ifBlank { "Info" }, tint = tint, modifier = Modifier.size(19.dp))
+                }
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    if (title.isNotBlank()) {
+                        Text(title, color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    }
+                    Text(text, color = TextSecondary, fontSize = 14.sp)
+                }
+            }
         }
     }
 
     @Composable
     private fun EmptyState(text: String) {
         CampusCard(background = CardLight) {
-            Text(text, color = TextSecondary)
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Filled.Search, contentDescription = "Empty", tint = SecondaryBlue, modifier = Modifier.size(42.dp))
+                Text(text, color = TextPrimary, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                Text("Check again later or adjust your filters.", color = TextSecondary, fontSize = 13.sp, textAlign = TextAlign.Center)
+            }
         }
     }
 
     @Composable
     private fun SectionTitle(text: String) {
-        Text(text, color = PrimaryBlue, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(text, color = PrimaryBlue, fontSize = 19.sp, fontWeight = FontWeight.Bold)
     }
 
     @Composable
@@ -1562,13 +1841,29 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun DetailRow(label: String, value: String?) {
-        Column {
-            Text(label.uppercase(Locale.US), color = SecondaryBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-            Text(
-                if (value.isNullOrBlank() || value == "null") "Not specified" else value,
-                color = TextPrimary,
-                fontSize = 14.sp
-            )
+        IconTextRow(iconForLabel(label), label, value)
+    }
+
+    @Composable
+    private fun IconTextRow(icon: ImageVector, label: String, value: String?) {
+        Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .size(34.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFEAF3FF)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, contentDescription = label, tint = SecondaryBlue, modifier = Modifier.size(18.dp))
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(label.uppercase(Locale.US), color = SecondaryBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    if (value.isNullOrBlank() || value == "null") "Not specified" else value,
+                    color = TextPrimary,
+                    fontSize = 15.sp
+                )
+            }
         }
     }
 
@@ -1601,13 +1896,13 @@ class MainActivity : ComponentActivity() {
     ) {
         Button(
             onClick = onClick,
-            modifier = modifier.height(50.dp),
-            shape = RoundedCornerShape(8.dp),
+            modifier = modifier.height(52.dp),
+            shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (primary) PrimaryBlue else Color.White,
                 contentColor = if (primary) Color.White else PrimaryBlue
             ),
-            border = if (primary) null else ButtonDefaults.outlinedButtonBorder
+            border = if (primary) null else BorderStroke(1.dp, Color(0xFF8DB2D9))
         ) {
             Text(text, fontWeight = FontWeight.Bold)
         }
@@ -1621,8 +1916,8 @@ class MainActivity : ComponentActivity() {
     ) {
         Button(
             onClick = onClick,
-            modifier = modifier.height(50.dp),
-            shape = RoundedCornerShape(8.dp),
+            modifier = modifier.height(52.dp),
+            shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = DangerRed,
                 contentColor = Color.White
@@ -1644,18 +1939,136 @@ class MainActivity : ComponentActivity() {
         onValueChange: (String) -> Unit,
         keyboardType: KeyboardType = KeyboardType.Text,
         password: Boolean = false,
-        multiline: Boolean = false
+        multiline: Boolean = false,
+        leadingIcon: ImageVector? = null
     ) {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
+            leadingIcon = leadingIcon?.let { icon ->
+                { Icon(icon, contentDescription = label, tint = SecondaryBlue) }
+            },
             modifier = Modifier.fillMaxWidth(),
             minLines = if (multiline) 3 else 1,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(14.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = PrimaryBlue,
+                unfocusedBorderColor = Color(0xFFB8C9DA),
+                focusedLabelColor = PrimaryBlue
+            )
         )
+    }
+
+    @Composable
+    private fun AppMark() {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(painterResource(R.drawable.malayan_quest_logo), contentDescription = "Malayan Quest", modifier = Modifier.size(58.dp))
+            }
+            Text("Malayan Quest", color = PrimaryBlue, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+
+    @Composable
+    private fun UserAvatar(name: String, size: androidx.compose.ui.unit.Dp = 48.dp) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .clip(CircleShape)
+                .background(Color(0xFFEAF3FF)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(initials(name), color = PrimaryBlue, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        }
+    }
+
+    @Composable
+    private fun SectionCard(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
+        CampusCard {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFEAF3FF)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(icon, contentDescription = title, tint = PrimaryBlue, modifier = Modifier.size(19.dp))
+                }
+                Text(title, color = TextPrimary, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            }
+            content()
+        }
+    }
+
+    @Composable
+    private fun FilterChipRow(chips: List<String>, selected: String) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            chips.forEach { chip ->
+                val active = chip == selected
+                Text(
+                    chip,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(if (active) PrimaryBlue else Color.White)
+                        .border(1.dp, if (active) PrimaryBlue else BorderSoft, RoundedCornerShape(18.dp))
+                        .padding(horizontal = 13.dp, vertical = 8.dp),
+                    color = if (active) Color.White else TextSecondary,
+                    fontSize = 12.sp,
+                    fontWeight = if (active) FontWeight.Bold else FontWeight.Normal
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun ConfirmDangerButton(
+        text: String,
+        dialogTitle: String,
+        dialogMessage: String,
+        confirmText: String = text,
+        onConfirm: () -> Unit
+    ) {
+        var showDialog by remember { mutableStateOf(false) }
+        DangerButton(text) { showDialog = true }
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text(dialogTitle, fontWeight = FontWeight.Bold) },
+                text = { Text(dialogMessage, color = TextSecondary) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDialog = false
+                        onConfirm()
+                    }) {
+                        Text(confirmText, color = DangerRed, fontWeight = FontWeight.Bold)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("Go Back", color = PrimaryBlue)
+                    }
+                }
+            )
+        }
     }
 
     @Composable
@@ -1956,6 +2369,53 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun categoryVector(category: String?): ImageVector {
+        return when {
+            category == null -> Icons.Filled.Assignment
+            category.contains("Food", ignoreCase = true) -> Icons.Filled.Storefront
+            category.contains("Printing", ignoreCase = true) -> Icons.Filled.Assignment
+            category.contains("Bookstore", ignoreCase = true) || category.contains("Bluebook", ignoreCase = true) -> Icons.Filled.Storefront
+            category.contains("Delivery", ignoreCase = true) -> Icons.Filled.LocalShipping
+            else -> Icons.Filled.Assignment
+        }
+    }
+
+    private fun iconForLabel(label: String): ImageVector {
+        return when {
+            label.contains("pickup", ignoreCase = true) -> Icons.Filled.LocationOn
+            label.contains("drop", ignoreCase = true) -> Icons.Filled.LocalShipping
+            label.contains("deadline", ignoreCase = true) || label.contains("date", ignoreCase = true) -> Icons.Filled.Schedule
+            label.contains("reward", ignoreCase = true) || label.contains("amount", ignoreCase = true) -> Icons.Filled.Payments
+            label.contains("requester", ignoreCase = true) || label.contains("helper", ignoreCase = true) || label.contains("user", ignoreCase = true) -> Icons.Filled.Person
+            label.contains("rating", ignoreCase = true) || label.contains("score", ignoreCase = true) -> Icons.Filled.Star
+            label.contains("status", ignoreCase = true) || label.contains("verification", ignoreCase = true) || label.contains("account", ignoreCase = true) -> Icons.Filled.Verified
+            label.contains("category", ignoreCase = true) -> Icons.Filled.Storefront
+            label.contains("offer", ignoreCase = true) || label.contains("note", ignoreCase = true) -> Icons.Filled.Info
+            else -> Icons.Filled.Assignment
+        }
+    }
+
+    private fun recordHeadline(item: JSONObject, title: String): String {
+        return when {
+            item.has("full_name") -> item.optString("full_name")
+            item.has("title") -> item.optString("title")
+            item.has("reason") -> item.optString("reason")
+            item.has("feedback") -> item.optString("feedback")
+            else -> title
+        }.ifBlank { title }
+    }
+
+    private fun recordStatus(item: JSONObject): String? {
+        return when {
+            item.has("verification_status") -> item.optString("verification_status")
+            item.has("account_status") -> item.optString("account_status")
+            item.has("status") -> item.optString("status")
+            item.has("moderation_status") -> item.optString("moderation_status")
+            item.has("report_status") -> item.optString("report_status")
+            else -> null
+        }?.takeIf { it.isNotBlank() && it != "null" }
+    }
+
     private fun colorForStatus(status: String?): Color {
         if (status == null) return PrimaryBlue
         return when {
@@ -1979,6 +2439,12 @@ class MainActivity : ComponentActivity() {
         val trimmed = value.trim()
         val space = trimmed.indexOf(" ")
         return if (space > 0) trimmed.substring(0, space) else trimmed
+    }
+
+    private fun initials(value: String): String {
+        val parts = value.trim().split(" ").filter { it.isNotBlank() }
+        if (parts.isEmpty()) return "MQ"
+        return parts.take(2).joinToString("") { it.first().uppercaseChar().toString() }
     }
 
     private fun actionLabel(title: String): String {

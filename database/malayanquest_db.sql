@@ -193,3 +193,6 @@ INSERT INTO errand_status_logs (errand_id, changed_by, old_status, new_status, r
 VALUES
 (1, 3, 'Open', 'Has Applicants', 'Seed helper application submitted.'),
 (2, 4, 'Open', 'Has Applicants', 'Seed helper application submitted.');
+
+-- For a fully populated presentation database, import database/demo_seed_records.sql
+-- after this file. The demo seed is idempotent and can be run repeatedly.
