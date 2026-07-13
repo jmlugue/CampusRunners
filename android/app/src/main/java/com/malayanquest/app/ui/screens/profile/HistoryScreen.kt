@@ -25,7 +25,7 @@ import org.json.JSONObject
 fun HistoryScreen(
     api: ApiClient,
     userId: Int,
-    onNavigate: (Screen) -> Unit,
+    onNavigate: (Screen, JSONObject?) -> Unit,
     onNavigateBack: () -> Unit
 ) {
     var selectedTab by remember { mutableStateOf("All") }
@@ -40,14 +40,17 @@ fun HistoryScreen(
         params = mapOf("user_id" to userId.toString()),
         emptyText = "No history records yet."
     ) { item ->
-        HistoryCard(item)
+        HistoryCard(item) { clickedErrand ->
+            // Pass the errand data up so MainActivity can use it
+            onNavigate(Screen.ErrandDetails, clickedErrand)
+        }
     }
-    CampusButton("Ratings") { onNavigate(Screen.UserRatings) }
+    CampusButton("Ratings") { onNavigate(Screen.UserRatings, null) }
     CampusButton("Back", primary = false) { onNavigateBack() }
 }
 
 @Composable
-fun HistoryCard(item: JSONObject) {
+fun HistoryCard(item: JSONObject, onViewDetails: (JSONObject) -> Unit) { // Added callback
     CampusCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(
@@ -66,5 +69,6 @@ fun HistoryCard(item: JSONObject) {
             Badge(item.optString("status", "Recorded"), colorForStatus(item.optString("status")))
         }
         StructuredRecord(item)
+        CampusButton("View Details", primary = false) { onViewDetails(item) }
     }
 }

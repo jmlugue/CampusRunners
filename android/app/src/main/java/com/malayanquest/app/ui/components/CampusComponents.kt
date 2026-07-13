@@ -371,7 +371,7 @@ fun TabStrip(tabs: List<String>, selected: String, onSelected: (String) -> Unit)
 }
 
 @Composable
-fun FilterChipRow(chips: List<String>, selected: String) {
+fun FilterChipRow(chips: List<String>, selected: String, onSelected: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -386,6 +386,7 @@ fun FilterChipRow(chips: List<String>, selected: String) {
                     .clip(RoundedCornerShape(18.dp))
                     .background(if (active) PrimaryBlue else Color.White)
                     .border(1.dp, if (active) PrimaryBlue else BorderSoft, RoundedCornerShape(18.dp))
+                    .clickable { onSelected(chip) } // <--- Added this line so they actually work
                     .padding(horizontal = 13.dp, vertical = 8.dp),
                 color = if (active) Color.White else TextSecondary,
                 fontSize = 12.sp,

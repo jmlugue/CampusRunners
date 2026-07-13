@@ -19,24 +19,35 @@ fun AdminArrayScreen(
     onViewRecord: (JSONObject, String) -> Unit,
     onNavigateBack: () -> Unit
 ) {
+    val defaultChip = if (title.contains("Reports")) "Pending" else "All"
+    var selectedChip by remember { mutableStateOf(defaultChip) }
+
     if (title == "Manage Users") {
         var keyword by remember { mutableStateOf("") }
         CampusTextField("Search by name", keyword, { keyword = it }, leadingIcon = Icons.Filled.Search)
-        FilterChipRow(listOf("All", "Verified", "Restricted", "Deactivated"), "All")
+
+        FilterChipRow(
+            chips = listOf("All", "Verified", "Restricted", "Deactivated"),
+            selected = selectedChip,
+            onSelected = { selectedChip = it }
+        )
         InfoPanel("The current backend returns all users. This search field is a UI placeholder until server-side filtering is added.")
     } else {
         FilterChipRow(
-            when {
+            chips = when {
                 title.contains("Errands") -> listOf("All", "Open", "Active", "Completed", "Cancelled", "Reported", "Flagged")
                 title.contains("Reports") -> listOf("Pending", "Under Review", "Resolved", "Dismissed")
                 else -> listOf("All", "Allowed", "Flagged", "Rejected")
             },
-            "All"
+            selected = selectedChip,
+            onSelected = { selectedChip = it }
         )
     }
+
     if (title == "Moderation Logs") {
         InfoPanel("The backend does not currently have a moderation log endpoint, so this screen reuses flagged errands for the prototype.", Icons.Filled.Report, "Moderation logs", WarningAmber)
     }
+
     RemoteList(
         api = api,
         endpoint = endpoint,

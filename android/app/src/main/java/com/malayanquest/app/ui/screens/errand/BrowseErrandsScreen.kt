@@ -25,13 +25,26 @@ fun BrowseErrandsScreen(
 
     SectionTitle("Errand Feed")
     CampusTextField("Search errands or locations", keyword, { keyword = it }, leadingIcon = Icons.Filled.Search)
+
     CategoryDropdown(category, categories, includeAll = true) { category = it }
-    FilterChipRow(listOf("All", "Food", "Printing", "Bluebook", "Delivery", "Supplies"), "All")
+
+    FilterChipRow(
+        chips = listOf("All", "Food", "Printing", "Bluebook", "Delivery", "Supplies"),
+        selected = if (category == "All Categories" || category.isBlank()) "All" else category,
+        onSelected = { selectedChip ->
+            category = if (selectedChip == "All") "All Categories" else selectedChip
+            appliedCategory = if (category == "All Categories") "" else category
+            appliedKeyword = keyword.trim()
+            localRefreshKey++
+        }
+    )
+
     CampusButton("Apply Filters") {
         appliedKeyword = keyword.trim()
         appliedCategory = if (category == "All Categories") "" else category
         localRefreshKey++
     }
+
     RemoteList(
         api = api,
         endpoint = "get_available_errands.php",

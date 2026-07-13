@@ -174,7 +174,8 @@ class MainActivity : ComponentActivity() {
                     )
                     Screen.ErrandDetails -> ErrandDetailsScreen(
                         errand = selectedErrand,
-                        applyMode = true,
+                        applyMode = (selectedErrand?.optInt("requester_id") != userId) &&
+                                (selectedErrand?.optString("status") == "Open" || selectedErrand?.optString("status") == "Has Applicants"),
                         userId = userId,
                         onApply = {
                             selectedErrand = it
@@ -282,7 +283,16 @@ class MainActivity : ComponentActivity() {
                     )
                     Screen.Completion -> CompletionScreen(
                         errand = selectedErrand,
-                        onConfirmCompletion = { postStatus("confirm_completion.php", it, "requester_id", "Confirmed by Requester") },
+                        onConfirmCompletion = { confirmedErrand ->
+                            postStatus(
+                                endpoint = "confirm_completion.php",
+                                errand = confirmedErrand,
+                                userKey = "requester_id",
+                                successStatus = "Confirmed by Requester"
+                            ) {
+                                screen = Screen.Rating
+                            }
+                        },
                         onNavigateBack = { screen = Screen.MyTasks }
                     )
                     Screen.Rating -> RatingScreen(
@@ -331,7 +341,12 @@ class MainActivity : ComponentActivity() {
                     Screen.History -> HistoryScreen(
                         api = api,
                         userId = userId,
-                        onNavigate = { screen = it },
+                        onNavigate = { targetScreen, errand ->
+                            if (errand != null) {
+                                selectedErrand = errand
+                            }
+                            screen = targetScreen
+                        },
                         onNavigateBack = { navigateBack() }
                     )
                     Screen.UserRatings -> UserRatingsScreen(
@@ -506,7 +521,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun postStatus(endpoint: String, errand: JSONObject, userKey: String, successStatus: String) {
+    private fun postStatus(
+        endpoint: String,
+        errand: JSONObject,
+        userKey: String,
+        successStatus: String,
+        onSuccess: () -> Unit = { screen = Screen.MyTasks }
+    ) {
         api.post(endpoint, JSONObject().apply {
             put("errand_id", errand.optInt("errand_id"))
             put(userKey, userId)
@@ -515,7 +536,7 @@ class MainActivity : ComponentActivity() {
             if (response.optBoolean("success")) {
                 errand.put("status", successStatus)
                 refreshKey++
-                screen = Screen.MyTasks
+                onSuccess()
             }
         }
     }
@@ -523,8 +544,8 @@ class MainActivity : ComponentActivity() {
     private fun updateUserStatus(targetUserId: Int, status: String) {
         api.post("admin_update_user_status.php", JSONObject().apply {
             put("admin_id", userId)
-            put("user_id", targetUserId)
-            put("verification_status", status)
+            put("target_user_id", targetUserId)
+            put("account_status", status)
         }) { response ->
             toast(response.optString("message"))
             refreshKey++

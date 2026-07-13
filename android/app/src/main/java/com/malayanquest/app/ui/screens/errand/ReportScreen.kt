@@ -40,6 +40,7 @@ fun ReportScreen(
     )
 
     InfoPanel("Browse recent errands or search for a specific errand, then submit the report to admin records.", Icons.Filled.Security, "Report Errand", DangerRed)
+
     if (selectedErrand == null) {
         SectionCard("Find Errand", Icons.Filled.Search) {
             CampusTextField("Search by title, category, or location", keyword, { keyword = it }, leadingIcon = Icons.Filled.Search)
@@ -63,37 +64,46 @@ fun ReportScreen(
             emptyText = "No matching errands found.",
             refreshKey = localRefreshKey
         ) { item ->
-            CampusCard {
-                ErrandCore(item)
-                CampusButton("Report This Errand", primary = false) {
-                    selectedErrand = item
+            if (item.optInt("requester_id") != userId) {
+                CampusCard {
+                    ErrandCore(item)
+                    CampusButton("Report This Errand", primary = false) {
+                        selectedErrand = item
+                    }
                 }
             }
         }
     } else {
+        val isOwnErrand = selectedErrand!!.optInt("requester_id") == userId
+
         CampusCard {
             ErrandCore(selectedErrand!!)
-            CampusButton("Choose Different Errand", primary = false) {
+            CampusButton(if (isOwnErrand) "Browse Other Errands" else "Choose Different Errand", primary = false) {
                 selectedErrand = null
             }
         }
-        SectionCard("Report Details", Icons.Filled.Report) {
-            GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
-            CampusTextField("Additional details - describe what happened", details, { details = it }, multiline = true, leadingIcon = Icons.Filled.Info)
-        }
-        ConfirmDangerButton(
-            text = "Submit Report",
-            dialogTitle = "Submit this report?",
-            dialogMessage = "This will send the errand report to admin records for review."
-        ) {
-            api.post("report_errand.php", JSONObject().apply {
-                put("errand_id", selectedErrand!!.optInt("errand_id"))
-                put("reported_by_user_id", userId)
-                put("reason", reason.trim())
-                put("details", details.trim())
-            }) { response ->
-                onShowToast(response.optString("message"))
-                if (response.optBoolean("success")) onSuccess()
+
+        if (isOwnErrand) {
+            InfoPanel("You cannot report an errand that you requested.", Icons.Filled.Info, "Action Unavailable", DangerRed)
+        } else {
+            SectionCard("Report Details", Icons.Filled.Report) {
+                GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
+                CampusTextField("Additional details - describe what happened", details, { details = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+            }
+            ConfirmDangerButton(
+                text = "Submit Report",
+                dialogTitle = "Submit this report?",
+                dialogMessage = "This will send the errand report to admin records for review."
+            ) {
+                api.post("report_errand.php", JSONObject().apply {
+                    put("errand_id", selectedErrand!!.optInt("errand_id"))
+                    put("reported_by_user_id", userId)
+                    put("reason", reason.trim())
+                    put("details", details.trim())
+                }) { response ->
+                    onShowToast(response.optString("message"))
+                    if (response.optBoolean("success")) onSuccess()
+                }
             }
         }
     }

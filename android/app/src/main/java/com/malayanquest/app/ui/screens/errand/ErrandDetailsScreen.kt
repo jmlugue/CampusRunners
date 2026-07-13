@@ -46,8 +46,11 @@ fun ErrandDetailsScreen(
             onCancelErrand = onCancelErrand
         )
     }
-    CampusButton("Report Errand", primary = false) {
-        onReport(errand)
+    if (errand.optInt("requester_id") != userId) {
+        CampusButton("Report Errand", primary = false) {
+            onReport(errand)
+        }
     }
+
     CampusButton("Back", primary = false) { onNavigateBack() }
 }
