@@ -1,0 +1,32 @@
+package com.malayanquest.app.navigation
+
+enum class Screen {
+    Splash,
+    Login,
+    Register,
+    Dashboard,
+    PostErrand,
+    BrowseErrands,
+    ErrandDetails,
+    Apply,
+    MyPosted,
+    MyHelper,
+    Applicants,
+    HelperProfile,
+    Status,
+    MessageHub,
+    Chat,
+    Completion,
+    Rating,
+    Report,
+    Profile,
+    EditProfile,
+    History,
+    UserRatings,
+    CancelErrand,
+    MyTasks,
+    AdminDashboard,
+    AdminArray,
+    AdminRecordDetails,
+    AdminRatings
+}
