@@ -2,6 +2,7 @@ package com.malayanquest.app
 
 object Config {
     // Android emulator -> local XAMPP Apache.
-    // For a real phone, replace 10.0.2.2 with your computer IPv4 address.
-    const val API_BASE_URL = "http://10.0.2.2:8080/backend/api/"
+    // Change this from the login screen if another computer uses a different
+    // Apache port, project folder name, or a real phone instead of an emulator.
+    const val DEFAULT_API_BASE_URL = "http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/"
 }

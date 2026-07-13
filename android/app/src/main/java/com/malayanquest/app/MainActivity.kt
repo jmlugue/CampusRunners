@@ -76,6 +76,11 @@ class MainActivity : ComponentActivity() {
         val header = headerText()
         val authScreen = screen == Screen.Splash || screen == Screen.Login || screen == Screen.Register
         val studentChrome = userId > 0 && role != "admin" && !authScreen
+        val scrollState = rememberScrollState()
+
+        LaunchedEffect(screen) {
+            scrollState.scrollTo(0)
+        }
         
         Scaffold(
             topBar = {
@@ -85,7 +90,13 @@ class MainActivity : ComponentActivity() {
             },
             bottomBar = {
                 if (studentChrome) {
-                    StudentBottomNav(screen) { screen = it }
+                    StudentBottomNav(screen) { target ->
+                        if (target == Screen.Profile) {
+                            selectedErrand = null
+                            selectedApplicant = null
+                        }
+                        screen = target
+                    }
                 }
             },
             floatingActionButton = {
@@ -106,7 +117,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
                     .padding(
                         horizontal = if (authScreen) 24.dp else 16.dp,
                         vertical = if (authScreen) 28.dp else 14.dp
@@ -297,7 +308,12 @@ class MainActivity : ComponentActivity() {
                         api = api,
                         userId = userId,
                         fullName = fullName,
-                        onNavigate = { screen = it },
+                        onNavigate = { target ->
+                            if (target == Screen.Report) {
+                                selectedErrand = null
+                            }
+                            screen = target
+                        },
                         onLogout = { logout() }
                     )
                     Screen.EditProfile -> EditProfileScreen(
@@ -462,7 +478,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun logout() {
-        prefs.edit().clear().apply()
+        prefs.edit()
+            .remove("user_id")
+            .remove("full_name")
+            .remove("role")
+            .apply()
         userId = 0
         fullName = ""
         role = ""

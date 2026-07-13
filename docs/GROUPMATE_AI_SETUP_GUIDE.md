@@ -10,7 +10,7 @@ Use this guide when a groupmate, classmate, or AI coding assistant needs to set 
 - **Target users:** Mapúa Malayan Colleges Laguna students
 - **Backend requirement:** PHP + MySQL through XAMPP, not Firebase, Supabase, or another cloud database
 - **Database name:** `malayanquest_db`
-- **Android API config file:** `android/app/src/main/java/com/malayanquest/app/Config.java`
+- **Android API config file:** `android/app/src/main/java/com/malayanquest/app/Config.kt`
 - **Default backend API folder:** `backend/api/`
 - **SQL import file:** `database/malayanquest_db.sql`
 
@@ -44,7 +44,7 @@ C:\xampp\htdocs\IT140P-MP-MalayanQuest\database\malayanquest_db.sql
 C:\xampp\htdocs\IT140P-MP-MalayanQuest\android
 ```
 
-If you keep the project somewhere else, the Android `API_BASE_URL` and browser URLs must match the actual Apache URL.
+If you keep the project somewhere else, the Android API URL setting and browser URLs must match the actual Apache URL.
 
 ## 4. First-Time Setup Checklist
 
@@ -147,28 +147,30 @@ IT140P-MP-MalayanQuest/android
 Open:
 
 ```text
-android/app/src/main/java/com/malayanquest/app/Config.java
+android/app/src/main/java/com/malayanquest/app/Config.kt
 ```
 
 For the Android emulator, use your computer localhost through `10.0.2.2`:
 
-```java
-public static final String API_BASE_URL = "http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/";
+```text
+http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/
 ```
 
 If Apache uses port `80`, remove `:8080`:
 
-```java
-public static final String API_BASE_URL = "http://10.0.2.2/IT140P-MP-MalayanQuest/backend/api/";
+```text
+http://10.0.2.2/IT140P-MP-MalayanQuest/backend/api/
 ```
 
 For a real Android phone, replace `10.0.2.2` with your computer IPv4 address. Example:
 
-```java
-public static final String API_BASE_URL = "http://192.168.1.12:8080/IT140P-MP-MalayanQuest/backend/api/";
+```text
+http://192.168.1.12:8080/IT140P-MP-MalayanQuest/backend/api/
 ```
 
 The phone and computer must be connected to the same Wi-Fi network.
+
+If the backend folder is copied directly into `htdocs` instead of the whole project folder, use `/backend/api/` instead of `/IT140P-MP-MalayanQuest/backend/api/`.
 
 ## 5. Running the App
 
@@ -176,7 +178,7 @@ The phone and computer must be connected to the same Wi-Fi network.
 
 1. Start XAMPP Apache and MySQL first.
 2. Start an Android emulator in Android Studio.
-3. Confirm `Config.java` uses `10.0.2.2`.
+3. Confirm `Config.DEFAULT_API_BASE_URL` uses `10.0.2.2`.
 4. Click **Run** in Android Studio.
 5. Log in or register using sample accounts.
 
@@ -190,7 +192,7 @@ The phone and computer must be connected to the same Wi-Fi network.
 ipconfig
 ```
 
-4. Update `Config.java` to use that IPv4 address.
+4. Update `Config.DEFAULT_API_BASE_URL` to use that IPv4 address.
 5. Run the Android app on the connected phone.
 6. If requests fail, check Windows Firewall and allow Apache through private networks.
 
@@ -267,9 +269,10 @@ Check these items:
 - Apache and MySQL are running before opening the app.
 - Emulator uses `10.0.2.2`, not `localhost`.
 - Real phone uses the computer IPv4 address, not `10.0.2.2`.
-- The port in `Config.java` matches Apache.
+- The port in `Config.DEFAULT_API_BASE_URL` matches Apache.
 - Windows Firewall is not blocking Apache.
 - Phone and computer are on the same Wi-Fi.
+- If the message mentions `DOCTYPE` or `HTML`, the app reached an Apache error page instead of a JSON PHP API endpoint. Fix the API URL path, port, or folder name.
 
 ### Problem: Login fails for sample accounts
 
@@ -349,7 +352,7 @@ Important constraints:
 - PHP API files are in backend/api/.
 - PHP database config is backend/config/db.php.
 - Android project is in android/.
-- Android API URL is configured in android/app/src/main/java/com/malayanquest/app/Config.java.
+- Android API URL is configured in android/app/src/main/java/com/malayanquest/app/Config.kt.
 - Use prepared statements in PHP.
 - Use password_hash and password_verify for passwords.
 - Do not expose database credentials in Android.
@@ -377,7 +380,7 @@ docs/USER_GUIDE.md
 docs/GROUPMATE_AI_SETUP_GUIDE.md
 README.md
 backend/config/db.php
-android/app/src/main/java/com/malayanquest/app/Config.java
+android/app/src/main/java/com/malayanquest/app/Config.kt
 database/malayanquest_db.sql
 ```
 

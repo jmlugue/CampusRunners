@@ -245,8 +245,9 @@ fun CampusTextField(
 fun Badge(
     text: String,
     color: Color,
-    fill: Color = CardLight,
-    border: Color = color
+    fill: Color = color,
+    border: Color = color,
+    contentColor: Color = Color.White
 ) {
     Text(
         text = text.ifBlank { "Open" },
@@ -255,7 +256,7 @@ fun Badge(
             .background(fill)
             .border(1.dp, border, RoundedCornerShape(18.dp))
             .padding(horizontal = 11.dp, vertical = 5.dp),
-        color = color,
+        color = contentColor,
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold
     )

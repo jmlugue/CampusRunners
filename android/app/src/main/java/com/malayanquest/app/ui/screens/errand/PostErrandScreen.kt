@@ -36,6 +36,7 @@ fun PostErrandScreen(
     SectionCard("Locations", Icons.Filled.LocationOn) {
         CampusTextField("Pickup location", pickup, { pickup = it }, leadingIcon = Icons.Filled.LocationOn)
         CampusTextField("Drop-off location", dropoff, { dropoff = it }, leadingIcon = Icons.Filled.LocalShipping)
+        InfoPanel("Room codes must use R or E and rooms 101-113, 201-213, 301-313, 401-413, or 501-513. Examples: R101, E413.", Icons.Filled.Info, "MCL room format")
     }
     SectionCard("Time and Reward", Icons.Filled.Schedule) {
         CampusTextField("Deadline: 2026-07-15 13:00:00", deadline, { deadline = it }, leadingIcon = Icons.Filled.CalendarMonth)
@@ -44,6 +45,14 @@ fun PostErrandScreen(
     }
     InfoPanel("Do not post errands involving confidential documents, prohibited items, exams, IDs, medicine, or unsafe tasks.", Icons.Filled.Report, "Safety Reminder", DangerRed)
     CampusButton("Submit Errand") {
+        validateRoomLocation("Pickup", pickup)?.let {
+            onShowToast(it)
+            return@CampusButton
+        }
+        validateRoomLocation("Drop-off", dropoff)?.let {
+            onShowToast(it)
+            return@CampusButton
+        }
         val body = JSONObject().apply {
             put("requester_id", userId)
             put("title", title.trim())
@@ -63,4 +72,30 @@ fun PostErrandScreen(
         }
     }
     CampusButton("Back", primary = false) { onNavigateBack() }
+}
+
+private fun validateRoomLocation(label: String, location: String): String? {
+    val roomWithPrefix = Regex("\\b([REre])[- ]?(\\d{3})\\b")
+    val bareRoomNumber = Regex("\\b([1-5][0-9]{2})\\b")
+    val normalized = location.trim()
+
+    roomWithPrefix.findAll(normalized).forEach { match ->
+        val roomNumber = match.groupValues[2].toIntOrNull() ?: return "$label room code is invalid."
+        if (!isValidMclRoomNumber(roomNumber)) {
+            return "$label room must be from R101-R113, E101-E113, up to R501-R513 or E501-E513."
+        }
+    }
+
+    val withoutPrefixedRooms = roomWithPrefix.replace(normalized, "")
+    if (bareRoomNumber.containsMatchIn(withoutPrefixedRooms)) {
+        return "$label room code must start with R or E, example R101 or E413."
+    }
+
+    return null
+}
+
+private fun isValidMclRoomNumber(roomNumber: Int): Boolean {
+    val floor = roomNumber / 100
+    val room = roomNumber % 100
+    return floor in 1..5 && room in 1..13
 }

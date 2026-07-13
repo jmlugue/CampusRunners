@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class ApiClient {
+class ApiClient(initialBaseUrl: String = Config.DEFAULT_API_BASE_URL) {
 
     fun interface Callback {
         fun onComplete(response: JSONObject)
@@ -19,6 +19,14 @@ class ApiClient {
 
     private val executor: ExecutorService = Executors.newFixedThreadPool(3)
     private val mainHandler = Handler(Looper.getMainLooper())
+    @Volatile
+    private var apiBaseUrl: String = normalizeBaseUrl(initialBaseUrl)
+
+    fun setBaseUrl(value: String) {
+        apiBaseUrl = normalizeBaseUrl(value)
+    }
+
+    fun getBaseUrl(): String = apiBaseUrl
 
     fun get(endpoint: String, params: Map<String, String>?, callback: Callback) {
         executor.execute {
@@ -41,8 +49,9 @@ class ApiClient {
         body: JSONObject?
     ): JSONObject {
         var connection: HttpURLConnection? = null
+        val baseUrl = apiBaseUrl
         return try {
-            var urlText = Config.API_BASE_URL + endpoint
+            var urlText = baseUrl + endpoint
             if (method == "GET" && !params.isNullOrEmpty()) {
                 urlText += "?" + encodeParams(params)
             }
@@ -71,12 +80,25 @@ class ApiClient {
                 connection.inputStream
             }
             val text = readStream(stream)
-            JSONObject(text)
-        } catch (e: Exception) {
-            JSONObject().apply {
-                put("success", false)
-                put("message", "Connection failed: ${e.message}")
+            val trimmed = text.trim()
+
+            if (trimmed.isBlank()) {
+                return errorResponse("Empty server response from $endpoint.")
             }
+
+            if (!trimmed.startsWith("{")) {
+                val responseType = when {
+                    trimmed.startsWith("<!doctype", ignoreCase = true) || trimmed.startsWith("<html", ignoreCase = true) -> "HTML"
+                    else -> "non-JSON"
+                }
+                return errorResponse(
+                    "Server returned $responseType instead of JSON for $endpoint. Check that the PHP file exists, Apache/MySQL are running, and the API URL is correct. Current API URL: $baseUrl"
+                )
+            }
+
+            JSONObject(trimmed)
+        } catch (e: Exception) {
+            errorResponse("Connection failed: ${e.message}")
         } finally {
             connection?.disconnect()
         }
@@ -96,5 +118,22 @@ class ApiClient {
         val text = reader.readText()
         reader.close()
         return text
+    }
+
+    private fun errorResponse(message: String): JSONObject {
+        return JSONObject().apply {
+            put("success", false)
+            put("message", message)
+        }
+    }
+
+    companion object {
+        fun normalizeBaseUrl(value: String): String {
+            val trimmed = value.trim()
+            if (trimmed.isBlank()) {
+                return Config.DEFAULT_API_BASE_URL
+            }
+            return if (trimmed.endsWith("/")) trimmed else "$trimmed/"
+        }
     }
 }

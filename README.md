@@ -54,9 +54,9 @@ For detailed local setup, see `docs/LOCAL_SETUP.md`. For a groupmate-friendly se
 ### Android
 
 1. Open the Android project in Android Studio.
-2. Set the API base URL in the Android config file.
-3. For emulator testing, use `http://10.0.2.2/IT140P-MP-MalayanQuest/backend/api/`.
-4. For phone testing, use the computer local IP address.
+2. Set the default API base URL in `android/app/src/main/java/com/malayanquest/app/Config.kt`.
+3. For emulator testing, use `http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/` if Apache runs on port `8080`, or remove `:8080` for port `80`.
+4. For phone testing, replace `10.0.2.2` with the computer IPv4 address.
 
 ## Sample Test Accounts
 

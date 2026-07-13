@@ -74,12 +74,14 @@ Expected fields:
   "description": "Please buy one bluebook from the bookstore before my quiz.",
   "category": "Bluebook Purchase",
   "pickup_location": "Bookstore",
-  "dropoff_location": "Room A301",
+  "dropoff_location": "R301",
   "deadline": "2026-07-15 13:00:00",
   "reward_amount": 20,
   "reward_note": "Cash after delivery"
 }
 ```
+
+If a pickup or drop-off location uses an MCL room code, it must start with `R` or `E` and use rooms `101-113`, `201-213`, `301-313`, `401-413`, or `501-513`.
 
 ### GET get_available_errands.php
 
@@ -188,6 +190,17 @@ Expected fields:
 ### POST report_errand.php
 
 Reports an unsafe or inappropriate errand.
+
+Expected fields:
+
+```json
+{
+  "errand_id": 1,
+  "reported_by_user_id": 3,
+  "reason": "Unsafe or prohibited request",
+  "details": "The errand asks for a prohibited item."
+}
+```
 
 ### POST report_user.php
 

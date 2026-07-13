@@ -133,13 +133,19 @@ D:\MalayanQuest\android
 4. Wait for Gradle sync.
 5. Run the app on an Android emulator.
 
-For emulator testing, the app uses:
+For emulator testing, set `Config.DEFAULT_API_BASE_URL` in `android/app/src/main/java/com/malayanquest/app/Config.kt` to:
 
 ```text
 http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/
 ```
 
-`10.0.2.2` means "your computer's localhost" from the Android emulator. The `:8080` part must match your Apache port.
+`10.0.2.2` means "your computer's localhost" from the Android emulator. The `:8080` part must match your Apache port. If Apache uses port `80`, remove `:8080`.
+
+If your teammate copied only the backend folder directly into `htdocs`, use:
+
+```text
+http://10.0.2.2:8080/backend/api/
+```
 
 ## 8. View the Output
 
@@ -168,13 +174,15 @@ If you use a real phone instead of emulator:
 3. Edit:
 
 ```text
-android/app/src/main/java/com/malayanquest/app/Config.java
+android/app/src/main/java/com/malayanquest/app/Config.kt
 ```
 
 4. Replace `10.0.2.2` with your computer IPv4 address.
 
 Example:
 
-```java
-public static final String API_BASE_URL = "http://192.168.1.12:8080/IT140P-MP-MalayanQuest/backend/api/";
+```text
+http://192.168.1.12:8080/IT140P-MP-MalayanQuest/backend/api/
 ```
+
+If the app says the server returned `HTML` or `DOCTYPE` instead of JSON, the URL is reaching an Apache page or error page instead of the PHP API endpoint. Check the project folder name, Apache port, and `backend/api/` path.
