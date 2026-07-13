@@ -33,7 +33,7 @@ fun LoginScreen(
 
     AppMark()
     AuthTitle("Welcome back!", "Sign in to continue your campus errands.")
-    Badge("For MCL students only", PrimaryBlue)
+    Badge("For MMCL students only", PrimaryBlue)
     CampusTextField("School email", email, { email = it }, KeyboardType.Email, leadingIcon = Icons.Filled.Email)
     CampusTextField("Password", password, { password = it }, KeyboardType.Password, password = true, leadingIcon = Icons.Filled.Lock)
     CampusButton("Login") {

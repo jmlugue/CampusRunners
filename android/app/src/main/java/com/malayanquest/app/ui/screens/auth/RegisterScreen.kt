@@ -22,7 +22,7 @@ fun RegisterScreen(
     var confirm by remember { mutableStateOf("") }
 
     AppMark()
-    AuthTitle("Create Student Account", "Use your MCL student details to join Malayan Quest.")
+    AuthTitle("Create Student Account", "Use your MMCL student details to join Malayan Quest.")
     InfoPanel("Use your school email and student number. Student numbers and school emails are stored for verification and are not shown publicly.", Icons.Filled.Info, "Private verification")
 
     CampusTextField("Full name", name, { name = it }, leadingIcon = Icons.Filled.Person)

@@ -420,7 +420,7 @@ class MainActivity : ComponentActivity() {
 
     private fun headerText(): Pair<String, String> {
         return when (screen) {
-            Screen.Splash -> "Malayan Quest" to "School-only campus errands for MCL students"
+            Screen.Splash -> "Malayan Quest" to "School-only campus errands for MMCL students"
             Screen.Login -> "Malayan Quest" to "Login to the campus errand prototype"
             Screen.Register -> "Register" to "Create a verified prototype student account"
             Screen.Dashboard -> if (role == "admin") "Admin Dashboard" to "Monitoring and moderation" else "Malayan Quest" to (if (fullName.isBlank()) "Student dashboard" else "Welcome, $fullName")
