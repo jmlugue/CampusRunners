@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -36,7 +38,12 @@ import com.malayanquest.app.ui.theme.*
 import java.util.Locale
 
 @Composable
-fun Header(title: String, subtitle: String, canNavigateBack: Boolean, onBack: () -> Unit) {
+fun Header(
+    title: String,
+    subtitle: String,
+    canNavigateBack: Boolean,
+    onBack: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,7 +57,7 @@ fun Header(title: String, subtitle: String, canNavigateBack: Boolean, onBack: ()
                 modifier = Modifier.size(40.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                     tint = PrimaryBlue
                 )
@@ -69,7 +76,7 @@ fun Header(title: String, subtitle: String, canNavigateBack: Boolean, onBack: ()
         }
         Spacer(Modifier.size(40.dp))
     }
-    Divider(color = BorderSoft)
+    HorizontalDivider(color = BorderSoft)
 }
 
 @Composable
@@ -174,13 +181,13 @@ fun InfoPanel(
 @Composable
 fun CampusButton(
     text: String,
+    modifier: Modifier = Modifier,
     primary: Boolean = true,
-    modifier: Modifier = Modifier.fillMaxWidth(),
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.height(52.dp),
+        modifier = modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (primary) PrimaryBlue else Color.White,
@@ -195,12 +202,12 @@ fun CampusButton(
 @Composable
 fun DangerButton(
     text: String,
-    modifier: Modifier = Modifier.fillMaxWidth(),
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.height(52.dp),
+        modifier = modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = DangerRed,
@@ -430,9 +437,15 @@ fun ConfirmDangerButton(
 
 @Composable
 fun RatingRow(value: String) {
+    val score = value.toFloatOrNull()?.coerceIn(0f, 5f) ?: 0f
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-        repeat(5) {
-            Icon(Icons.Filled.Star, contentDescription = "Rating", tint = WarningAmber, modifier = Modifier.size(14.dp))
+        repeat(5) { index ->
+            Icon(
+                Icons.Filled.Star,
+                contentDescription = null,
+                tint = if (index < score.toInt()) WarningAmber else BorderSoft,
+                modifier = Modifier.size(14.dp)
+            )
         }
         Text(value.ifBlank { "0.00" }, color = TextSecondary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
     }
@@ -451,7 +464,7 @@ fun CategoryDropdown(value: String, categories: List<String>, includeAll: Boolea
             label = { Text("Category") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp)
         )
@@ -481,7 +494,7 @@ fun GenericDropdown(label: String, value: String, options: List<String>, onChang
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp)
         )
@@ -500,13 +513,18 @@ fun GenericDropdown(label: String, value: String, options: List<String>, onChang
 }
 
 @Composable
-fun StudentBottomNav(currentScreen: Screen, onNavigate: (Screen) -> Unit) {
+fun StudentBottomNav(
+    currentScreen: Screen,
+    showAdminDashboard: Boolean = false,
+    onNavigate: (Screen) -> Unit,
+    onAdminDashboard: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        Divider(color = BorderSoft)
+        HorizontalDivider(color = BorderSoft)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -517,6 +535,9 @@ fun StudentBottomNav(currentScreen: Screen, onNavigate: (Screen) -> Unit) {
             BottomNavItem("Feed", Icons.Filled.Home, currentScreen == Screen.BrowseErrands) { onNavigate(Screen.BrowseErrands) }
             BottomNavItem("My Tasks", Icons.Filled.Work, currentScreen == Screen.MyTasks) { onNavigate(Screen.MyTasks) }
             BottomNavItem("Profile", Icons.Filled.AccountCircle, currentScreen == Screen.Profile || currentScreen == Screen.EditProfile) { onNavigate(Screen.Profile) }
+            if (showAdminDashboard) {
+                BottomNavItem("Admin", Icons.Filled.AdminPanelSettings, false, onAdminDashboard)
+            }
         }
     }
 }
@@ -586,30 +607,62 @@ fun ProfileStat(label: String, value: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun SummaryGrid(items: List<Pair<String, String>>) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        items.chunked(2).forEach { rowItems ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                rowItems.forEach { item ->
-                    CampusCard(modifier = Modifier.weight(1f)) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(iconColor(item.first).copy(alpha = 0.10f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(actionIcon(item.first), contentDescription = item.first, tint = iconColor(item.first), modifier = Modifier.size(19.dp))
-                            }
-                            Column {
-                                Text(item.second, color = PrimaryBlue, fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                                Text(item.first, color = TextSecondary, fontSize = 12.sp)
-                            }
-                        }
+    CampusCard {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(PrimaryBlue.copy(alpha = 0.10f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Filled.Assessment, contentDescription = "Activity overview", tint = PrimaryBlue, modifier = Modifier.size(21.dp))
+            }
+            Column {
+                Text("Activity Overview", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Current platform records", color = TextSecondary, fontSize = 12.sp)
+            }
+        }
+        HorizontalDivider(color = BorderSoft)
+        items.chunked(2).forEachIndexed { rowIndex, rowItems ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                rowItems.forEachIndexed { itemIndex, item ->
+                    SummaryMetric(item.first, item.second, Modifier.weight(1f))
+                    if (itemIndex == 0 && rowItems.size > 1) {
+                        Box(Modifier.width(1.dp).height(54.dp).background(BorderSoft))
                     }
                 }
                 if (rowItems.size == 1) Spacer(Modifier.weight(1f))
             }
+            if (rowIndex < items.chunked(2).lastIndex) {
+                HorizontalDivider(color = BorderSoft)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SummaryMetric(label: String, value: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.padding(horizontal = 6.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(34.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(iconColor(label).copy(alpha = 0.10f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(actionIcon(label), contentDescription = label, tint = iconColor(label), modifier = Modifier.size(18.dp))
+        }
+        Column {
+            Text(value, color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(label, color = TextSecondary, fontSize = 11.sp, maxLines = 1)
         }
     }
 }
@@ -720,7 +773,7 @@ fun iconForLabel(label: String): ImageVector {
         label.contains("status", ignoreCase = true) || label.contains("verification", ignoreCase = true) || label.contains("account", ignoreCase = true) -> Icons.Filled.Verified
         label.contains("category", ignoreCase = true) -> Icons.Filled.Storefront
         label.contains("offer", ignoreCase = true) || label.contains("note", ignoreCase = true) -> Icons.Filled.Info
-        else -> Icons.Filled.Assignment
+        else -> Icons.AutoMirrored.Filled.Assignment
     }
 }
 
@@ -735,7 +788,7 @@ fun actionIcon(title: String): ImageVector {
         title.contains("Helper") -> Icons.Filled.Person
         title.contains("Posted") -> Icons.Filled.Work
         title.contains("Errand") -> Icons.Filled.LocalShipping
-        else -> Icons.Filled.Assignment
+        else -> Icons.AutoMirrored.Filled.Assignment
     }
 }
 

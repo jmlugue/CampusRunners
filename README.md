@@ -46,7 +46,7 @@ For detailed local setup, see `docs/LOCAL_SETUP.md`. For a groupmate-friendly se
 
 1. Install XAMPP.
 2. Start Apache and MySQL.
-3. Copy the `backend` folder to your XAMPP `htdocs` folder.
+3. Copy this project to `C:\xampp\htdocs\IT140P-MP-MalayanQuest`, or copy the `backend` folder into a project folder with that name.
 4. Create a database named `malayanquest_db` in phpMyAdmin.
 5. Import `database/malayanquest_db.sql`.
 6. Update database credentials in `backend/config/db.php`.
@@ -54,9 +54,9 @@ For detailed local setup, see `docs/LOCAL_SETUP.md`. For a groupmate-friendly se
 ### Android
 
 1. Open the Android project in Android Studio.
-2. Set the default API base URL in `android/app/src/main/java/com/malayanquest/app/Config.kt`.
-3. For emulator testing, use `http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/` if Apache runs on port `8080`, or remove `:8080` for port `80`.
-4. For phone testing, replace `10.0.2.2` with the computer IPv4 address.
+2. The default emulator URL is `http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/`.
+3. To override it without changing tracked source, add `api.base.url=http://YOUR_HOST:YOUR_PORT/YOUR_FOLDER/backend/api/` to the root `local.properties` file.
+4. For phone testing, use the computer IPv4 address instead of `10.0.2.2`; for Apache port `80`, omit `:8080`.
 
 ## Sample Test Accounts
 

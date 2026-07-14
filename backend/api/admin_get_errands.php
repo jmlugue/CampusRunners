@@ -3,11 +3,12 @@ require_once "../config/db.php";
 require_once "helpers.php";
 
 $admin_id = $_GET["admin_id"] ?? null;
-if ($admin_id) {
-    require_admin($pdo, $admin_id);
+if (!$admin_id) {
+    respond_error("Missing admin_id parameter.");
 }
+require_admin($pdo, (int) $admin_id);
 
-$status = trim($_GET["status"] ?? "");
+$filter = strtolower(trim($_GET["filter"] ?? ($_GET["status"] ?? "all")));
 $keyword = trim($_GET["keyword"] ?? "");
 
 $sql = "
@@ -19,9 +20,31 @@ $sql = "
 ";
 $params = [];
 
-if ($status !== "") {
-    $sql .= " AND e.status = ?";
-    $params[] = $status;
+switch ($filter) {
+    case "open":
+        $sql .= " AND e.status IN ('Open', 'Has Applicants')";
+        break;
+    case "active":
+        $sql .= " AND e.status IN ('Assigned', 'Accepted', 'In Progress', 'Completed by Helper')";
+        break;
+    case "completed":
+        $sql .= " AND e.status IN ('Confirmed by Requester', 'Rated', 'Closed')";
+        break;
+    case "cancelled":
+        $sql .= " AND e.status IN ('Cancelled by Requester', 'Cancelled by Helper')";
+        break;
+    case "reported":
+        $sql .= " AND e.status = 'Reported'";
+        break;
+    case "flagged":
+        $sql .= " AND e.moderation_status = 'flagged'";
+        break;
+    case "rated":
+        $sql .= " AND e.status = 'Rated'";
+        break;
+    case "closed":
+        $sql .= " AND e.status = 'Closed'";
+        break;
 }
 
 if ($keyword !== "") {

@@ -14,8 +14,7 @@ fun BrowseErrandsScreen(
     api: ApiClient,
     userId: Int,
     refreshKey: Int,
-    onNavigate: (Screen, JSONObject?) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigate: (Screen, JSONObject?) -> Unit
 ) {
     var keyword by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("All Categories") }

@@ -11,12 +11,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.malayanquest.app.navigation.Screen
 import com.malayanquest.app.ui.theme.*
 import org.json.JSONObject
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 
 @Composable
@@ -82,7 +84,7 @@ fun ErrandCard(
             }
         }
         
-        Divider(color = BorderSoft)
+        HorizontalDivider(color = BorderSoft)
 
         // Contextual Primary Action
         when {
@@ -112,7 +114,6 @@ fun ErrandCard(
 @Composable
 fun RequesterActions(
     errand: JSONObject,
-    userId: Int,
     onViewApplicants: (JSONObject) -> Unit,
     onMessages: (JSONObject) -> Unit,
     onConfirmCompletion: (JSONObject) -> Unit,
@@ -165,27 +166,58 @@ fun HelperActions(
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 fun ErrandCore(errand: JSONObject) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    val title = errand.optString("title", "Untitled")
+    val description = errand.optString("description")
+    val category = errand.optString("category", "Other School-Related Errand")
+    val status = errand.optString("status", "Open")
+
+    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Box(
             modifier = Modifier
                 .size(44.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(colorForStatus(errand.optString("status")).copy(alpha = 0.12f)),
+                .clip(RoundedCornerShape(8.dp))
+                .background(colorForStatus(status).copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(categoryVector(errand.optString("category")), contentDescription = errand.optString("category"), tint = colorForStatus(errand.optString("status")), modifier = Modifier.size(23.dp))
+            Icon(
+                categoryVector(category),
+                contentDescription = category,
+                tint = colorForStatus(status),
+                modifier = Modifier.size(23.dp)
+            )
         }
-        Text(
-            errand.optString("title", "Untitled"),
+        Column(
             modifier = Modifier.weight(1f),
-            color = TextPrimary,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Badge(errand.optString("status", "Open"), colorForStatus(errand.optString("status")))
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                title,
+                color = TextPrimary,
+                fontSize = 18.sp,
+                lineHeight = 23.sp,
+                fontWeight = FontWeight.Bold
+            )
+            if (description.isNotBlank() && description != "null") {
+                Text(
+                    description,
+                    color = TextSecondary,
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
     }
-    Badge("${categoryIcon(errand.optString("category"))} ${errand.optString("category")}", SecondaryBlue)
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Badge(status, colorForStatus(status))
+        Badge(category, SecondaryBlue)
+    }
     DetailRow("Pickup", errand.optString("pickup_location"))
     DetailRow("Drop-off", errand.optString("dropoff_location"))
     DetailRow("Deadline", errand.optString("deadline"))
@@ -220,6 +252,8 @@ fun ApplicantCard(
 
 @Composable
 fun AdminRecordCard(item: JSONObject, title: String, clickable: Boolean = true, onView: (JSONObject, String) -> Unit) {
+    val headline = recordHeadline(item, title)
+    val subtitle = recordSubtitle(item)
     CampusCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(
@@ -232,12 +266,14 @@ fun AdminRecordCard(item: JSONObject, title: String, clickable: Boolean = true, 
                 Icon(actionIcon(title), contentDescription = title, tint = iconColor(title), modifier = Modifier.size(22.dp))
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(recordHeadline(item, title), color = TextSecondary, fontSize = 13.sp)
+                Text(headline, color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                if (subtitle.isNotBlank()) {
+                    Text(subtitle, color = TextSecondary, fontSize = 13.sp)
+                }
             }
             recordStatus(item)?.let { Badge(it, colorForStatus(it)) }
         }
-        StructuredRecord(item)
+        StructuredRecord(item, setOf("full_name", "title"))
         if (clickable) {
             CampusButton("View") { onView(item, title) }
         }
@@ -245,8 +281,8 @@ fun AdminRecordCard(item: JSONObject, title: String, clickable: Boolean = true, 
 }
 
 @Composable
-fun StructuredRecord(item: JSONObject) {
-    val hidden = setOf("password_hash")
+fun StructuredRecord(item: JSONObject, additionalHidden: Set<String> = emptySet()) {
+    val hidden = setOf("password_hash") + additionalHidden
     val priority = listOf(
         "full_name", "role", "verification_status", "account_status",
         "title", "category", "status", "moderation_status",
@@ -276,26 +312,14 @@ fun rewardText(errand: JSONObject): String {
     }
 }
 
-fun categoryIcon(category: String?): String {
-    return when {
-        category == null -> "[ ]"
-        category.contains("Food", ignoreCase = true) -> "[Food]"
-        category.contains("Printing", ignoreCase = true) -> "[Print]"
-        category.contains("Document", ignoreCase = true) -> "[Doc]"
-        category.contains("Bookstore", ignoreCase = true) || category.contains("Bluebook", ignoreCase = true) -> "[Book]"
-        category.contains("Delivery", ignoreCase = true) -> "[Move]"
-        else -> "[Task]"
-    }
-}
-
 fun categoryVector(category: String?): ImageVector {
     return when {
-        category == null -> Icons.Filled.Assignment
+        category == null -> Icons.AutoMirrored.Filled.Assignment
         category.contains("Food", ignoreCase = true) -> Icons.Filled.Storefront
-        category.contains("Printing", ignoreCase = true) -> Icons.Filled.Assignment
+        category.contains("Printing", ignoreCase = true) -> Icons.AutoMirrored.Filled.Assignment
         category.contains("Bookstore", ignoreCase = true) || category.contains("Bluebook", ignoreCase = true) -> Icons.Filled.Storefront
         category.contains("Delivery", ignoreCase = true) -> Icons.Filled.LocalShipping
-        else -> Icons.Filled.Assignment
+        else -> Icons.AutoMirrored.Filled.Assignment
     }
 }
 
@@ -309,8 +333,21 @@ fun recordHeadline(item: JSONObject, title: String): String {
     }.ifBlank { title }
 }
 
+fun recordSubtitle(item: JSONObject): String {
+    return when {
+        item.has("school_email") -> item.optString("school_email")
+        item.has("requester_name") -> "Requested by ${item.optString("requester_name")}"
+        item.has("reported_by_name") -> "Reported by ${item.optString("reported_by_name")}"
+        item.has("category") -> item.optString("category")
+        item.has("report_type") -> item.optString("report_type").replace("_", " ")
+        else -> ""
+    }
+}
+
 fun recordStatus(item: JSONObject): String? {
     return when {
+        item.optString("account_status") == "deactivated" -> "deactivated"
+        item.optString("verification_status") == "restricted" -> "restricted"
         item.has("verification_status") -> item.optString("verification_status")
         item.has("account_status") -> item.optString("account_status")
         item.has("status") -> item.optString("status")

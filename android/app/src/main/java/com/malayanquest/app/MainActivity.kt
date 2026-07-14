@@ -39,6 +39,7 @@ class MainActivity : ComponentActivity() {
 
     private var userId by mutableIntStateOf(0)
     private var fullName by mutableStateOf("")
+    private var accountRole by mutableStateOf("")
     private var role by mutableStateOf("")
     private var screen by mutableStateOf(Screen.Splash)
     private var selectedErrand by mutableStateOf<JSONObject?>(null)
@@ -52,7 +53,8 @@ class MainActivity : ComponentActivity() {
         prefs = getSharedPreferences("malayanquest_session", MODE_PRIVATE)
         userId = prefs.getInt("user_id", 0)
         fullName = prefs.getString("full_name", "") ?: ""
-        role = prefs.getString("role", "") ?: ""
+        accountRole = prefs.getString("role", "") ?: ""
+        role = accountRole
 
         setContent {
             CampusTheme {
@@ -85,18 +87,31 @@ class MainActivity : ComponentActivity() {
         Scaffold(
             topBar = {
                 if (!authScreen) {
-                    Header(header.first, header.second, canNavigateBack()) { navigateBack() }
+                    Header(
+                        title = header.first,
+                        subtitle = header.second,
+                        canNavigateBack = canNavigateBack(),
+                        onBack = { navigateBack() }
+                    )
                 }
             },
             bottomBar = {
                 if (studentChrome) {
-                    StudentBottomNav(screen) { target ->
-                        if (target == Screen.Profile) {
-                            selectedErrand = null
-                            selectedApplicant = null
+                    StudentBottomNav(
+                        currentScreen = screen,
+                        showAdminDashboard = accountRole == "admin",
+                        onNavigate = { target ->
+                            if (target == Screen.Profile) {
+                                selectedErrand = null
+                                selectedApplicant = null
+                            }
+                            screen = target
+                        },
+                        onAdminDashboard = {
+                            role = "admin"
+                            screen = Screen.AdminDashboard
                         }
-                        screen = target
-                    }
+                    )
                 }
             },
             floatingActionButton = {
@@ -148,8 +163,7 @@ class MainActivity : ComponentActivity() {
                         onNavigate = { target, errand ->
                             selectedErrand = errand
                             screen = target
-                        },
-                        onNavigateBack = { navigateBack() }
+                        }
                     )
                     Screen.MyTasks -> MyTasksScreen(
                         api = api,
@@ -240,7 +254,6 @@ class MainActivity : ComponentActivity() {
                         onRequesterActions = { e ->
                             RequesterActions(
                                 errand = e,
-                                userId = userId,
                                 onViewApplicants = { obj -> selectedErrand = obj; screen = Screen.Applicants },
                                 onMessages = { obj -> selectedErrand = obj; screen = Screen.Chat },
                                 onConfirmCompletion = { obj -> selectedErrand = obj; screen = Screen.Completion },
@@ -394,8 +407,6 @@ class MainActivity : ComponentActivity() {
                         onNavigateBack = { screen = Screen.AdminDashboard }
                     )
                     Screen.AdminRecordDetails -> AdminRecordDetailsScreen(
-                        api = api,
-                        adminId = userId,
                         item = selectedErrand,
                         title = adminTitle,
                         onUpdateUserStatus = { targetId, status -> updateUserStatus(targetId, status) },
@@ -404,12 +415,8 @@ class MainActivity : ComponentActivity() {
                         onNavigateBack = { screen = Screen.AdminDashboard }
                     )
                     Screen.AdminRatings -> AdminRatingsScreen(
-                        onOpenErrandRecords = {
-                            adminEndpoint = "admin_get_errands.php"
-                            adminTitle = "Ratings and Feedback"
-                            refreshKey++
-                            screen = Screen.AdminArray
-                        },
+                        api = api,
+                        adminId = userId,
                         onNavigateBack = { screen = Screen.AdminDashboard }
                     )
                     else -> {}
@@ -485,6 +492,7 @@ class MainActivity : ComponentActivity() {
         userId = data.optInt("user_id")
         fullName = data.optString("full_name")
         role = data.optString("role")
+        accountRole = role
         prefs.edit()
             .putInt("user_id", userId)
             .putString("full_name", fullName)
@@ -500,6 +508,7 @@ class MainActivity : ComponentActivity() {
             .apply()
         userId = 0
         fullName = ""
+        accountRole = ""
         role = ""
         selectedErrand = null
         selectedApplicant = null

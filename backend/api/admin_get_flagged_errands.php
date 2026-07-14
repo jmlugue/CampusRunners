@@ -3,9 +3,10 @@ require_once "../config/db.php";
 require_once "helpers.php";
 
 $admin_id = $_GET["admin_id"] ?? null;
-if ($admin_id) {
-    require_admin($pdo, $admin_id);
+if (!$admin_id) {
+    respond_error("Missing admin_id parameter.");
 }
+require_admin($pdo, (int) $admin_id);
 
 $stmt = $pdo->query("
     SELECT e.*, u.full_name AS requester_name, m.matched_terms, m.created_at AS moderated_at

@@ -1,6 +1,7 @@
 package com.malayanquest.app.ui.screens.errand
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,8 +29,8 @@ fun PostErrandScreen(
     var rewardNote by remember { mutableStateOf("") }
 
     InfoPanel("Describe a small, safe, school-related errand.", Icons.Filled.Security, "Campus-only request")
-    SectionCard("Errand Details", Icons.Filled.Assignment) {
-        CampusTextField("Title", title, { title = it }, leadingIcon = Icons.Filled.Assignment)
+    SectionCard("Errand Details", Icons.AutoMirrored.Filled.Assignment) {
+        CampusTextField("Title", title, { title = it }, leadingIcon = Icons.AutoMirrored.Filled.Assignment)
         CampusTextField("Description", description, { description = it }, multiline = true, leadingIcon = Icons.Filled.Info)
         CategoryDropdown(category, categories) { category = it }
     }

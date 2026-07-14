@@ -3,6 +3,18 @@ plugins {
     id "org.jetbrains.kotlin.android"
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = [
+    rootProject.file("local.properties"),
+    rootProject.file("../local.properties")
+].find { it.exists() }
+if (localPropertiesFile != null) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+def defaultApiBaseUrl = "http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/"
+def apiBaseUrl = localProperties.getProperty("api.base.url", defaultApiBaseUrl)
+def escapedApiBaseUrl = apiBaseUrl.replace("\\", "\\\\").replace('"', '\\"')
+
 android {
     namespace "com.malayanquest.app"
     compileSdk 36
@@ -14,6 +26,7 @@ android {
         targetSdk 36
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "API_BASE_URL", "\"${escapedApiBaseUrl}\""
     }
 
     compileOptions {
@@ -27,6 +40,7 @@ android {
 
     buildFeatures {
         compose true
+        buildConfig true
     }
 
     composeOptions {
@@ -35,9 +49,7 @@ android {
 }
 
 dependencies {
-    implementation "androidx.activity:activity:1.9.3"
     implementation "androidx.activity:activity-compose:1.9.3"
-    implementation "androidx.recyclerview:recyclerview:1.3.2"
     implementation platform("androidx.compose:compose-bom:2024.10.01")
     implementation "androidx.compose.foundation:foundation"
     implementation "androidx.compose.material:material-icons-extended"

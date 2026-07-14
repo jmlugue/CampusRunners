@@ -99,13 +99,13 @@ These should work unless you changed your MySQL password.
 Open:
 
 ```text
-http://localhost/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php
+http://localhost/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php?admin_id=1
 ```
 
 If Apache is configured for port `8080`, use:
 
 ```text
-http://localhost:8080/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php
+http://localhost:8080/IT140P-MP-MalayanQuest/backend/api/admin_dashboard.php?admin_id=1
 ```
 
 Expected result:
@@ -133,7 +133,7 @@ D:\MalayanQuest\android
 4. Wait for Gradle sync.
 5. Run the app on an Android emulator.
 
-For emulator testing, set `Config.DEFAULT_API_BASE_URL` in `android/app/src/main/java/com/malayanquest/app/Config.kt` to:
+For emulator testing, the app defaults to:
 
 ```text
 http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/
@@ -171,13 +171,13 @@ If you use a real phone instead of emulator:
 
 1. Connect the phone and computer to the same Wi-Fi.
 2. Find your computer IPv4 address using `ipconfig`.
-3. Edit:
+3. Add this property to the root `local.properties` file:
 
 ```text
-android/app/src/main/java/com/malayanquest/app/Config.kt
+api.base.url=http://192.168.1.12:8080/IT140P-MP-MalayanQuest/backend/api/
 ```
 
-4. Replace `10.0.2.2` with your computer IPv4 address.
+4. Replace the example address with your computer IPv4 address and rebuild the app.
 
 Example:
 

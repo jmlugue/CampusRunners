@@ -44,16 +44,14 @@ fun AdminDashboardScreen(
             "Manage Errands" to "View and remove records",
             "Reports" to "Review and resolve",
             "Flagged Errands" to "Moderation queue",
-            "Ratings" to "Feedback review",
-            "Moderation" to "Rule-based logs"
+            "Ratings" to "Feedback review"
         ),
         listOf(
             { onOpenAdminArray("admin_get_users.php", "Manage Users") },
             { onOpenAdminArray("admin_get_errands.php", "Manage Errands") },
             { onOpenAdminArray("admin_get_reports.php", "Reports") },
             { onOpenAdminArray("admin_get_flagged_errands.php", "Flagged Errands") },
-            { onNavigateToRatings() },
-            { onOpenAdminArray("admin_get_flagged_errands.php", "Moderation Logs") }
+            { onNavigateToRatings() }
         )
     )
     CampusButton("Student Dashboard", primary = false) { onSwitchToStudent() }

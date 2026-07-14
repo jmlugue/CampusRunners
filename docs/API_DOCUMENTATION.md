@@ -5,10 +5,10 @@
 Example for local XAMPP testing:
 
 ```text
-http://10.0.2.2/IT140P-MP-MalayanQuest/backend/api/
+http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/
 ```
 
-For Android phone testing, replace `10.0.2.2` with the local IP address of the computer running XAMPP.
+The example assumes Apache listens on port `8080`. For Android phone testing, replace `10.0.2.2` with the local IP address of the computer running XAMPP.
 
 ## Standard Success Response
 
@@ -187,6 +187,12 @@ Expected fields:
 
 ## Report Endpoints
 
+### GET get_reportable_errands.php
+
+Returns up to 50 recent, non-removed errands using only fields needed by the student reporting screen.
+
+Required query parameter: `user_id`. Optional query parameter: `keyword`.
+
 ### POST report_errand.php
 
 Reports an unsafe or inappropriate errand.
@@ -208,6 +214,15 @@ Reports a user.
 
 ## Admin Endpoints
 
+All admin GET endpoints require the `admin_id` query parameter. The API verifies that the referenced account is an active admin.
+
+Admin list filters:
+
+- `admin_get_users.php`: optional `keyword`; `filter` supports `All`, `Verified`, `Restricted`, and `Deactivated`.
+- `admin_get_errands.php`: `filter` supports `All`, `Open`, `Active`, `Completed`, `Cancelled`, `Reported`, `Flagged`, `Rated`, and `Closed`.
+- `admin_get_reports.php`: `filter` supports `Pending`, `Under Review`, `Resolved`, and `Dismissed`.
+- `admin_get_ratings.php`: optional `keyword`; `filter` supports `All`, `5 Stars`, `4 Stars`, and `3 or Below`.
+
 1. admin_dashboard.php
 2. admin_get_users.php
 3. admin_update_user_status.php
@@ -216,3 +231,5 @@ Reports a user.
 6. admin_get_reports.php
 7. admin_resolve_report.php
 8. admin_get_flagged_errands.php
+9. get_moderation_logs.php
+10. admin_get_ratings.php

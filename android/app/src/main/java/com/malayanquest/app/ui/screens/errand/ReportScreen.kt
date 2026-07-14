@@ -59,8 +59,11 @@ fun ReportScreen(
         SectionTitle(if (appliedKeyword.isBlank()) "Recent Errands" else "Search Results")
         RemoteList(
             api = api,
-            endpoint = "admin_get_errands.php",
-            params = mapOf("keyword" to appliedKeyword),
+            endpoint = "get_reportable_errands.php",
+            params = mapOf(
+                "user_id" to userId.toString(),
+                "keyword" to appliedKeyword
+            ),
             emptyText = "No matching errands found.",
             refreshKey = localRefreshKey
         ) { item ->

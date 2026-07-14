@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme">
+        <item name="android:windowSplashScreenBackground">@color/primary_blue</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/malayan_quest_logo</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/primary_blue</item>
+    </style>
+</resources>

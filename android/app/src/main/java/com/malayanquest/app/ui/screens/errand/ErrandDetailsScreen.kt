@@ -38,7 +38,6 @@ fun ErrandDetailsScreen(
     } else {
         RequesterActions(
             errand = errand,
-            userId = userId,
             onViewApplicants = onViewApplicants,
             onMessages = onMessages,
             onConfirmCompletion = onConfirmCompletion,

@@ -6,8 +6,5 @@
         <item name="android:navigationBarColor">@color/background_white</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:statusBarColor">@color/primary_blue</item>
-        <item name="android:windowSplashScreenBackground">@color/primary_blue</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/malayan_quest_logo</item>
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/primary_blue</item>
     </style>
 </resources>

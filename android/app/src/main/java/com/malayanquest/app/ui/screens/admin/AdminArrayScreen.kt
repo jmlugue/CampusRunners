@@ -1,13 +1,10 @@
 package com.malayanquest.app.ui.screens.admin
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import com.malayanquest.app.ApiClient
 import com.malayanquest.app.ui.components.*
-import com.malayanquest.app.ui.theme.WarningAmber
 import org.json.JSONObject
 
 @Composable
@@ -19,39 +16,58 @@ fun AdminArrayScreen(
     onViewRecord: (JSONObject, String) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val defaultChip = if (title.contains("Reports")) "Pending" else "All"
-    var selectedChip by remember { mutableStateOf(defaultChip) }
+    val defaultChip = if (endpoint == "admin_get_reports.php") "Pending" else "All"
+    var selectedChip by remember(endpoint, title) { mutableStateOf(defaultChip) }
+    var keyword by remember(endpoint, title) { mutableStateOf("") }
 
-    if (title == "Manage Users") {
-        var keyword by remember { mutableStateOf("") }
-        CampusTextField("Search by name", keyword, { keyword = it }, leadingIcon = Icons.Filled.Search)
+    when (endpoint) {
+        "admin_get_users.php" -> {
+            CampusTextField(
+                "Search name, email, or student number",
+                keyword,
+                { keyword = it },
+                leadingIcon = Icons.Filled.Search
+            )
 
-        FilterChipRow(
-            chips = listOf("All", "Verified", "Restricted", "Deactivated"),
+            FilterChipRow(
+                chips = listOf("All", "Verified", "Restricted", "Deactivated"),
+                selected = selectedChip,
+                onSelected = { selectedChip = it }
+            )
+        }
+        "admin_get_errands.php" -> FilterChipRow(
+            chips = if (title == "Ratings and Feedback") {
+                listOf("All", "Rated", "Closed")
+            } else {
+                listOf("All", "Open", "Active", "Completed", "Cancelled", "Reported", "Flagged")
+            },
             selected = selectedChip,
             onSelected = { selectedChip = it }
         )
-        InfoPanel("The current backend returns all users. This search field is a UI placeholder until server-side filtering is added.")
-    } else {
-        FilterChipRow(
-            chips = when {
-                title.contains("Errands") -> listOf("All", "Open", "Active", "Completed", "Cancelled", "Reported", "Flagged")
-                title.contains("Reports") -> listOf("Pending", "Under Review", "Resolved", "Dismissed")
-                else -> listOf("All", "Allowed", "Flagged", "Rejected")
-            },
+        "admin_get_reports.php" -> FilterChipRow(
+            chips = listOf("Pending", "Under Review", "Resolved", "Dismissed"),
             selected = selectedChip,
             onSelected = { selectedChip = it }
         )
     }
 
-    if (title == "Moderation Logs") {
-        InfoPanel("The backend does not currently have a moderation log endpoint, so this screen reuses flagged errands for the prototype.", Icons.Filled.Report, "Moderation logs", WarningAmber)
+    val params = when (endpoint) {
+        "admin_get_users.php" -> mapOf(
+            "admin_id" to adminId.toString(),
+            "keyword" to keyword.trim(),
+            "filter" to selectedChip
+        )
+        "admin_get_errands.php", "admin_get_reports.php" -> mapOf(
+            "admin_id" to adminId.toString(),
+            "filter" to selectedChip
+        )
+        else -> mapOf("admin_id" to adminId.toString())
     }
 
     RemoteList(
         api = api,
         endpoint = endpoint,
-        params = mapOf("admin_id" to adminId.toString()),
+        params = params,
         emptyText = "No records."
     ) { item ->
         AdminRecordCard(item, title, onView = onViewRecord)

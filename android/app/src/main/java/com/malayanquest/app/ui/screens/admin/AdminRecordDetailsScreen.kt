@@ -3,15 +3,12 @@ package com.malayanquest.app.ui.screens.admin
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.runtime.Composable
-import com.malayanquest.app.ApiClient
 import com.malayanquest.app.ui.components.*
 import com.malayanquest.app.ui.theme.WarningAmber
 import org.json.JSONObject
 
 @Composable
 fun AdminRecordDetailsScreen(
-    api: ApiClient,
-    adminId: Int,
     item: JSONObject?,
     title: String,
     onUpdateUserStatus: (Int, String) -> Unit,
