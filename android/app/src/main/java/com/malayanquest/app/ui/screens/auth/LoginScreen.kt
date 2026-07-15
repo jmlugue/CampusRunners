@@ -304,7 +304,7 @@ fun LoginScreen(
 
                 Text(
                     text = "Create an account using your official " +
-                            "@live.mcl.edu.ph student email.",
+                            "@mcl.edu.ph or @live.mcl.edu.ph student email.",
                     color = TextSecondary,
                     fontSize = 13.sp
                 )

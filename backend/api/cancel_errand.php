@@ -5,9 +5,9 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["errand_id", "user_id"]);
 
-$errand_id = (int) $data["errand_id"];
-$user_id = (int) $data["user_id"];
-$reason = trim($data["reason"] ?? "");
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
+$user_id = require_positive_int($data["user_id"], "User ID");
+$reason = validate_optional_text_length($data["reason"] ?? "", "Cancellation reason", 500);
 $errand = get_errand_by_id($pdo, $errand_id);
 
 if (!$errand) {
@@ -21,8 +21,8 @@ if (!$is_requester && !$is_helper) {
     respond_error("You cannot cancel this errand.");
 }
 
-if ($errand["status"] === "In Progress" && $reason === "") {
-    respond_error("A cancellation reason is required once an errand is in progress.");
+if (in_array($errand["status"], ["Assigned", "Accepted", "In Progress"], true) && $reason === "") {
+    respond_error("A cancellation reason is required once a helper is involved.");
 }
 
 if ($is_requester && in_array($errand["status"], ["Open", "Has Applicants", "Assigned", "Accepted"])) {

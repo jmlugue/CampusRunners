@@ -9,6 +9,8 @@ import androidx.compose.runtime.*
 import com.malayanquest.app.ApiClient
 import com.malayanquest.app.ui.components.*
 import com.malayanquest.app.ui.screens.profile.HelperPreviewPanel
+import com.malayanquest.app.util.limited
+import com.malayanquest.app.util.requiredLengthError
 import org.json.JSONObject
 
 @Composable
@@ -37,11 +39,19 @@ fun ApplyScreen(
         "Offer note and estimated completion time are public to this requester only."
     )
     SectionCard("Helper Offer", Icons.Filled.PersonSearch) {
-        CampusTextField("Offer note, example: I can do this before 12:30 PM.", offer, { offer = it }, multiline = true, leadingIcon = Icons.Filled.Info)
-        CampusTextField("Estimated time, example: 20 minutes", estimate, { estimate = it }, leadingIcon = Icons.Filled.Schedule)
+        CampusTextField("Offer note, example: I can do this before 12:30 PM.", offer, { offer = limited(it, 500) }, multiline = true, leadingIcon = Icons.Filled.Info)
+        CampusTextField("Estimated time, example: 20 minutes", estimate, { estimate = limited(it, 100) }, leadingIcon = Icons.Filled.Schedule)
     }
     InfoPanel("Apply only if you can complete the errand safely and on time.", Icons.Filled.Security, "Trust reminder")
     CampusButton("Submit Application") {
+        listOfNotNull(
+            requiredLengthError(offer, "Offer note", 10, 500),
+            requiredLengthError(estimate, "Estimated completion time", 2, 100)
+        ).firstOrNull()?.let {
+            onShowToast(it)
+            return@CampusButton
+        }
+
         api.post("apply_to_errand.php", JSONObject().apply {
             put("errand_id", errand.optInt("errand_id"))
             put("helper_id", userId)

@@ -5,8 +5,8 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["errand_id", "helper_id"]);
 
-$errand_id = (int) $data["errand_id"];
-$helper_id = (int) $data["helper_id"];
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
+$helper_id = require_positive_int($data["helper_id"], "Helper ID");
 $errand = get_errand_by_id($pdo, $errand_id);
 
 if (!$errand) {

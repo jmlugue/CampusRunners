@@ -5,11 +5,11 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["errand_id", "rated_user_id", "rated_by_user_id", "rating_score"]);
 
-$errand_id = (int) $data["errand_id"];
-$rated_user_id = (int) $data["rated_user_id"];
-$rated_by_user_id = (int) $data["rated_by_user_id"];
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
+$rated_user_id = require_positive_int($data["rated_user_id"], "Rated user ID");
+$rated_by_user_id = require_positive_int($data["rated_by_user_id"], "Reviewer ID");
 $rating_score = (int) $data["rating_score"];
-$feedback = trim($data["feedback"] ?? "");
+$feedback = validate_optional_text_length($data["feedback"] ?? "", "Feedback", 500);
 
 if ($rating_score < 1 || $rating_score > 5) {
     respond_error("Rating score must be from 1 to 5.");

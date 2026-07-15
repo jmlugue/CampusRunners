@@ -14,12 +14,12 @@ require_fields(
     ]
 );
 
-$errand_id = (int) $data["errand_id"];
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
 $reported_by_user_id =
-    (int) $data["reported_by_user_id"];
+    require_positive_int($data["reported_by_user_id"], "Reporter ID");
 
-$reason = trim($data["reason"]);
-$details = trim($data["details"] ?? "");
+$reason = require_text_length($data["reason"], "Report reason", 5, 120);
+$details = require_text_length($data["details"] ?? "", "Report details", 10, 1000);
 
 /*
  * Validate the reporter.

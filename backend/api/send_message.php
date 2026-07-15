@@ -5,10 +5,14 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["errand_id", "sender_id", "receiver_id", "message_text"]);
 
-$errand_id = (int) $data["errand_id"];
-$sender_id = (int) $data["sender_id"];
-$receiver_id = (int) $data["receiver_id"];
-$message_text = trim($data["message_text"]);
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
+$sender_id = require_positive_int($data["sender_id"], "Sender ID");
+$receiver_id = require_positive_int($data["receiver_id"], "Receiver ID");
+$message_text = require_text_length($data["message_text"], "Message", 1, 500);
+
+if ($sender_id === $receiver_id) {
+    respond_error("Sender and receiver must be different users.");
+}
 
 $errand = get_errand_by_id($pdo, $errand_id);
 if (!$errand) {

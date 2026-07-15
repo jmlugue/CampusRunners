@@ -56,7 +56,7 @@ import com.malayanquest.app.ui.theme.BrandRed
 private val STUDENT_EMAIL_PATTERN = Regex(
     pattern =
         "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?" +
-                "@live\\.mcl\\.edu\\.ph$",
+                "@(?:live\\.)?mcl\\.edu\\.ph$",
     option = RegexOption.IGNORE_CASE
 )
 
@@ -174,7 +174,7 @@ fun RegisterScreen(
         )
 
         ValidationText(
-            text = "Format: 2024student@live.mcl.edu.ph",
+            text = "Use your @mcl.edu.ph or @live.mcl.edu.ph school email",
             valid = emailValid,
             showState = email.isNotBlank()
         )

@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.malayanquest.app.ApiClient
 import com.malayanquest.app.ui.components.*
 import com.malayanquest.app.ui.theme.*
+import com.malayanquest.app.util.limited
 import org.json.JSONObject
 
 @Composable
@@ -127,7 +128,7 @@ fun ChatScreen(
                 label = "Message",
                 value = message,
                 onValueChange = {
-                    message = it
+                    message = limited(it, 500)
 
                     // Remove the previous error when typing again.
                     if (sendError.isNotBlank()) {
@@ -154,6 +155,10 @@ fun ChatScreen(
 
                 message.isBlank() -> {
                     sendError = "Enter a message first."
+                }
+
+                message.trim().length > 500 -> {
+                    sendError = "Message must not exceed 500 characters."
                 }
 
                 isSending -> {

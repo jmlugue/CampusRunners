@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.malayanquest.app.ApiClient
 import com.malayanquest.app.ui.components.*
 import com.malayanquest.app.ui.theme.DangerRed
+import com.malayanquest.app.util.limited
+import com.malayanquest.app.util.requiredLengthError
 import org.json.JSONObject
 
 @Composable
@@ -91,13 +93,18 @@ fun ReportScreen(
         } else {
             SectionCard("Report Details", Icons.Filled.Report) {
                 GenericDropdown("Reason for reporting", reason, reportReasons) { reason = it }
-                CampusTextField("Additional details - describe what happened", details, { details = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+                CampusTextField("Additional details - describe what happened", details, { details = limited(it, 1000) }, multiline = true, leadingIcon = Icons.Filled.Info)
             }
             ConfirmDangerButton(
                 text = "Submit Report",
                 dialogTitle = "Submit this report?",
                 dialogMessage = "This will send the errand report to admin records for review."
             ) {
+                requiredLengthError(details, "Report details", 10, 1000)?.let {
+                    onShowToast(it)
+                    return@ConfirmDangerButton
+                }
+
                 api.post("report_errand.php", JSONObject().apply {
                     put("errand_id", selectedErrand!!.optInt("errand_id"))
                     put("reported_by_user_id", userId)

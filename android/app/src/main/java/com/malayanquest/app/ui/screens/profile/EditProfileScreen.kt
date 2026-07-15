@@ -16,6 +16,8 @@ import com.malayanquest.app.ui.components.*
 import com.malayanquest.app.ui.theme.SecondaryBlue
 import com.malayanquest.app.ui.theme.TextPrimary
 import com.malayanquest.app.ui.theme.TextSecondary
+import com.malayanquest.app.util.fullNameError
+import com.malayanquest.app.util.limited
 import org.json.JSONObject
 
 @Composable
@@ -30,10 +32,15 @@ fun EditProfileScreen(
     var name by remember { mutableStateOf(currentFullName) }
     HelperPreviewPanel("Editable profile", currentFullName, "Verified Student", "Only safe profile fields are editable in this prototype.")
     SectionCard("Display Information", Icons.Filled.Person) {
-        CampusTextField("Full name", name, { name = it }, leadingIcon = Icons.Filled.Person)
+        CampusTextField("Full name", name, { name = limited(it, 100) }, leadingIcon = Icons.Filled.Person)
         Text("School email and student number stay private verification records.", color = TextSecondary, fontSize = 12.sp)
     }
     CampusButton("Save Profile") {
+        fullNameError(name)?.let {
+            onShowToast(it)
+            return@CampusButton
+        }
+
         api.post("update_user_profile.php", JSONObject().apply {
             put("user_id", userId)
             put("full_name", name.trim())

@@ -29,19 +29,19 @@ completed_errands = VALUES(completed_errands);
 -- Errands (Categories UPDATED)
 INSERT INTO errands (errand_id, requester_id, selected_helper_id, title, description, category, pickup_location, dropoff_location, deadline, reward_amount, reward_note, status, moderation_status, created_at)
 VALUES
-(1, 2, NULL, 'Buy bluebook from bookstore', 'Please buy one bluebook from the bookstore before my quiz.', 'Bluebook', 'Bookstore', 'Room A301', '2026-07-15 13:00:00', 20.00, 'Cash after delivery', 'Has Applicants', 'allowed', '2026-07-12 08:30:00'),
+(1, 2, NULL, 'Buy bluebook from bookstore', 'Please buy one bluebook from the bookstore before my quiz.', 'Bluebook', 'Bookstore', 'R301', '2026-07-15 13:00:00', 20.00, 'Cash after delivery', 'Has Applicants', 'allowed', '2026-07-12 08:30:00'),
 (2, 3, NULL, 'Pick up printed handouts', 'Please pick up my printed handouts from printing services.', 'Printing', 'Printing Services', 'Library entrance', '2026-07-15 11:30:00', 15.00, 'Will pay upon handoff', 'Has Applicants', 'allowed', '2026-07-12 09:00:00'),
 (3, 4, NULL, 'Buy lunch from canteen', 'Please buy one rice meal and bottled water from the canteen.', 'Food', 'Canteen', 'Classroom Building', '2026-07-15 12:00:00', 25.00, 'Payment after delivery', 'Open', 'allowed', '2026-07-12 09:15:00'),
-(4, 5, 2, 'Deliver project materials', 'Bring light project materials from Room B202 to Room C105.', 'Delivery', 'Room B202', 'Room C105', '2026-07-16 10:00:00', 10.00, 'Thank you reward', 'Assigned', 'allowed', '2026-07-12 10:00:00'),
-(5, 2, 3, 'Bring calculator from library', 'Please bring my calculator from the library desk to Room A210.', 'Delivery', 'Library', 'Room A210', '2026-07-15 14:00:00', 30.00, 'Handle carefully', 'In Progress', 'allowed', '2026-07-12 10:30:00'),
-(6, 2, 4, 'Pick up printed thesis draft', 'Pick up my printed thesis draft from printing services.', 'Printing', 'Printing Services', 'Room A305', '2026-07-15 15:00:00', 60.00, 'Includes printing fee reimbursement', 'Completed by Helper', 'allowed', '2026-07-12 11:00:00'),
+(4, 5, 2, 'Deliver project materials', 'Bring light project materials from R202 to E105.', 'Delivery', 'R202', 'E105', '2026-07-16 10:00:00', 10.00, 'Thank you reward', 'Assigned', 'allowed', '2026-07-12 10:00:00'),
+(5, 2, 3, 'Bring calculator from library', 'Please bring my calculator from the library desk to R210.', 'Delivery', 'Library', 'R210', '2026-07-15 14:00:00', 30.00, 'Handle carefully', 'In Progress', 'allowed', '2026-07-12 10:30:00'),
+(6, 2, 4, 'Pick up printed thesis draft', 'Pick up my printed thesis draft from printing services.', 'Printing', 'Printing Services', 'R305', '2026-07-15 15:00:00', 60.00, 'Includes printing fee reimbursement', 'Completed by Helper', 'allowed', '2026-07-12 11:00:00'),
 (7, 2, 5, 'Buy graphing paper', 'Please buy graphing paper from the bookstore.', 'Supplies', 'Bookstore', 'Library', '2026-07-14 16:00:00', 20.00, 'Will pay in cash', 'Confirmed by Requester', 'allowed', '2026-07-11 13:00:00'),
-(8, 3, 2, 'Classroom-to-classroom delivery', 'Deliver a sealed envelope from Room A201 to Room B104.', 'Delivery', 'Room A201', 'Room B104', '2026-07-10 10:00:00', 25.00, 'Completed successfully', 'Closed', 'allowed', '2026-07-10 08:00:00'),
+(8, 3, 2, 'Classroom-to-classroom delivery', 'Deliver a sealed envelope from R201 to E104.', 'Delivery', 'R201', 'E104', '2026-07-10 10:00:00', 25.00, 'Completed successfully', 'Closed', 'allowed', '2026-07-10 08:00:00'),
 (9, 6, 2, 'Check bookstore graphing paper', 'Check if the bookstore has graphing paper available.', 'Supplies', 'Bookstore', 'Library', '2026-07-11 14:00:00', NULL, 'No purchase needed', 'Cancelled by Requester', 'allowed', '2026-07-10 09:30:00'),
 (10, 7, NULL, 'Errand to restricted office', 'Please get a document from a restricted office area.', 'Delivery', 'Restricted Office', 'Lobby', '2026-07-16 10:00:00', 40.00, 'Needs review', 'Open', 'flagged', '2026-07-12 12:00:00'),
-(11, 8, NULL, 'Pick up confidential exam paper', 'Please pick up a confidential exam paper for me.', 'Delivery', 'Faculty Room', 'Room C204', '2026-07-16 09:00:00', 100.00, 'Unsafe request', 'Open', 'flagged', '2026-07-12 12:15:00'),
+(11, 8, NULL, 'Pick up confidential exam paper', 'Please pick up a confidential exam paper for me.', 'Delivery', 'Faculty Room', 'E204', '2026-07-16 09:00:00', 100.00, 'Unsafe request', 'Open', 'flagged', '2026-07-12 12:15:00'),
 (12, 9, NULL, 'Buy medicine nearby', 'Please buy medicine from a nearby pharmacy.', 'Others', 'Nearby Pharmacy', 'Campus Gate', '2026-07-16 11:00:00', 30.00, 'Medical purchase is not allowed', 'Open', 'flagged', '2026-07-12 12:30:00'),
-(13, 4, 2, 'Deliver library book return', 'Return a borrowed library book before closing.', 'Delivery', 'Room C105', 'Library', '2026-07-15 17:00:00', 20.00, 'Book is ready for pickup', 'Accepted', 'allowed', '2026-07-12 13:00:00')
+(13, 4, 2, 'Deliver library book return', 'Return a borrowed library book before closing.', 'Delivery', 'E105', 'Library', '2026-07-15 17:00:00', 20.00, 'Book is ready for pickup', 'Accepted', 'allowed', '2026-07-12 13:00:00')
 ON DUPLICATE KEY UPDATE
 requester_id = VALUES(requester_id),
 selected_helper_id = VALUES(selected_helper_id),
@@ -63,7 +63,7 @@ VALUES
 (3, 1, 5, 'I can buy it after my library visit.', '35 minutes', 'pending', '2026-07-12 08:55:00'),
 (4, 2, 2, 'I can pick these up after my 10:30 class.', '25 minutes', 'pending', '2026-07-12 09:10:00'),
 (5, 4, 2, 'I can deliver these materials before lunch.', '30 minutes', 'selected', '2026-07-12 10:10:00'),
-(6, 5, 3, 'I will bring it to A210 carefully.', '20 minutes', 'selected', '2026-07-12 10:40:00'),
+(6, 5, 3, 'I will bring it to R210 carefully.', '20 minutes', 'selected', '2026-07-12 10:40:00'),
 (7, 6, 4, 'I am at printing services now.', '15 minutes', 'selected', '2026-07-12 11:10:00'),
 (8, 7, 5, 'I can buy it after my class.', '25 minutes', 'selected', '2026-07-11 13:10:00'),
 (9, 8, 2, 'I can deliver the envelope on my way to B building.', '10 minutes', 'selected', '2026-07-10 08:10:00'),
@@ -100,12 +100,12 @@ reason = VALUES(reason);
 
 INSERT INTO messages (message_id, errand_id, sender_id, receiver_id, message_text, is_read, created_at)
 VALUES
-(1, 4, 5, 2, 'Hi Juan, the project materials are ready at Room B202.', 1, '2026-07-12 10:20:00'),
+(1, 4, 5, 2, 'Hi Juan, the project materials are ready at R202.', 1, '2026-07-12 10:20:00'),
 (2, 4, 2, 5, 'Got it. I will deliver them before lunch.', 1, '2026-07-12 10:22:00'),
 (3, 5, 2, 3, 'Maria, please check the library front desk for the calculator.', 1, '2026-07-12 10:45:00'),
-(4, 5, 3, 2, 'I have it. I am walking to Room A210 now.', 0, '2026-07-12 10:58:00'),
+(4, 5, 3, 2, 'I have it. I am walking to R210 now.', 0, '2026-07-12 10:58:00'),
 (5, 8, 3, 2, 'Thanks for delivering the envelope safely.', 1, '2026-07-10 10:15:00'),
-(6, 8, 2, 3, 'You are welcome. It was delivered to Room B104.', 1, '2026-07-10 10:16:00'),
+(6, 8, 2, 3, 'You are welcome. It was delivered to E104.', 1, '2026-07-10 10:16:00'),
 (7, 13, 4, 2, 'Please return the book before 5 PM.', 0, '2026-07-12 13:25:00'),
 (8, 13, 2, 4, 'Accepted. I will go to the library after class.', 0, '2026-07-12 13:28:00')
 ON DUPLICATE KEY UPDATE

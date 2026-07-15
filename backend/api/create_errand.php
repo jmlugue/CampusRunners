@@ -5,28 +5,34 @@ require_once "helpers.php";
 $data = read_json_input();
 
 $requester_id = $data["requester_id"] ?? null;
-$title = trim($data["title"] ?? "");
-$description = trim($data["description"] ?? "");
-$category = trim($data["category"] ?? "");
-$pickup_location = trim($data["pickup_location"] ?? "");
-$dropoff_location = trim($data["dropoff_location"] ?? "");
-$deadline = trim($data["deadline"] ?? "");
 $reward_amount = $data["reward_amount"] ?? null;
-$reward_note = trim($data["reward_note"] ?? "");
 
-if (!$requester_id || $title === "" || $description === "" || $category === "" || $pickup_location === "" || $dropoff_location === "" || $deadline === "") {
+if (
+    !$requester_id ||
+    trim($data["title"] ?? "") === "" ||
+    trim($data["description"] ?? "") === "" ||
+    trim($data["category"] ?? "") === "" ||
+    trim($data["pickup_location"] ?? "") === "" ||
+    trim($data["dropoff_location"] ?? "") === "" ||
+    trim($data["deadline"] ?? "") === ""
+) {
     respond_error("Missing required errand fields.");
 }
 
-$pickup_room_error = validate_room_location("Pickup", $pickup_location);
-if ($pickup_room_error !== null) {
-    respond_error($pickup_room_error);
-}
+$requester_id = require_positive_int($requester_id, "Requester ID");
+validate_active_verified_student($pdo, $requester_id, "Requester");
 
-$dropoff_room_error = validate_room_location("Drop-off", $dropoff_location);
-if ($dropoff_room_error !== null) {
-    respond_error($dropoff_room_error);
-}
+$title = require_text_length($data["title"], "Title", 5, 120);
+$description = require_text_length($data["description"], "Description", 15, 1000);
+$category = validate_errand_category($data["category"]);
+$pickup_location = require_text_length($data["pickup_location"], "Pickup location", 3, 150);
+$dropoff_location = require_text_length($data["dropoff_location"], "Drop-off location", 3, 150);
+$deadline = validate_deadline($data["deadline"]);
+$reward_amount = validate_reward_amount($reward_amount);
+$reward_note = validate_optional_text_length($data["reward_note"] ?? "", "Reward note", 180);
+
+validate_room_location("Pickup", $pickup_location);
+validate_room_location("Drop-off", $dropoff_location);
 
 $moderation = moderate_errand($title, $description, $category, $pickup_location, $dropoff_location);
 $moderation_status = $moderation["result"];
@@ -71,29 +77,5 @@ try {
     ]);
 } catch (PDOException $e) {
     respond_error("Failed to create errand.");
-}
-
-function validate_room_location($label, $location) {
-    preg_match_all('/\b([REre])[- ]?(\d{3})\b/', $location, $matches, PREG_SET_ORDER);
-
-    foreach ($matches as $match) {
-        $room_number = (int) $match[2];
-        if (!is_valid_mcl_room_number($room_number)) {
-            return $label . " room must be from R101-R113, E101-E113, up to R501-R513 or E501-E513.";
-        }
-    }
-
-    $without_prefixed_rooms = preg_replace('/\b([REre])[- ]?(\d{3})\b/', '', $location);
-    if (preg_match('/\b([1-5][0-9]{2})\b/', $without_prefixed_rooms)) {
-        return $label . " room code must start with R or E, example R101 or E413.";
-    }
-
-    return null;
-}
-
-function is_valid_mcl_room_number($room_number) {
-    $floor = intdiv($room_number, 100);
-    $room = $room_number % 100;
-    return $floor >= 1 && $floor <= 5 && $room >= 1 && $room <= 13;
 }
 ?>

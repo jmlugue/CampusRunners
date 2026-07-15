@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.malayanquest.app.ApiClient
 import com.malayanquest.app.ui.components.*
 import com.malayanquest.app.ui.theme.*
+import com.malayanquest.app.util.limited
+import com.malayanquest.app.util.optionalLengthError
 import org.json.JSONObject
 
 @Composable
@@ -57,12 +59,17 @@ fun RatingScreen(
             }
         }
 
-        CampusTextField("Feedback", feedback, { feedback = it }, multiline = true, leadingIcon = Icons.Filled.Info)
+        CampusTextField("Feedback", feedback, { feedback = limited(it, 500) }, multiline = true, leadingIcon = Icons.Filled.Info)
     }
 
     CampusButton("Submit Rating") {
         if (score == 0) {
             onShowToast("Please select a star rating first.")
+            return@CampusButton
+        }
+
+        optionalLengthError(feedback, "Feedback", 500)?.let {
+            onShowToast(it)
             return@CampusButton
         }
 

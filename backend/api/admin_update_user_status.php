@@ -5,13 +5,21 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["admin_id", "target_user_id"]);
 
-$admin_id = (int) $data["admin_id"];
-$target_user_id = (int) $data["target_user_id"];
+$admin_id = require_positive_int($data["admin_id"], "Admin ID");
+$target_user_id = require_positive_int($data["target_user_id"], "Target user ID");
 $account_status = trim($data["account_status"] ?? "");
 $verification_status = trim($data["verification_status"] ?? "");
-$details = trim($data["details"] ?? "");
+$details = validate_optional_text_length($data["details"] ?? "", "Action details", 500);
 
 require_admin($pdo, $admin_id);
+
+if ($admin_id === $target_user_id) {
+    respond_error("Admins cannot update their own status from this action.");
+}
+
+if (!get_user_by_id($pdo, $target_user_id)) {
+    respond_error("Target user was not found.");
+}
 
 $allowed_accounts = ["active", "deactivated"];
 $allowed_verifications = ["pending", "verified", "rejected", "restricted"];

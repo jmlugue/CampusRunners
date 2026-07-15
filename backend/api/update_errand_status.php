@@ -5,10 +5,10 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["errand_id", "changed_by", "new_status"]);
 
-$errand_id = (int) $data["errand_id"];
-$changed_by = (int) $data["changed_by"];
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
+$changed_by = require_positive_int($data["changed_by"], "User ID");
 $new_status = trim($data["new_status"]);
-$reason = trim($data["reason"] ?? "");
+$reason = validate_optional_text_length($data["reason"] ?? "", "Status update reason", 500);
 
 $errand = get_errand_by_id($pdo, $errand_id);
 if (!$errand) {

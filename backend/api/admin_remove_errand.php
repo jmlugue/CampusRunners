@@ -5,9 +5,13 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["admin_id", "errand_id"]);
 
-$admin_id = (int) $data["admin_id"];
-$errand_id = (int) $data["errand_id"];
-$reason = trim($data["reason"] ?? "Removed by admin.");
+$admin_id = require_positive_int($data["admin_id"], "Admin ID");
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
+$reason = validate_optional_text_length($data["reason"] ?? "Removed by admin.", "Removal reason", 500);
+
+if ($reason === "") {
+    $reason = "Removed by admin.";
+}
 
 require_admin($pdo, $admin_id);
 $errand = get_errand_by_id($pdo, $errand_id);

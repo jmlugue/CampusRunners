@@ -5,8 +5,8 @@ require_once "helpers.php";
 $data = read_json_input();
 require_fields($data, ["errand_id", "user_id"]);
 
-$errand_id = (int) $data["errand_id"];
-$user_id = (int) $data["user_id"];
+$errand_id = require_positive_int($data["errand_id"], "Errand ID");
+$user_id = require_positive_int($data["user_id"], "User ID");
 
 $errand = get_errand_by_id($pdo, $errand_id);
 if (!$errand || !user_can_access_errand($errand, $user_id)) {
