@@ -19,6 +19,13 @@ $params = [];
 if ($user_id) {
     $sql .= " AND e.requester_id <> ?";
     $params[] = $user_id;
+    
+    $sql .= " AND NOT EXISTS (
+                SELECT 1 FROM errand_applications ea 
+                WHERE ea.errand_id = e.errand_id 
+                AND ea.helper_id = ?
+              )";
+    $params[] = $user_id;
 }
 
 if ($keyword !== "") {

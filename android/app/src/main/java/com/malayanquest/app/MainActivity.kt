@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
     private var adminEndpoint by mutableStateOf("")
     private var adminTitle by mutableStateOf("")
     private var refreshKey by mutableIntStateOf(0)
+    private var previousMainScreen by mutableStateOf(Screen.BrowseErrands)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
         LaunchedEffect(screen) {
             scrollState.scrollTo(0)
         }
-        
+
         Scaffold(
             topBar = {
                 if (!authScreen) {
@@ -105,6 +106,9 @@ class MainActivity : ComponentActivity() {
                                 selectedErrand = null
                                 selectedApplicant = null
                             }
+                            if (target == Screen.BrowseErrands || target == Screen.MyTasks) {
+                                refreshKey++
+                            }
                             screen = target
                         },
                         onAdminDashboard = {
@@ -117,7 +121,10 @@ class MainActivity : ComponentActivity() {
             floatingActionButton = {
                 if (studentChrome && (screen == Screen.BrowseErrands || screen == Screen.MyTasks)) {
                     FloatingActionButton(
-                        onClick = { screen = Screen.PostErrand },
+                        onClick = {
+                            previousMainScreen = screen
+                            screen = Screen.PostErrand
+                        },
                         containerColor = PrimaryBlue,
                         contentColor = Color.White,
                         shape = CircleShape
@@ -162,6 +169,7 @@ class MainActivity : ComponentActivity() {
                         refreshKey = refreshKey,
                         onNavigate = { target, errand ->
                             selectedErrand = errand
+                            previousMainScreen = Screen.BrowseErrands // Save context
                             screen = target
                         }
                     )
@@ -171,6 +179,7 @@ class MainActivity : ComponentActivity() {
                         refreshKey = refreshKey,
                         onNavigate = { target, errand ->
                             selectedErrand = errand
+                            previousMainScreen = Screen.MyTasks // Save context
                             screen = target
                         },
                         onUpdateStatus = { errand, newStatus -> updateStatus(errand, newStatus) },
@@ -208,9 +217,16 @@ class MainActivity : ComponentActivity() {
                             selectedErrand = it
                             screen = Screen.Chat
                         },
-                        onConfirmCompletion = {
-                            selectedErrand = it
-                            screen = Screen.Completion
+                        onConfirmCompletion = { confirmedErrand ->
+                            postStatus(
+                                endpoint = "confirm_completion.php",
+                                errand = confirmedErrand,
+                                userKey = "requester_id",
+                                successStatus = "Confirmed by Requester"
+                            ) {
+                                selectedErrand = confirmedErrand
+                                screen = Screen.Rating
+                            }
                         },
                         onRateHelper = {
                             selectedErrand = it
@@ -242,7 +258,7 @@ class MainActivity : ComponentActivity() {
                             screen = target
                         },
                         onSelectHelper = { applicant, errandId -> selectHelper(applicant, errandId) },
-                        onNavigateBack = { screen = Screen.MyTasks }
+                        onNavigateBack = { navigateBack() } // UPDATED
                     )
                     Screen.HelperProfile -> HelperProfileScreen(
                         applicant = selectedApplicant,
@@ -298,14 +314,8 @@ class MainActivity : ComponentActivity() {
                                 toast(response.optString("message"))
 
                                 if (success) {
-                                    // Reload the message list.
                                     refreshKey++
                                 }
-
-                                /*
-                                 * Tell ChatScreen whether sending succeeded.
-                                 * ChatScreen will only clear the message when true.
-                                 */
                                 onResult(success)
                             }
                         },
@@ -326,7 +336,7 @@ class MainActivity : ComponentActivity() {
                                 screen = Screen.Rating
                             }
                         },
-                        onNavigateBack = { screen = Screen.MyTasks }
+                        onNavigateBack = { navigateBack() } // UPDATED
                     )
                     Screen.Rating -> RatingScreen(
                         api = api,
@@ -336,7 +346,7 @@ class MainActivity : ComponentActivity() {
                             refreshKey++
                             screen = Screen.MyTasks
                         },
-                        onNavigateBack = { screen = Screen.MyTasks },
+                        onNavigateBack = { navigateBack() }, // UPDATED
                         onShowToast = { toast(it) }
                     )
                     Screen.Report -> ReportScreen(
@@ -378,6 +388,7 @@ class MainActivity : ComponentActivity() {
                             if (errand != null) {
                                 selectedErrand = errand
                             }
+                            previousMainScreen = Screen.History // Save context
                             screen = targetScreen
                         },
                         onNavigateBack = { navigateBack() }
@@ -480,17 +491,37 @@ class MainActivity : ComponentActivity() {
 
     private fun canNavigateBack(): Boolean {
         return screen != Screen.Splash &&
-            screen != Screen.Login &&
-            screen != Screen.BrowseErrands &&
-            screen != Screen.MyTasks &&
-            screen != Screen.Profile &&
-            screen != Screen.AdminDashboard
+                screen != Screen.Login &&
+                screen != Screen.BrowseErrands &&
+                screen != Screen.MyTasks &&
+                screen != Screen.Profile &&
+                screen != Screen.AdminDashboard
     }
 
     private fun navigateBack() {
-        screen = if (userId > 0) {
-            if (role == "admin") Screen.AdminDashboard else Screen.BrowseErrands
-        } else Screen.Login
+        screen = when (screen) {
+            Screen.ErrandDetails -> previousMainScreen
+            Screen.Apply -> Screen.ErrandDetails
+            Screen.Applicants -> previousMainScreen
+            Screen.Status -> previousMainScreen
+            Screen.Chat -> previousMainScreen
+            Screen.Completion -> previousMainScreen
+            Screen.Rating -> previousMainScreen
+            Screen.CancelErrand -> previousMainScreen
+            Screen.Report -> if (selectedErrand != null) Screen.ErrandDetails else previousMainScreen
+            Screen.HelperProfile -> Screen.Applicants
+            Screen.EditProfile -> Screen.Profile
+            Screen.History -> Screen.Profile
+            Screen.UserRatings -> Screen.History
+            Screen.AdminArray -> Screen.AdminDashboard
+            Screen.AdminRecordDetails -> Screen.AdminArray
+            Screen.AdminRatings -> Screen.AdminDashboard
+            Screen.PostErrand -> previousMainScreen
+            Screen.Register -> Screen.Login
+            else -> if (userId > 0) {
+                if (role == "admin") Screen.AdminDashboard else Screen.BrowseErrands
+            } else Screen.Login
+        }
     }
 
     private fun selectHelper(applicant: JSONObject, errandId: Int) {
@@ -507,14 +538,6 @@ class MainActivity : ComponentActivity() {
                 return@post
             }
 
-            /*
-             * Helper selection succeeded in the database.
-             *
-             * Reload the errand so selectedErrand contains the new:
-             * - selected_helper_id
-             * - helper_name
-             * - Assigned status
-             */
             api.get(
                 "get_errand_details.php",
                 mapOf(
@@ -541,10 +564,6 @@ class MainActivity : ComponentActivity() {
                 val selectedHelperId =
                     updatedErrand?.optInt("selected_helper_id") ?: 0
 
-                /*
-                 * Do not open Chat when the refreshed errand
-                 * still has no valid selected helper.
-                 */
                 if (updatedErrand == null || selectedHelperId <= 0) {
                     toast(
                         "Helper selected, but no valid helper ID was returned."
@@ -555,13 +574,9 @@ class MainActivity : ComponentActivity() {
                     return@get
                 }
 
-                // Replace the old errand object with the refreshed one.
                 selectedErrand = updatedErrand
-
                 refreshKey++
-
-                // Chat can now calculate the correct receiver ID.
-                screen = Screen.Chat
+                screen = Screen.MyTasks
             }
         }
     }

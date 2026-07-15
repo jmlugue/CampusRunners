@@ -26,6 +26,7 @@ fun ErrandCard(
     errand: JSONObject,
     applyMode: Boolean,
     userId: Int,
+    minimalDisplay: Boolean = false,
     onViewDetails: (JSONObject) -> Unit,
     onApply: (JSONObject) -> Unit,
     onViewApplicants: (JSONObject) -> Unit,
@@ -45,10 +46,19 @@ fun ErrandCard(
     val isRequester = userId == requesterId
     val isHelper = userId == selectedHelperId || errand.optString("application_status") == "selected"
 
+    // UPDATED: Pre-calculate if any buttons will actually render at the bottom
+    val hasBottomActions = when {
+        isRequester -> status in listOf("Open", "Has Applicants", "Assigned", "Accepted", "In Progress", "Completed by Helper", "Confirmed by Requester")
+        isHelper -> status in listOf("Assigned", "Accepted", "In Progress", "Completed by Helper", "Confirmed by Requester")
+        errand.optString("application_status") == "pending" -> true
+        applyMode -> true
+        else -> false
+    }
+
     CampusCard {
         Row(verticalAlignment = Alignment.Top) {
             Column(modifier = Modifier.weight(1f)) {
-                ErrandCore(errand)
+                ErrandCore(errand, minimalDisplay)
             }
             Box {
                 IconButton(onClick = { showMenu = true }) {
@@ -63,12 +73,7 @@ fun ErrandCard(
                         onClick = { showMenu = false; onViewDetails(errand) },
                         leadingIcon = { Icon(Icons.Filled.Info, null) }
                     )
-                    DropdownMenuItem(
-                        text = { Text("Status Tracker") },
-                        onClick = { showMenu = false; onStatusTracker(errand) },
-                        leadingIcon = { Icon(Icons.Filled.History, null) }
-                    )
-                    if (status in listOf("Open", "Has Applicants", "Assigned", "Accepted", "In Progress")) {
+                    if (isRequester && status in listOf("Open", "Has Applicants", "Assigned", "Accepted", "In Progress")) {
                         DropdownMenuItem(
                             text = { Text("Cancel Errand") },
                             onClick = { showMenu = false; onCancelErrand(errand) },
@@ -83,28 +88,90 @@ fun ErrandCard(
                 }
             }
         }
-        
-        HorizontalDivider(color = BorderSoft)
 
-        // Contextual Primary Action
-        when {
-            applyMode -> {
-                CampusButton("Apply as Helper") { onApply(errand) }
-            }
-            isRequester -> {
-                when (status) {
-                    "Open", "Has Applicants" -> CampusButton("View Applicants") { onViewApplicants(errand) }
-                    "Completed by Helper" -> CampusButton("Confirm Completion") { onConfirmCompletion(errand) }
-                    "Confirmed by Requester" -> CampusButton("Rate Helper") { onRateHelper(errand) }
-                    else -> if (selectedHelperId > 0) CampusButton("Open Chat", primary = false) { onMessages(errand) }
+        // UPDATED: Only draw the divider and action block if there are buttons to show
+        if (hasBottomActions) {
+            HorizontalDivider(color = BorderSoft)
+
+            when {
+                isRequester -> {
+                    when (status) {
+                        "Open", "Has Applicants" -> CampusButton("View Applicants") { onViewApplicants(errand) }
+                        "Assigned" -> {
+                            Button(
+                                onClick = { /* Disabled, does nothing */ },
+                                enabled = false,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    disabledContainerColor = BorderSoft,
+                                    disabledContentColor = TextSecondary
+                                )
+                            ) {
+                                Text("Waiting for Helper to Accept", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                        "Accepted", "In Progress" -> CampusButton("Open Chat", primary = false) { onMessages(errand) }
+                        "Completed by Helper" -> {
+                            CampusButton("Confirm Completion") { onConfirmCompletion(errand) }
+                            CampusButton("Open Chat", primary = false) { onMessages(errand) }
+                        }
+                        "Confirmed by Requester" -> CampusButton("Rate Helper") { onRateHelper(errand) }
+                    }
                 }
-            }
-            isHelper -> {
-                when (status) {
-                    "Assigned" -> CampusButton("Accept Task") { onPostStatus?.invoke("accept_assigned_errand.php", errand, "helper_id", "Accepted") }
-                    "Accepted" -> CampusButton("Mark In Progress") { onUpdateStatus?.invoke(errand, "In Progress") }
-                    "In Progress" -> CampusButton("Mark Complete") { onUpdateStatus?.invoke(errand, "Completed by Helper") }
-                    else -> CampusButton("Open Chat", primary = false) { onMessages(errand) }
+                isHelper -> {
+                    when (status) {
+                        "Assigned" -> CampusButton("Accept Task") { onPostStatus?.invoke("accept_assigned_errand.php", errand, "helper_id", "Accepted") }
+                        "Accepted" -> {
+                            CampusButton("Mark In Progress") { onUpdateStatus?.invoke(errand, "In Progress") }
+                            CampusButton("Open Chat", primary = false) { onMessages(errand) }
+                        }
+                        "In Progress" -> {
+                            CampusButton("Mark Complete") { onUpdateStatus?.invoke(errand, "Completed by Helper") }
+                            CampusButton("Open Chat", primary = false) { onMessages(errand) }
+                        }
+                        "Completed by Helper" -> CampusButton("Open Chat", primary = false) { onMessages(errand) }
+                        "Confirmed by Requester" -> {
+                            Button(
+                                onClick = { /* Disabled, does nothing */ },
+                                enabled = false,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    disabledContainerColor = BorderSoft,
+                                    disabledContentColor = TextSecondary
+                                )
+                            ) {
+                                Text("Waiting for Rating", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+                errand.optString("application_status") == "pending" -> {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(
+                            onClick = { /* Disabled, does nothing */ },
+                            enabled = false,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                disabledContainerColor = BorderSoft,
+                                disabledContentColor = TextSecondary
+                            )
+                        ) {
+                            Text("Applied (Waiting)", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        }
+                        CampusButton("Cancel Application", primary = false) { onCancelErrand(errand) }
+                    }
+                }
+                applyMode -> {
+                    CampusButton("Apply as Helper") { onApply(errand) }
                 }
             }
         }
@@ -121,18 +188,40 @@ fun RequesterActions(
     onCancelErrand: (JSONObject) -> Unit
 ) {
     val status = errand.optString("status")
+
     if (status == "Has Applicants" || status == "Open") {
         CampusButton("View Applicants") { onViewApplicants(errand) }
     }
-    if (errand.optInt("selected_helper_id") > 0) {
+
+    if (status == "Assigned") {
+        Button(
+            onClick = { /* Disabled, does nothing */ },
+            enabled = false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = BorderSoft,
+                disabledContentColor = TextSecondary
+            )
+        ) {
+            Text("Waiting for Helper to Accept", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+
+    if (status in listOf("Accepted", "In Progress", "Completed by Helper")) {
         CampusButton("Open Chat", primary = false) { onMessages(errand) }
     }
+
     if (status == "Completed by Helper") {
         CampusButton("Confirm Completion") { onConfirmCompletion(errand) }
     }
+
     if (status == "Confirmed by Requester") {
         CampusButton("Rate Helper") { onRateHelper(errand) }
     }
+
     if (status in listOf("Open", "Has Applicants", "Assigned", "Accepted", "In Progress")) {
         CampusButton("Cancel Errand", primary = false) { onCancelErrand(errand) }
     }
@@ -149,6 +238,7 @@ fun HelperActions(
     onStatusTracker: (JSONObject) -> Unit
 ) {
     val status = errand.optString("status")
+
     if (errand.optString("application_status") == "selected" && status == "Assigned") {
         CampusButton("Accept Task") { onPostStatus("accept_assigned_errand.php", errand, "helper_id", "Accepted") }
     }
@@ -158,8 +248,28 @@ fun HelperActions(
     if (status == "In Progress") {
         CampusButton("Mark Complete") { onUpdateStatus(errand, "Completed by Helper") }
     }
-    if (errand.optInt("selected_helper_id") == userId || errand.optString("application_status") == "selected") {
+
+    if (status == "Confirmed by Requester") {
+        Button(
+            onClick = { /* Disabled, does nothing */ },
+            enabled = false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = BorderSoft,
+                disabledContentColor = TextSecondary
+            )
+        ) {
+            Text("Waiting for Rating", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+
+    if (status in listOf("Accepted", "In Progress", "Completed by Helper")) {
         CampusButton("Open Chat", primary = false) { onMessages(errand) }
+    }
+    if (errand.optInt("selected_helper_id") == userId || errand.optString("application_status") == "selected") {
         CampusButton("Cancel/Withdraw", primary = false) { onCancel(errand) }
     }
     CampusButton("Status Tracker", primary = false) { onStatusTracker(errand) }
@@ -167,61 +277,69 @@ fun HelperActions(
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-fun ErrandCore(errand: JSONObject) {
+fun ErrandCore(errand: JSONObject, minimalDisplay: Boolean = false) {
     val title = errand.optString("title", "Untitled")
     val description = errand.optString("description")
     val category = errand.optString("category", "Other School-Related Errand")
     val status = errand.optString("status", "Open")
 
-    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Box(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(colorForStatus(status).copy(alpha = 0.12f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                categoryVector(category),
-                contentDescription = category,
-                tint = colorForStatus(status),
-                modifier = Modifier.size(23.dp)
-            )
-        }
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                title,
-                color = TextPrimary,
-                fontSize = 18.sp,
-                lineHeight = 23.sp,
-                fontWeight = FontWeight.Bold
-            )
-            if (description.isNotBlank() && description != "null") {
-                Text(
-                    description,
-                    color = TextSecondary,
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+
+        Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(colorForStatus(status).copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    categoryVector(category),
+                    contentDescription = category,
+                    tint = colorForStatus(status),
+                    modifier = Modifier.size(23.dp)
                 )
             }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    title,
+                    color = TextPrimary,
+                    fontSize = 16.sp,
+                    lineHeight = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                if (description.isNotBlank() && description != "null") {
+                    Text(
+                        description,
+                        color = TextSecondary,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Badge(status, colorForStatus(status))
+            Badge(category, SecondaryBlue)
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            if (!minimalDisplay) {
+                DetailRow("Pickup", errand.optString("pickup_location"))
+                DetailRow("Drop-off", errand.optString("dropoff_location"))
+                DetailRow("Deadline", errand.optString("deadline"))
+            }
+            DetailRow("Reward", rewardText(errand))
         }
     }
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        Badge(status, colorForStatus(status))
-        Badge(category, SecondaryBlue)
-    }
-    DetailRow("Pickup", errand.optString("pickup_location"))
-    DetailRow("Drop-off", errand.optString("dropoff_location"))
-    DetailRow("Deadline", errand.optString("deadline"))
-    DetailRow("Reward", rewardText(errand))
 }
 
 @Composable
@@ -243,7 +361,7 @@ fun ApplicantCard(
         DetailRow("Completed", applicant.optString("completed_errands", "0") + " errands")
         DetailRow("Offer", applicant.optString("offer_note"))
         DetailRow("Estimate", applicant.optString("estimated_completion_time"))
-        CampusButton("Helper Profile", primary = false) { onHelperProfile(applicant) }
+
         if (applicant.optString("status") == "pending") {
             CampusButton("Select Helper") { onSelectHelper(applicant, errandId) }
         }
@@ -301,7 +419,6 @@ fun StructuredRecord(item: JSONObject, additionalHidden: Set<String> = emptySet(
     }
 }
 
-// Helper functions for Errand Components
 fun rewardText(errand: JSONObject): String {
     val amount = errand.optString("reward_amount", "")
     val note = errand.optString("reward_note", "")

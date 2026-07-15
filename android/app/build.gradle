@@ -11,7 +11,7 @@ def localPropertiesFile = [
 if (localPropertiesFile != null) {
     localPropertiesFile.withInputStream { localProperties.load(it) }
 }
-def defaultApiBaseUrl = "http://10.0.2.2:8080/IT140P-MP-MalayanQuest/backend/api/"
+def defaultApiBaseUrl = "http://192.168.18.10/IT140P-MP-MalayanQuest/backend/api/"
 def apiBaseUrl = localProperties.getProperty("api.base.url", defaultApiBaseUrl)
 def escapedApiBaseUrl = apiBaseUrl.replace("\\", "\\\\").replace('"', '\\"')
 

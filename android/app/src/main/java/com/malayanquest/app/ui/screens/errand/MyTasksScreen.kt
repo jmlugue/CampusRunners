@@ -17,16 +17,16 @@ fun MyTasksScreen(
     onUpdateStatus: (JSONObject, String) -> Unit,
     onPostStatus: (String, JSONObject, String, String) -> Unit
 ) {
-    var selectedTab by remember { mutableStateOf("Requested") }
-    
+    var selectedTab by remember { mutableStateOf("As Requester") }
+
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TabStrip(
-            tabs = listOf("Requested", "Doing"),
+            tabs = listOf("As Requester", "As Helper"),
             selected = selectedTab,
             onSelected = { selectedTab = it }
         )
-        
-        if (selectedTab == "Requested") {
+
+        if (selectedTab == "As Requester") {
             RemoteList(
                 api = api,
                 endpoint = "get_my_posted_errands.php",
@@ -84,5 +84,5 @@ fun MyTasksScreen(
 
 private fun isArchived(status: String?): Boolean {
     val s = status ?: ""
-    return s.contains("Confirmed") || s.contains("Rated") || s.contains("Closed") || s.contains("Cancel") || s.contains("Removed")
+    return s.contains("Closed") || s.contains("Cancel") || s.contains("Removed")
 }

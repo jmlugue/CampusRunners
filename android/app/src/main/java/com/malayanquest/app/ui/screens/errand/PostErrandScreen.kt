@@ -24,7 +24,7 @@ fun PostErrandScreen(
     var category by remember { mutableStateOf(categories.first()) }
     var pickup by remember { mutableStateOf("") }
     var dropoff by remember { mutableStateOf("") }
-    var deadline by remember { mutableStateOf("2026-07-15 13:00:00") }
+    var deadline by remember { mutableStateOf("2026-07-16 13:00:00") }
     var reward by remember { mutableStateOf("") }
     var rewardNote by remember { mutableStateOf("") }
 
@@ -40,7 +40,7 @@ fun PostErrandScreen(
         InfoPanel("Room codes must use R or E and rooms 101-113, 201-213, 301-313, 401-413, or 501-513. Examples: R101, E413.", Icons.Filled.Info, "MCL room format")
     }
     SectionCard("Time and Reward", Icons.Filled.Schedule) {
-        CampusTextField("Deadline: 2026-07-15 13:00:00", deadline, { deadline = it }, leadingIcon = Icons.Filled.CalendarMonth)
+        CampusTextField("Deadline: 2026-07-16 13:00:00", deadline, { deadline = it }, leadingIcon = Icons.Filled.CalendarMonth)
         CampusTextField("Reward amount, optional", reward, { reward = it }, KeyboardType.Decimal, leadingIcon = Icons.Filled.Payments)
         CampusTextField("Reward note, optional", rewardNote, { rewardNote = it }, leadingIcon = Icons.Filled.Info)
     }

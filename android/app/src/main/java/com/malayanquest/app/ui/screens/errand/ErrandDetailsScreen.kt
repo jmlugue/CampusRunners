@@ -27,15 +27,24 @@ fun ErrandDetailsScreen(
         CampusButton("Back", primary = false) { onNavigateBack() }
         return
     }
+
     CampusCard { ErrandCore(errand) }
+
     InfoPanel("Only accept if the request is safe, school-related, and limited to campus or nearby MCL locations.", Icons.Filled.Security, "Safety Note")
+
     SectionTitle("Status Tracker")
     StatusTracker(errand.optString("status"))
+
+    val isRequester = errand.optInt("requester_id") == userId
+
     if (applyMode) {
-        CampusButton("Apply as Helper") {
-            onApply(errand)
+        val appStatus = errand.optString("application_status")
+        if (appStatus != "pending" && appStatus != "selected") {
+            CampusButton("Apply as Helper") {
+                onApply(errand)
+            }
         }
-    } else {
+    } else if (isRequester) {
         RequesterActions(
             errand = errand,
             onViewApplicants = onViewApplicants,
@@ -45,7 +54,8 @@ fun ErrandDetailsScreen(
             onCancelErrand = onCancelErrand
         )
     }
-    if (errand.optInt("requester_id") != userId) {
+
+    if (!isRequester) {
         CampusButton("Report Errand", primary = false) {
             onReport(errand)
         }

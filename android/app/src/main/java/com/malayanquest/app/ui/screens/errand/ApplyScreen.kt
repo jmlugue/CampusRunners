@@ -31,7 +31,7 @@ fun ApplyScreen(
 
     CampusCard { ErrandCore(errand) }
     HelperPreviewPanel(
-        "Your helper profile shown to requester",
+        "Helper Profile",
         fullName,
         "Rating and completed errands are shown as trust indicators.",
         "Offer note and estimated completion time are public to this requester only."
