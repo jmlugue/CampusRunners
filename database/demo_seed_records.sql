@@ -37,7 +37,7 @@ VALUES
 (7, 2, 5, 'Buy graphing paper', 'Please buy graphing paper from the bookstore.', 'Bookstore Item Purchase', 'Bookstore', 'Library', '2026-07-14 16:00:00', 20.00, 'Will pay in cash', 'Confirmed by Requester', 'allowed', '2026-07-11 13:00:00'),
 (8, 3, 2, 'Classroom-to-classroom delivery', 'Deliver a sealed envelope from Room A201 to Room B104.', 'Classroom-to-Classroom Delivery', 'Room A201', 'Room B104', '2026-07-10 10:00:00', 25.00, 'Completed successfully', 'Closed', 'allowed', '2026-07-10 08:00:00'),
 (9, 6, 2, 'Check bookstore graphing paper', 'Check if the bookstore has graphing paper available.', 'Bookstore Item Purchase', 'Bookstore', 'Library', '2026-07-11 14:00:00', NULL, 'No purchase needed', 'Cancelled by Requester', 'allowed', '2026-07-10 09:30:00'),
-(10, 7, NULL, 'Errand to restricted office', 'Please get a document from a restricted office area.', 'Document Delivery', 'Restricted Office', 'Lobby', '2026-07-16 10:00:00', 40.00, 'Needs review', 'Reported', 'flagged', '2026-07-12 12:00:00'),
+(10, 7, NULL, 'Errand to restricted office', 'Please get a document from a restricted office area.', 'Document Delivery', 'Restricted Office', 'Lobby', '2026-07-16 10:00:00', 40.00, 'Needs review', 'Open', 'flagged', '2026-07-12 12:00:00'),
 (11, 8, NULL, 'Pick up confidential exam paper', 'Please pick up a confidential exam paper for me.', 'Document Delivery', 'Faculty Room', 'Room C204', '2026-07-16 09:00:00', 100.00, 'Unsafe request', 'Open', 'flagged', '2026-07-12 12:15:00'),
 (12, 9, NULL, 'Buy medicine nearby', 'Please buy medicine from a nearby pharmacy.', 'Nearby Establishment Errand', 'Nearby Pharmacy', 'Campus Gate', '2026-07-16 11:00:00', 30.00, 'Medical purchase is not allowed', 'Open', 'flagged', '2026-07-12 12:30:00'),
 (13, 4, 2, 'Deliver library book return', 'Return a borrowed library book before closing.', 'Library or Bookstore Errand', 'Room C105', 'Library', '2026-07-15 17:00:00', 20.00, 'Book is ready for pickup', 'Accepted', 'allowed', '2026-07-12 13:00:00')
@@ -73,6 +73,14 @@ offer_note = VALUES(offer_note),
 estimated_completion_time = VALUES(estimated_completion_time),
 status = VALUES(status);
 
+-- Remove the obsolete demo log that changed the errand workflow status to Reported.
+-- Reporting should remain in the reports table and must not replace errands.status.
+DELETE FROM errand_status_logs
+WHERE log_id = 9
+  AND errand_id = 10
+  AND old_status = 'Open'
+  AND new_status = 'Reported';
+
 INSERT INTO errand_status_logs (log_id, errand_id, changed_by, old_status, new_status, reason, created_at)
 VALUES
 (1, 1, 3, 'Open', 'Has Applicants', 'Maria applied as helper.', '2026-07-12 08:45:00'),
@@ -83,7 +91,6 @@ VALUES
 (6, 7, 2, 'Completed by Helper', 'Confirmed by Requester', 'Requester confirmed delivery.', '2026-07-11 14:10:00'),
 (7, 8, 3, 'Rated', 'Closed', 'Requester submitted rating.', '2026-07-10 10:20:00'),
 (8, 9, 6, 'Open', 'Cancelled by Requester', 'Item was no longer needed.', '2026-07-10 10:00:00'),
-(9, 10, 2, 'Open', 'Reported', 'Reported for restricted area.', '2026-07-12 12:20:00'),
 (10, 13, 2, 'Assigned', 'Accepted', 'Helper accepted the selected errand.', '2026-07-12 13:20:00')
 ON DUPLICATE KEY UPDATE
 old_status = VALUES(old_status),

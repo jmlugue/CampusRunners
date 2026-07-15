@@ -34,7 +34,17 @@ switch ($filter) {
         $sql .= " AND e.status IN ('Cancelled by Requester', 'Cancelled by Helper')";
         break;
     case "reported":
-        $sql .= " AND e.status = 'Reported'";
+            $sql .= "
+            AND EXISTS (
+                SELECT 1
+                FROM reports r
+                WHERE r.errand_id = e.errand_id
+                AND r.status IN (
+                    'pending',
+                    'under_review'
+                )
+            )
+        ";
         break;
     case "flagged":
         $sql .= " AND e.moderation_status = 'flagged'";

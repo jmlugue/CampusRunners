@@ -155,11 +155,11 @@ CREATE TABLE admin_actions (
 INSERT INTO users (full_name, school_email, student_number, password_hash, role, verification_status, account_status)
 VALUES
 ('Malayan Quest Admin', 'admin@mcl.edu.ph', NULL, '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'admin', 'verified', 'active'),
-('Juan Dela Cruz', 'juan.dcruz@mcl.edu.ph', '202600001', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
-('Maria Santos', 'maria.santos@mcl.edu.ph', '202600002', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
-('Carlo Reyes', 'carlo.reyes@mcl.edu.ph', '202600003', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
-('Ana Lopez', 'ana.lopez@mcl.edu.ph', '202600004', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
-('Miguel Garcia', 'miguel.garcia@mcl.edu.ph', '202600005', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active');
+('Juan Dela Cruz', 'juan.dcruz@mcl.edu.ph', '2026000001', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Maria Santos', 'maria.santos@mcl.edu.ph', '2026000002', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Carlo Reyes', 'carlo.reyes@mcl.edu.ph', '2026000003', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Ana Lopez', 'ana.lopez@mcl.edu.ph', '2026000004', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active'),
+('Miguel Garcia', 'miguel.garcia@mcl.edu.ph', '2026000005', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active');
 
 -- Sample locations
 INSERT INTO locations (location_name, location_type)

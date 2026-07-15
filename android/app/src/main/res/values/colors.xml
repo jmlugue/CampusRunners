@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_blue">#0B4EA2</color>
-    <color name="secondary_blue">#1976D2</color>
+
+    <color name="primary_blue">#172852</color>
+    <color name="secondary_blue">#263F70</color>
+    <color name="brand_red">#EC1F28</color>
     <color name="background_white">#FFFFFF</color>
+
 </resources>

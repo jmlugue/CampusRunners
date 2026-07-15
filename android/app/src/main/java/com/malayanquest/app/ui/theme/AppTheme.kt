@@ -5,23 +5,29 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val PrimaryBlue = Color(0xFF0B4EA2)
-val SecondaryBlue = Color(0xFF1976D2)
-val BackgroundSoft = Color(0xFFEEF5FB)
-val CardLight = Color(0xFFF4F8FC)
-val BorderSoft = Color(0xFFD7E6F5)
-val TextPrimary = Color(0xFF102A43)
-val TextSecondary = Color(0xFF6B7280)
-val SuccessGreen = Color(0xFF2E7D32)
-val WarningAmber = Color(0xFFF9A825)
-val DangerRed = Color(0xFFD32F2F)
+val PrimaryBlue = Color(0xFF172852)
+val SecondaryBlue = Color(0xFF263F70)
 
+val BrandRed = Color(0xFFEC1F28)
+val BrandRedSoft = Color(0xFFFFF1F2)
+
+val BackgroundSoft = Color(0xFFF5F7FA)
+val CardLight = Color(0xFFF7F9FC)
+val BorderSoft = Color(0xFFD9DFE8)
+
+val TextPrimary = Color(0xFF172852)
+val TextSecondary = Color(0xFF667085)
+
+val SuccessGreen = Color(0xFF2E7D32)
+val WarningAmber = Color(0xFFF59E0B)
+val DangerRed = Color(0xFFB3261E)
 @Composable
 fun CampusTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = lightColorScheme(
             primary = PrimaryBlue,
             secondary = SecondaryBlue,
+            tertiary = BrandRed,
             background = BackgroundSoft,
             surface = Color.White,
             error = DangerRed

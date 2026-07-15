@@ -279,20 +279,40 @@ class MainActivity : ComponentActivity() {
                         userId = userId,
                         errand = selectedErrand,
                         refreshKey = refreshKey,
-                        onSendMessage = { receiverId, msg ->
+
+                        onSendMessage = { receiverId, msg, onResult ->
+
                             api.post("send_message.php", JSONObject().apply {
-                                put("errand_id", selectedErrand?.optInt("errand_id"))
+                                put(
+                                    "errand_id",
+                                    selectedErrand?.optInt("errand_id")
+                                )
                                 put("sender_id", userId)
                                 put("receiver_id", receiverId)
                                 put("message_text", msg.trim())
                             }) { response ->
+
+                                val success =
+                                    response.optBoolean("success")
+
                                 toast(response.optString("message"))
-                                if (response.optBoolean("success")) {
+
+                                if (success) {
+                                    // Reload the message list.
                                     refreshKey++
                                 }
+
+                                /*
+                                 * Tell ChatScreen whether sending succeeded.
+                                 * ChatScreen will only clear the message when true.
+                                 */
+                                onResult(success)
                             }
                         },
-                        onNavigateBack = { navigateBack() }
+
+                        onNavigateBack = {
+                            navigateBack()
+                        }
                     )
                     Screen.Completion -> CompletionScreen(
                         errand = selectedErrand,
@@ -479,10 +499,68 @@ class MainActivity : ComponentActivity() {
             put("requester_id", userId)
             put("application_id", applicant.optInt("application_id"))
         }) { response ->
+
             toast(response.optString("message"))
-            if (response.optBoolean("success")) {
+
+            // Stop when helper selection fails.
+            if (!response.optBoolean("success")) {
+                return@post
+            }
+
+            /*
+             * Helper selection succeeded in the database.
+             *
+             * Reload the errand so selectedErrand contains the new:
+             * - selected_helper_id
+             * - helper_name
+             * - Assigned status
+             */
+            api.get(
+                "get_errand_details.php",
+                mapOf(
+                    "errand_id" to errandId.toString()
+                )
+            ) { detailsResponse ->
+
+                if (!detailsResponse.optBoolean("success")) {
+                    toast(
+                        detailsResponse.optString(
+                            "message",
+                            "Helper selected, but the errand could not be refreshed."
+                        )
+                    )
+
+                    refreshKey++
+                    screen = Screen.MyTasks
+                    return@get
+                }
+
+                val updatedErrand =
+                    detailsResponse.optJSONObject("data")
+
+                val selectedHelperId =
+                    updatedErrand?.optInt("selected_helper_id") ?: 0
+
+                /*
+                 * Do not open Chat when the refreshed errand
+                 * still has no valid selected helper.
+                 */
+                if (updatedErrand == null || selectedHelperId <= 0) {
+                    toast(
+                        "Helper selected, but no valid helper ID was returned."
+                    )
+
+                    refreshKey++
+                    screen = Screen.MyTasks
+                    return@get
+                }
+
+                // Replace the old errand object with the refreshed one.
+                selectedErrand = updatedErrand
+
                 refreshKey++
-                // Automatically open chat after selection
+
+                // Chat can now calculate the correct receiver ID.
                 screen = Screen.Chat
             }
         }

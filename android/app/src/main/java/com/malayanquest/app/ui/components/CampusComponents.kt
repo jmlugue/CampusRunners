@@ -151,28 +151,117 @@ fun CampusCard(
 }
 
 @Composable
+fun BrandHighlightLabel(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(18.dp))
+            .background(CardLight)
+            .border(
+                width = 1.dp,
+                color = BorderSoft,
+                shape = RoundedCornerShape(18.dp)
+            )
+            .padding(
+                horizontal = 14.dp,
+                vertical = 8.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(7.dp)
+                .clip(CircleShape)
+                .background(BrandRed)
+        )
+
+        Text(
+            text = text,
+            color = PrimaryBlue,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+@Composable
 fun InfoPanel(
     text: String,
     icon: ImageVector = Icons.Filled.Info,
     title: String = "",
-    tint: Color = SecondaryBlue
+    tint: Color = SecondaryBlue,
+    accentColor: Color? = null
 ) {
-    CampusCard(background = CardLight) {
-        Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(tint.copy(alpha = 0.12f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(icon, contentDescription = title.ifBlank { "Info" }, tint = tint, modifier = Modifier.size(19.dp))
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = CardLight
+        ),
+        border = BorderStroke(1.dp, BorderSoft),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+        ) {
+            if (accentColor != null) {
+                Box(
+                    modifier = Modifier
+                        .width(5.dp)
+                        .fillMaxHeight()
+                        .background(accentColor)
+                )
             }
-            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                if (title.isNotBlank()) {
-                    Text(title, color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(tint.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = title.ifBlank {
+                            "Information"
+                        },
+                        tint = tint,
+                        modifier = Modifier.size(19.dp)
+                    )
                 }
-                Text(text, color = TextSecondary, fontSize = 14.sp)
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    if (title.isNotBlank()) {
+                        Text(
+                            text = title,
+                            color = TextPrimary,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Text(
+                        text = text,
+                        color = TextSecondary,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }
@@ -183,19 +272,51 @@ fun CampusButton(
     text: String,
     modifier: Modifier = Modifier,
     primary: Boolean = true,
+    enabled: Boolean = true,
+    loading: Boolean = false,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth().height(52.dp),
+        enabled = enabled && !loading,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (primary) PrimaryBlue else Color.White,
-            contentColor = if (primary) Color.White else PrimaryBlue
+            contentColor = if (primary) Color.White else PrimaryBlue,
+
+            disabledContainerColor = if (primary) {
+                PrimaryBlue.copy(alpha = 0.38f)
+            } else {
+                Color(0xFFF1F3F6)
+            },
+
+            disabledContentColor = if (primary) {
+                Color.White.copy(alpha = 0.75f)
+            } else {
+                TextSecondary
+            }
         ),
-        border = if (primary) null else BorderStroke(1.dp, Color(0xFF8DB2D9))
+        border = if (primary) {
+            null
+        } else {
+            BorderStroke(1.dp, PrimaryBlue.copy(alpha = 0.45f))
+        }
     ) {
-        Text(text, fontWeight = FontWeight.Bold)
+        if (loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+                color = if (primary) Color.White else PrimaryBlue
+            )
+        } else {
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
@@ -589,6 +710,19 @@ fun AuthTitle(title: String, subtitle: String) {
         Text(title, color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Text(subtitle, color = TextSecondary, fontSize = 13.sp)
     }
+}
+
+@Composable
+fun BrandAccentLine(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .width(48.dp)
+            .height(4.dp)
+            .clip(RoundedCornerShape(2.dp))
+            .background(BrandRed)
+    )
 }
 
 @Composable

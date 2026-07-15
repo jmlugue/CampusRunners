@@ -10,15 +10,39 @@ if (!$user_id || !get_user_by_id($pdo, $user_id)) {
 }
 
 $sql = "
-    SELECT e.errand_id, e.requester_id, e.title, e.description, e.category,
-           e.pickup_location, e.dropoff_location, e.deadline, e.status,
-           e.created_at, requester.full_name AS requester_name
+    SELECT
+        e.errand_id,
+        e.requester_id,
+        e.title,
+        e.description,
+        e.category,
+        e.pickup_location,
+        e.dropoff_location,
+        e.deadline,
+        e.status,
+        e.created_at,
+        requester.full_name AS requester_name
     FROM errands e
-    JOIN users requester ON e.requester_id = requester.user_id
+    JOIN users requester
+        ON e.requester_id = requester.user_id
     WHERE e.requester_id <> ?
       AND e.status <> 'Removed by Admin'
+      AND NOT EXISTS (
+          SELECT 1
+          FROM reports r
+          WHERE r.errand_id = e.errand_id
+            AND r.reported_by_user_id = ?
+            AND r.status IN (
+                'pending',
+                'under_review'
+            )
+      )
 ";
-$params = [$user_id];
+
+$params = [
+    $user_id,
+    $user_id
+];
 
 if ($keyword !== "") {
     $sql .= " AND (e.title LIKE ? OR e.category LIKE ? OR e.pickup_location LIKE ? OR e.dropoff_location LIKE ?)";

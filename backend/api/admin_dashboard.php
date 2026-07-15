@@ -16,7 +16,12 @@ $queries = [
     "active_errands" => "SELECT COUNT(*) FROM errands WHERE status IN ('Assigned', 'Accepted', 'In Progress', 'Completed by Helper')",
     "completed_errands" => "SELECT COUNT(*) FROM errands WHERE status IN ('Confirmed by Requester', 'Closed')",
     "cancelled_errands" => "SELECT COUNT(*) FROM errands WHERE status IN ('Cancelled by Requester', 'Cancelled by Helper')",
-    "reported_errands" => "SELECT COUNT(*) FROM errands WHERE status = 'Reported'",
+    "reported_errands" => "
+    SELECT COUNT(DISTINCT errand_id)
+    FROM reports
+    WHERE errand_id IS NOT NULL
+      AND status IN ('pending', 'under_review')
+",
     "flagged_errands" => "SELECT COUNT(*) FROM errands WHERE moderation_status = 'flagged'"
 ];
 
