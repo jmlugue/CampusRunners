@@ -50,13 +50,15 @@ fun EditProfileScreen(
 @Composable
 fun HelperPreviewPanel(eyebrow: String, name: String, stats: String, note: String) {
     CampusCard {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
+            Badge(eyebrow, SecondaryBlue)
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             UserAvatar(name, size = 56.dp)
-            Column(modifier = Modifier.weight(1f)) {
-                Badge(eyebrow, SecondaryBlue)
+            Column {
                 Text(name.ifBlank { "Student Helper" }, color = TextPrimary, fontSize = 19.sp, fontWeight = FontWeight.Bold)
                 Text(stats, color = TextSecondary, fontSize = 13.sp)
             }

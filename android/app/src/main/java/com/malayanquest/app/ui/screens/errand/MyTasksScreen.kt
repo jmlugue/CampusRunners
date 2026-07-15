@@ -43,7 +43,14 @@ fun MyTasksScreen(
                         onApply = {},
                         onViewApplicants = { onNavigate(Screen.Applicants, it) },
                         onMessages = { onNavigate(Screen.Chat, it) },
-                        onConfirmCompletion = { onNavigate(Screen.Completion, it) },
+                        onConfirmCompletion = { errand ->
+                            onPostStatus(
+                                "confirm_completion.php",
+                                errand,
+                                "requester_id",
+                                "Confirmed by Requester"
+                            )
+                        },
                         onRateHelper = { onNavigate(Screen.Rating, it) },
                         onCancelErrand = { onNavigate(Screen.CancelErrand, it) },
                         onReportErrand = { onNavigate(Screen.Report, it) },

@@ -200,9 +200,19 @@ class MainActivity : ComponentActivity() {
                         applyMode = (selectedErrand?.optInt("requester_id") != userId) &&
                                 (selectedErrand?.optString("status") == "Open" || selectedErrand?.optString("status") == "Has Applicants"),
                         userId = userId,
-                        onApply = {
-                            selectedErrand = it
-                            screen = Screen.Apply
+                        onApply = { errandToApply ->
+                            api.post("apply_to_errand.php", JSONObject().apply {
+                                put("errand_id", errandToApply.optInt("errand_id"))
+                                put("helper_id", userId)
+                                put("offer_note", "I am interested in helping with this errand!") // Default offer
+                                put("estimated_completion_time", "As soon as possible") // Default estimate
+                            }) { response ->
+                                toast(response.optString("message"))
+                                if (response.optBoolean("success")) {
+                                    refreshKey++
+                                    screen = Screen.MyTasks
+                                }
+                            }
                         },
                         onReport = {
                             selectedErrand = it
@@ -246,7 +256,7 @@ class MainActivity : ComponentActivity() {
                             refreshKey++
                             screen = Screen.MyTasks
                         },
-                        onNavigateBack = { screen = Screen.ErrandDetails },
+                        onNavigateBack = { screen = Screen.BrowseErrands },
                         onShowToast = { toast(it) }
                     )
                     Screen.Applicants -> ApplicantsScreen(

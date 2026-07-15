@@ -80,16 +80,17 @@ fun ErrandCard(
                             leadingIcon = { Icon(Icons.Filled.Cancel, null, tint = DangerRed) }
                         )
                     }
-                    DropdownMenuItem(
-                        text = { Text("Report Problem") },
-                        onClick = { showMenu = false; onReportErrand(errand) },
-                        leadingIcon = { Icon(Icons.Filled.Flag, null, tint = WarningAmber) }
-                    )
+                    if (!isRequester) {
+                        DropdownMenuItem(
+                            text = { Text("Report Problem") },
+                            onClick = { showMenu = false; onReportErrand(errand) },
+                            leadingIcon = { Icon(Icons.Filled.Flag, null, tint = WarningAmber) }
+                        )
+                    }
                 }
             }
         }
 
-        // UPDATED: Only draw the divider and action block if there are buttons to show
         if (hasBottomActions) {
             HorizontalDivider(color = BorderSoft)
 
@@ -167,7 +168,6 @@ fun ErrandCard(
                         ) {
                             Text("Applied (Waiting)", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
-                        CampusButton("Cancel Application", primary = false) { onCancelErrand(errand) }
                     }
                 }
                 applyMode -> {
