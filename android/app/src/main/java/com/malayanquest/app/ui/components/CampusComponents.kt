@@ -755,7 +755,12 @@ fun SummaryGrid(items: List<Pair<String, String>>) {
                     .background(PrimaryBlue.copy(alpha = 0.10f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.Assessment, contentDescription = "Activity overview", tint = PrimaryBlue, modifier = Modifier.size(21.dp))
+                Icon(
+                    Icons.Filled.Dashboard,
+                    contentDescription = "Activity overview",
+                    tint = PrimaryBlue,
+                    modifier = Modifier.size(21.dp)
+                )
             }
             Column {
                 Text("Activity Overview", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -784,7 +789,11 @@ fun SummaryGrid(items: List<Pair<String, String>>) {
 }
 
 @Composable
-private fun SummaryMetric(label: String, value: String, modifier: Modifier = Modifier) {
+private fun SummaryMetric(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier.padding(horizontal = 6.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -794,14 +803,31 @@ private fun SummaryMetric(label: String, value: String, modifier: Modifier = Mod
             modifier = Modifier
                 .size(34.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(iconColor(label).copy(alpha = 0.10f)),
+                .background(summaryMetricColor(label).copy(alpha = 0.10f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(actionIcon(label), contentDescription = label, tint = iconColor(label), modifier = Modifier.size(18.dp))
+            Icon(
+                imageVector = summaryMetricIcon(label),
+                contentDescription = label,
+                tint = summaryMetricColor(label),
+                modifier = Modifier.size(18.dp)
+            )
         }
+
         Column {
-            Text(value, color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Text(label, color = TextSecondary, fontSize = 11.sp, maxLines = 1)
+            Text(
+                text = value,
+                color = TextPrimary,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = label,
+                color = TextSecondary,
+                fontSize = 11.sp,
+                maxLines = 1
+            )
         }
     }
 }
@@ -915,7 +941,30 @@ fun iconForLabel(label: String): ImageVector {
         else -> Icons.AutoMirrored.Filled.Assignment
     }
 }
+fun summaryMetricIcon(label: String): ImageVector {
+    return when (label) {
+        "Total Users" -> Icons.Filled.Groups
+        "Verified" -> Icons.Filled.VerifiedUser
+        "Open" -> Icons.Filled.FolderOpen
+        "Active" -> Icons.Filled.PlayCircle
+        "Completed" -> Icons.Filled.TaskAlt
+        "Cancelled" -> Icons.Filled.Cancel
+        "Reported" -> Icons.Filled.Flag
+        "Flagged" -> Icons.Filled.ReportProblem
+        else -> Icons.Filled.Analytics
+    }
+}
 
+fun summaryMetricColor(label: String): Color {
+    return when (label) {
+        "Verified", "Completed" -> SuccessGreen
+        "Active" -> Color(0xFF0F766E)
+        "Cancelled", "Reported" -> DangerRed
+        "Flagged" -> WarningAmber
+        "Open" -> SecondaryBlue
+        else -> PrimaryBlue
+    }
+}
 fun actionIcon(title: String): ImageVector {
     return when {
         title.contains("Post") -> Icons.Filled.AddCircle
