@@ -17,7 +17,10 @@ VALUES
 (7, 'Lara Mendoza', '2026laramendoza@live.mcl.edu.ph', '2026000006', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active', 4.95, 11),
 (8, 'Rafael Cruz', '2026rafaelcruz@live.mcl.edu.ph', '2026000007', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'restricted', 'active', 2.10, 1),
 (9, 'Nina Torres', '2026ninatorres@live.mcl.edu.ph', '2026000008', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'deactivated', 3.00, 2),
-(10, 'Paolo Rivera', '2026paolorivera@live.mcl.edu.ph', '2026000009', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'pending', 'active', 0.00, 0)
+(10, 'Paolo Rivera', '2026paolorivera@live.mcl.edu.ph', '2026000009', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'pending', 'active', 0.00, 0),
+(11, 'Bea Navarro', '2026beanavarro@live.mcl.edu.ph', '2026000010', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'rejected', 'active', 0.00, 0),
+(12, 'Theo Lim', '2026theolim@live.mcl.edu.ph', '2026000011', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'verified', 'active', 4.30, 4),
+(13, 'Matthew Lugue', '2026matthewlugue@live.mcl.edu.ph', '2026000012', '$2y$10$mlcMIfNWx9ZCZ.x0TmC6zORj29Pvu/s4d/Jqt4elYu5.On3T92qQ6', 'student', 'pending', 'active', 0.00, 0)
 ON DUPLICATE KEY UPDATE
 full_name = VALUES(full_name),
 role = VALUES(role),
@@ -41,7 +44,14 @@ VALUES
 (10, 7, NULL, 'Errand to restricted office', 'Please get a document from a restricted office area.', 'Delivery', 'Restricted Office', 'Lobby', '2026-07-16 10:00:00', 40.00, 'Needs review', 'Open', 'flagged', '2026-07-12 12:00:00'),
 (11, 8, NULL, 'Pick up confidential exam paper', 'Please pick up a confidential exam paper for me.', 'Delivery', 'Faculty Room', 'E204', '2026-07-16 09:00:00', 100.00, 'Unsafe request', 'Open', 'flagged', '2026-07-12 12:15:00'),
 (12, 9, NULL, 'Buy medicine nearby', 'Please buy medicine from a nearby pharmacy.', 'Others', 'Nearby Pharmacy', 'Campus Gate', '2026-07-16 11:00:00', 30.00, 'Medical purchase is not allowed', 'Open', 'flagged', '2026-07-12 12:30:00'),
-(13, 4, 2, 'Deliver library book return', 'Return a borrowed library book before closing.', 'Delivery', 'E105', 'Library', '2026-07-15 17:00:00', 20.00, 'Book is ready for pickup', 'Accepted', 'allowed', '2026-07-12 13:00:00')
+(13, 4, 2, 'Deliver library book return', 'Return a borrowed library book before closing.', 'Delivery', 'E105', 'Library', '2026-07-15 17:00:00', 20.00, 'Book is ready for pickup', 'Accepted', 'allowed', '2026-07-12 13:00:00'),
+(14, 5, 6, 'Pick up snacks near gate', 'Pick up packed snacks from a nearby food stall and bring them to the lobby.', 'Food', 'Nearby Food Restaurant', 'Campus Lobby', '2026-07-16 16:30:00', 25.00, 'Cancelled because helper had class conflict', 'Cancelled by Helper', 'allowed', '2026-07-12 13:30:00'),
+(15, 6, 7, 'Buy bookstore notebook', 'Buy one ruled notebook from the bookstore.', 'Supplies', 'Bookstore', 'Library entrance', '2026-07-16 15:00:00', 20.00, 'Rated after delivery', 'Rated', 'allowed', '2026-07-12 14:00:00'),
+(16, 7, NULL, 'Prank delivery request', 'Deliver a prank note to another student during class.', 'Others', 'R101', 'R102', '2026-07-16 15:30:00', 10.00, 'Removed by admin for unsafe behavior', 'Removed by Admin', 'flagged', '2026-07-12 14:30:00'),
+(17, 3, NULL, 'Expired library photocopy pickup', 'Pick up photocopies from the library counter before noon.', 'Printing', 'Library', 'R204', '2026-07-12 12:00:00', 15.00, 'Deadline passed before helper selection', 'Expired', 'allowed', '2026-07-12 09:30:00'),
+(18, 11, NULL, 'Buy vape near campus gate', 'Buy a vape product from a nearby shop.', 'Others', 'Nearby Business', 'Campus Gate', '2026-07-16 18:00:00', 80.00, 'Rejected by moderation', 'Flagged', 'rejected', '2026-07-12 15:00:00'),
+(19, 12, NULL, 'Buy marker from bookstore', 'Buy one black whiteboard marker from the bookstore.', 'Supplies', 'Bookstore', 'E202', '2026-07-17 09:00:00', 15.00, 'Open errand for browse feed', 'Open', 'allowed', '2026-07-12 15:30:00'),
+(20, 12, 6, 'Deliver folder to faculty room', 'Bring a sealed project folder from E202 to the faculty room drop box.', 'Delivery', 'E202', 'Faculty Room Drop Box', '2026-07-17 10:00:00', 25.00, 'Active helper task with no messages yet', 'In Progress', 'allowed', '2026-07-12 16:00:00')
 ON DUPLICATE KEY UPDATE
 requester_id = VALUES(requester_id),
 selected_helper_id = VALUES(selected_helper_id),
@@ -68,7 +78,12 @@ VALUES
 (8, 7, 5, 'I can buy it after my class.', '25 minutes', 'selected', '2026-07-11 13:10:00'),
 (9, 8, 2, 'I can deliver the envelope on my way to B building.', '10 minutes', 'selected', '2026-07-10 08:10:00'),
 (10, 9, 2, 'I can check the bookstore after class.', '20 minutes', 'withdrawn', '2026-07-10 09:45:00'),
-(11, 13, 2, 'I can return the book before library closing.', '20 minutes', 'selected', '2026-07-12 13:10:00')
+(11, 13, 2, 'I can return the book before library closing.', '20 minutes', 'selected', '2026-07-12 13:10:00'),
+(12, 14, 6, 'I can pick up the snacks after my lab class.', '35 minutes', 'withdrawn', '2026-07-12 13:40:00'),
+(13, 15, 7, 'I will buy the notebook before going to the library.', '20 minutes', 'selected', '2026-07-12 14:10:00'),
+(14, 19, 3, 'I am going to the bookstore later.', '30 minutes', 'pending', '2026-07-12 15:40:00'),
+(15, 19, 4, 'I can buy the marker after class.', '45 minutes', 'pending', '2026-07-12 15:45:00'),
+(16, 20, 6, 'I can deliver the folder before my next subject.', '15 minutes', 'selected', '2026-07-12 16:10:00')
 ON DUPLICATE KEY UPDATE
 offer_note = VALUES(offer_note),
 estimated_completion_time = VALUES(estimated_completion_time),
@@ -92,7 +107,13 @@ VALUES
 (6, 7, 2, 'Completed by Helper', 'Confirmed by Requester', 'Requester confirmed delivery.', '2026-07-11 14:10:00'),
 (7, 8, 3, 'Rated', 'Closed', 'Requester submitted rating.', '2026-07-10 10:20:00'),
 (8, 9, 6, 'Open', 'Cancelled by Requester', 'Item was no longer needed.', '2026-07-10 10:00:00'),
-(10, 13, 2, 'Assigned', 'Accepted', 'Helper accepted the selected errand.', '2026-07-12 13:20:00')
+(10, 13, 2, 'Assigned', 'Accepted', 'Helper accepted the selected errand.', '2026-07-12 13:20:00'),
+(11, 14, 6, 'Assigned', 'Cancelled by Helper', 'Helper had a class conflict before starting.', '2026-07-12 13:50:00'),
+(12, 15, 6, 'Confirmed by Requester', 'Rated', 'Requester submitted a rating but admin can still review this status.', '2026-07-12 14:40:00'),
+(13, 16, 1, 'Flagged', 'Removed by Admin', 'Admin removed prank request for unsafe behavior.', '2026-07-12 14:50:00'),
+(14, 17, 3, 'Open', 'Expired', 'Deadline passed with no selected helper.', '2026-07-12 12:05:00'),
+(15, 18, 1, 'Open', 'Flagged', 'Moderation rejected prohibited vape request.', '2026-07-12 15:02:00'),
+(16, 20, 6, 'Accepted', 'In Progress', 'Helper started folder delivery.', '2026-07-12 16:20:00')
 ON DUPLICATE KEY UPDATE
 old_status = VALUES(old_status),
 new_status = VALUES(new_status),
@@ -107,7 +128,11 @@ VALUES
 (5, 8, 3, 2, 'Thanks for delivering the envelope safely.', 1, '2026-07-10 10:15:00'),
 (6, 8, 2, 3, 'You are welcome. It was delivered to E104.', 1, '2026-07-10 10:16:00'),
 (7, 13, 4, 2, 'Please return the book before 5 PM.', 0, '2026-07-12 13:25:00'),
-(8, 13, 2, 4, 'Accepted. I will go to the library after class.', 0, '2026-07-12 13:28:00')
+(8, 13, 2, 4, 'Accepted. I will go to the library after class.', 0, '2026-07-12 13:28:00'),
+(9, 14, 5, 6, 'Please cancel if your class schedule changes.', 1, '2026-07-12 13:42:00'),
+(10, 14, 6, 5, 'Sorry, I need to withdraw because our lab was extended.', 0, '2026-07-12 13:49:00'),
+(11, 15, 6, 7, 'Please buy the ruled notebook, not graphing paper.', 1, '2026-07-12 14:15:00'),
+(12, 15, 7, 6, 'Done. I gave it to the library guard for handoff.', 1, '2026-07-12 14:35:00')
 ON DUPLICATE KEY UPDATE
 message_text = VALUES(message_text),
 is_read = VALUES(is_read);
@@ -117,7 +142,9 @@ VALUES
 (1, 8, 2, 3, 5, 'Fast, polite, and gave clear updates.', '2026-07-10 10:25:00'),
 (2, 7, 5, 2, 5, 'Ana delivered the graphing paper quickly.', '2026-07-11 14:15:00'),
 (3, 6, 4, 2, 4, 'Carlo completed the printing pickup on time.', '2026-07-12 11:50:00'),
-(4, 5, 3, 2, 5, 'Maria handled the calculator carefully.', '2026-07-12 11:05:00')
+(4, 5, 3, 2, 5, 'Maria handled the calculator carefully.', '2026-07-12 11:05:00'),
+(5, 15, 7, 6, 3, 'The notebook was delivered, but updates were late.', '2026-07-12 14:45:00'),
+(6, 14, 6, 5, 2, 'Cancelled after accepting, so requester had to find another option.', '2026-07-12 13:55:00')
 ON DUPLICATE KEY UPDATE
 rating_score = VALUES(rating_score),
 feedback = VALUES(feedback);
@@ -125,9 +152,11 @@ feedback = VALUES(feedback);
 INSERT INTO reports (report_id, errand_id, reported_user_id, reported_by_user_id, report_type, reason, details, status, created_at, resolved_at)
 VALUES
 (1, 10, NULL, 2, 'errand', 'Unsafe location', 'The errand asks a student to enter a restricted office.', 'pending', '2026-07-12 12:20:00', NULL),
-(2, NULL, 8, 3, 'user', 'Harassment or inappropriate behavior', 'The user sent rude messages after a helper declined.', 'under_review', '2026-07-12 12:25:00', NULL),
+(2, NULL, 8, 3, 'user', 'Harassment or inappropriate behavior', 'The user sent rude messages after a helper declined.', 'pending', '2026-07-12 12:25:00', NULL),
 (3, 11, 8, 4, 'errand', 'Illegal or prohibited item', 'The request involves confidential exam material.', 'resolved', '2026-07-12 12:35:00', '2026-07-12 13:00:00'),
-(4, 12, 9, 5, 'errand', 'Medicine or medical-related purchase', 'Medicine purchases are banned by prototype rules.', 'pending', '2026-07-12 12:40:00', NULL)
+(4, 12, 9, 5, 'errand', 'Medicine or medical-related purchase', 'Medicine purchases are banned by prototype rules.', 'pending', '2026-07-12 12:40:00', NULL),
+(5, 16, 7, 12, 'errand', 'Harassment or prank', 'The request looks like a prank delivery during class.', 'resolved', '2026-07-12 14:35:00', '2026-07-12 15:00:00'),
+(6, 18, 11, 2, 'errand', 'Vape or prohibited item', 'The request asks a helper to buy a vape product.', 'pending', '2026-07-12 15:05:00', NULL)
 ON DUPLICATE KEY UPDATE
 reason = VALUES(reason),
 details = VALUES(details),
@@ -140,7 +169,11 @@ VALUES
 (2, 10, 'Errand to restricted office', 'Please get a document from a restricted office area.', 'flagged', 'restricted office, document', '2026-07-12 12:00:01'),
 (3, 11, 'Pick up confidential exam paper', 'Please pick up a confidential exam paper for me.', 'rejected', 'confidential, exam paper', '2026-07-12 12:15:01'),
 (4, 12, 'Buy medicine nearby', 'Please buy medicine from a nearby pharmacy.', 'flagged', 'medicine, pharmacy', '2026-07-12 12:30:01'),
-(5, 13, 'Deliver library book return', 'Return a borrowed library book before closing.', 'allowed', NULL, '2026-07-12 13:00:01')
+(5, 13, 'Deliver library book return', 'Return a borrowed library book before closing.', 'allowed', NULL, '2026-07-12 13:00:01'),
+(6, 16, 'Prank delivery request', 'Deliver a prank note to another student during class.', 'flagged', 'prank, during class', '2026-07-12 14:30:01'),
+(7, 18, 'Buy vape near campus gate', 'Buy a vape product from a nearby shop.', 'rejected', 'vape, nearby shop', '2026-07-12 15:00:01'),
+(8, 19, 'Buy marker from bookstore', 'Buy one black whiteboard marker from the bookstore.', 'allowed', NULL, '2026-07-12 15:30:01'),
+(9, 20, 'Deliver folder to faculty room', 'Bring a sealed project folder from E202 to the faculty room drop box.', 'allowed', NULL, '2026-07-12 16:00:01')
 ON DUPLICATE KEY UPDATE
 result = VALUES(result),
 matched_terms = VALUES(matched_terms);
@@ -149,7 +182,10 @@ INSERT INTO admin_actions (action_id, admin_id, target_user_id, target_errand_id
 VALUES
 (1, 1, 8, NULL, 'restrict_user', 'Restricted for unsafe report history in demo data.', '2026-07-12 13:05:00'),
 (2, 1, NULL, 11, 'review_flagged_errand', 'Reviewed confidential exam paper request.', '2026-07-12 13:10:00'),
-(3, 1, NULL, 3, 'resolve_report', 'Resolved report after confirming policy violation.', '2026-07-12 13:15:00')
+(3, 1, NULL, 3, 'resolve_report', 'Resolved report after confirming policy violation.', '2026-07-12 13:15:00'),
+(4, 1, NULL, 16, 'remove_errand', 'Removed prank request from public errand listings.', '2026-07-12 14:52:00'),
+(5, 1, 10, NULL, 'verify_student', 'Pending student left available for admin verification demo.', '2026-07-12 15:10:00'),
+(6, 1, 9, NULL, 'deactivate_user', 'Deactivated demo account for admin reactivation demo.', '2026-07-12 15:15:00')
 ON DUPLICATE KEY UPDATE
 action_details = VALUES(action_details);
 

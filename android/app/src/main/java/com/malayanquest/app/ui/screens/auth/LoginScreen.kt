@@ -301,13 +301,6 @@ fun LoginScreen(
                     color = TextPrimary,
                     fontWeight = FontWeight.SemiBold
                 )
-
-                Text(
-                    text = "Create an account using your official " +
-                            "@mcl.edu.ph or @live.mcl.edu.ph student email.",
-                    color = TextSecondary,
-                    fontSize = 13.sp
-                )
             }
 
             CampusButton(

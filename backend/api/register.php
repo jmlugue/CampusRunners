@@ -42,7 +42,7 @@ try {
             ?,
             ?,
             'student',
-            'verified',
+            'pending',
             'active'
         )
     ");
@@ -55,7 +55,7 @@ try {
     ]);
 
     respond_success(
-        "Registration successful. You can now sign in.",
+        "Registration successful. Please wait for admin verification before signing in.",
         [
             "user_id" => $pdo->lastInsertId()
         ]

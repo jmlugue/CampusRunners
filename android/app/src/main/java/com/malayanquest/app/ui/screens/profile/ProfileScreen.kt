@@ -8,12 +8,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,8 +45,8 @@ fun ProfileScreen(
     ) { data ->
         ProfileHeader(data, fullName)
         SectionCard("Account Info", Icons.Filled.Security) {
-            DetailRow("School email", data.optString("school_email"))
-            DetailRow("Student number", data.optString("student_number"))
+            SecureAccountRow("School email", data.optString("school_email"), Icons.Filled.Email)
+            SecureAccountRow("Student number", data.optString("student_number"), Icons.Filled.Badge)
         }
     }
     
@@ -84,6 +90,69 @@ fun ProfileHeader(data: JSONObject, fallbackFullName: String) {
             ProfileStat("Account", data.optString("account_status", "active"), Modifier.weight(1f))
         }
     }
+}
+
+@Composable
+fun SecureAccountRow(label: String, value: String?, icon: ImageVector) {
+    var visible by remember(label, value) { mutableStateOf(false) }
+    val displayValue = if (visible) {
+        displayAccountValue(value)
+    } else {
+        maskAccountValue(value)
+    }
+
+    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .size(34.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0xFFEAF3FF)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(icon, contentDescription = label, tint = SecondaryBlue, modifier = Modifier.size(18.dp))
+        }
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(label.uppercase(), color = SecondaryBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            Text(displayValue, color = TextPrimary, fontSize = 15.sp)
+        }
+
+        IconButton(onClick = { visible = !visible }, modifier = Modifier.size(34.dp)) {
+            Icon(
+                imageVector = if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                contentDescription = if (visible) "Hide $label" else "Show $label",
+                tint = SecondaryBlue,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+private fun displayAccountValue(value: String?): String {
+    return if (value.isNullOrBlank() || value == "null") "Not specified" else value
+}
+
+private fun maskAccountValue(value: String?): String {
+    val text = displayAccountValue(value)
+    if (text == "Not specified") return text
+
+    return if (text.contains("@")) {
+        val parts = text.split("@", limit = 2)
+        "${maskText(parts[0])}@${maskDomain(parts[1])}"
+    } else {
+        maskText(text)
+    }
+}
+
+private fun maskText(value: String): String {
+    if (value.length <= 2) return "*".repeat(value.length.coerceAtLeast(1))
+    return value.first() + "*".repeat((value.length - 2).coerceAtLeast(1)) + value.last()
+}
+
+private fun maskDomain(domain: String): String {
+    val dotIndex = domain.lastIndexOf('.')
+    if (dotIndex <= 0) return maskText(domain)
+    return maskText(domain.substring(0, dotIndex)) + domain.substring(dotIndex)
 }
 
 @Composable

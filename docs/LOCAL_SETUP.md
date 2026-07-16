@@ -58,7 +58,13 @@ database/malayanquest_db.sql
 ```
 
 4. Click `Import`.
-5. Confirm that `malayanquest_db` appears in the left sidebar.
+5. Import this second file after the base database import:
+
+```text
+database/demo_seed_records.sql
+```
+
+6. Confirm that `malayanquest_db` appears in the left sidebar.
 
 The seed accounts use this password:
 

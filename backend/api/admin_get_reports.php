@@ -9,7 +9,7 @@ if (!$admin_id) {
 require_admin($pdo, (int) $admin_id);
 
 $filter = strtolower(str_replace(" ", "_", trim($_GET["filter"] ?? "pending")));
-$allowed_filters = ["pending", "under_review", "resolved", "dismissed"];
+$allowed_filters = ["pending", "resolved"];
 
 $sql = "
     SELECT

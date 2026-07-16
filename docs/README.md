@@ -47,7 +47,8 @@ The project uses PHP and MySQL instead of Supabase or Firebase because the final
 3. Copy the `backend` folder to your XAMPP `htdocs` folder.
 4. Create a database named `malayanquest_db` in phpMyAdmin.
 5. Import `database/malayanquest_db.sql`.
-6. Update database credentials in `backend/config/db.php`.
+6. Import `database/demo_seed_records.sql` so every student, helper, and admin feature has demo records to show.
+7. Update database credentials in `backend/config/db.php`.
 
 ### Android
 

@@ -450,7 +450,9 @@ class MainActivity : ComponentActivity() {
                     Screen.AdminRecordDetails -> AdminRecordDetailsScreen(
                         item = selectedErrand,
                         title = adminTitle,
-                        onUpdateUserStatus = { targetId, status -> updateUserStatus(targetId, status) },
+                        onUpdateUserStatus = { targetId, accountStatus, verificationStatus ->
+                            updateUserStatus(targetId, accountStatus, verificationStatus)
+                        },
                         onRemoveErrand = { errandId -> removeErrand(errandId) },
                         onResolveReport = { reportId -> resolveReport(reportId) },
                         onNavigateBack = { screen = Screen.AdminDashboard }
@@ -653,11 +655,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun updateUserStatus(targetUserId: Int, status: String) {
+    private fun updateUserStatus(
+        targetUserId: Int,
+        accountStatus: String = "",
+        verificationStatus: String = ""
+    ) {
         api.post("admin_update_user_status.php", JSONObject().apply {
             put("admin_id", userId)
             put("target_user_id", targetUserId)
-            put("account_status", status)
+            if (accountStatus.isNotBlank()) {
+                put("account_status", accountStatus)
+            }
+            if (verificationStatus.isNotBlank()) {
+                put("verification_status", verificationStatus)
+            }
         }) { response ->
             toast(response.optString("message"))
             refreshKey++
@@ -680,7 +691,8 @@ class MainActivity : ComponentActivity() {
         api.post("admin_resolve_report.php", JSONObject().apply {
             put("admin_id", userId)
             put("report_id", reportId)
-            put("resolution_note", "Resolved from Android prototype admin screen.")
+            put("status", "resolved")
+            put("details", "Resolved from Android prototype admin screen.")
         }) { response ->
             toast(response.optString("message"))
             refreshKey++

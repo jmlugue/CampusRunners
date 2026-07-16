@@ -23,7 +23,7 @@ CREATE TABLE users (
     student_number VARCHAR(50) UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('student','admin') NOT NULL DEFAULT 'student',
-    verification_status ENUM('pending','verified','rejected','restricted') NOT NULL DEFAULT 'verified',
+    verification_status ENUM('pending','verified','rejected','restricted') NOT NULL DEFAULT 'pending',
     account_status ENUM('active','deactivated') NOT NULL DEFAULT 'active',
     average_rating DECIMAL(3,2) NOT NULL DEFAULT 0.00,
     completed_errands INT NOT NULL DEFAULT 0,

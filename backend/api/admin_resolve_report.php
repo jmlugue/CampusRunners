@@ -12,7 +12,7 @@ $details = validate_optional_text_length($data["details"] ?? "", "Resolution det
 
 require_admin($pdo, $admin_id);
 
-if (!in_array($status, ["under_review", "resolved", "dismissed"])) {
+if ($status !== "resolved") {
     respond_error("Invalid report status.");
 }
 
@@ -24,10 +24,10 @@ if (!$check->fetch(PDO::FETCH_ASSOC)) {
 
 $stmt = $pdo->prepare("
     UPDATE reports
-    SET status = ?, resolved_at = CASE WHEN ? IN ('resolved', 'dismissed') THEN NOW() ELSE resolved_at END
+    SET status = ?, resolved_at = NOW()
     WHERE report_id = ?
 ");
-$stmt->execute([$status, $status, $report_id]);
+$stmt->execute([$status, $report_id]);
 
 $action = $pdo->prepare("
     INSERT INTO admin_actions (admin_id, action_type, action_details)

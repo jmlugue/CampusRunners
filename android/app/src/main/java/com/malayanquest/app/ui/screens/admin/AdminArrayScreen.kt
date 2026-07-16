@@ -30,7 +30,7 @@ fun AdminArrayScreen(
             )
 
             FilterChipRow(
-                chips = listOf("All", "Verified", "Restricted", "Deactivated"),
+                chips = listOf("All", "Pending", "Verified", "Restricted", "Rejected", "Deactivated"),
                 selected = selectedChip,
                 onSelected = { selectedChip = it }
             )
@@ -45,7 +45,7 @@ fun AdminArrayScreen(
             onSelected = { selectedChip = it }
         )
         "admin_get_reports.php" -> FilterChipRow(
-            chips = listOf("Pending", "Under Review", "Resolved", "Dismissed"),
+            chips = listOf("Pending", "Resolved"),
             selected = selectedChip,
             onSelected = { selectedChip = it }
         )

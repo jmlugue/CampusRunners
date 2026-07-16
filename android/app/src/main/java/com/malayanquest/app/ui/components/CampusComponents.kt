@@ -324,15 +324,19 @@ fun CampusButton(
 fun DangerButton(
     text: String,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = DangerRed,
-            contentColor = Color.White
+            contentColor = Color.White,
+            disabledContainerColor = DangerRed.copy(alpha = 0.32f),
+            disabledContentColor = Color.White.copy(alpha = 0.75f)
         )
     ) {
         Text(text, fontWeight = FontWeight.Bold)
@@ -530,10 +534,11 @@ fun ConfirmDangerButton(
     dialogTitle: String,
     dialogMessage: String,
     confirmText: String = text,
+    enabled: Boolean = true,
     onConfirm: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    DangerButton(text) { showDialog = true }
+    DangerButton(text, enabled = enabled) { showDialog = true }
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },

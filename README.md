@@ -49,7 +49,8 @@ For detailed local setup, see `docs/LOCAL_SETUP.md`. For a groupmate-friendly se
 3. Copy this project to `C:\xampp\htdocs\IT140P-MP-MalayanQuest`, or copy the `backend` folder into a project folder with that name.
 4. Create a database named `malayanquest_db` in phpMyAdmin.
 5. Import `database/malayanquest_db.sql`.
-6. Update database credentials in `backend/config/db.php`.
+6. Import `database/demo_seed_records.sql` so every student, helper, and admin feature has demo records to show.
+7. Update database credentials in `backend/config/db.php`.
 
 ### Android
 
